@@ -1,0 +1,320 @@
+---
+title: "cfDNAPro"
+author:
+- name: Haichao Wang
+  affiliation: 
+    Cancer Research UK, Cambridge Institute, Cambridge, United Kingdom
+  email: hw538@cam.ac.uk
+package: cfDNAPro
+output:
+  BiocStyle::html_document:
+    toc_float: yes
+abstract: 
+  Using cfDNAPro for analyzing cfDNA for fragmentation metrics analysis.
+vignette: |
+  %\VignetteIndexEntry{cfDNAPro Tutorial} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  tidy.opts=list(width.cutoff=80),
+  tidy=FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction  
+<img src="logo.png" width="200" align="right">
+Cell-free (cf) DNA enters blood circulation via various biological processes. 
+There are increasing evidences showing cfDNA fragmentation patterns could be 
+used in cancer detection and monitoring. However, a lack of R package for 
+automated analysis of fragmentation data hindered the research in this field. 
+Hence, I wrote this tutorial showing how to use cfDNAPro functions to perform 
+characterisation and visualisation of cfDNA whole genome sequencing data. 
+The functions of cfDNAPro help reach a high degree of clarity, transparency 
+and reproducibility of analyses.  
+
+cfDNAPro now includes two sets of functions for data characterisation and 
+visualisation respectively. Data characterisation functions consist of 
+`examplePath`, `callMode`, `callSize`, `callMetrics`, `callPeakDistance`, and 
+`callValleyDistance`;  
+
+Data visualisation functions are: `plotAllToOne`, 
+`plotMetrics`, `plotMode`, `plotModeSummary`, `plotPeakDistance`, 
+`plotValleyDistance`, and `plotSingleGroup`.  
+
+Details about each function please
+refer to their built-in documentations in R. For example, typing 
+`?callMode` in R console will show you the user manual of `callMode` function. 
+
+# Installation
+
+For steady release, install via bioconductor:  
+
+``` R
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("cfDNAPro")
+```
+For develop version, install via github:  
+
+``` R
+if(!require(devtools)) {
+  install.packages("devtools", repos="https://cloud.r-project.org")}
+
+devtools::install_github("hw538/cfDNAPro")
+```
+
+***
+# Fragment Size Distribution of Each Group
+
+In cfDNAPro package, gathering all your insert size data into sub-folders 
+named by cohort name is required, even if when you have only one cohort. 
+Example data were installed with cfDNAPro into the library folder on you server
+or personal computer. Here is how to get the data path: 
+
+```{r get path to example data}
+library(cfDNAPro)
+# Get the path to example data in cfDNAPro package library path.
+data_path <- examplePath("groups_picard")
+```
+
+The example data has four groups separated into four sub-folders: 
+"cohort_1", "cohort_2", "cohort_3", and "cohort_4". Each group contains 
+their own samples (i.e. txt files). Feel feel to use 
+`list.files(data_path, full.names = TRUE,recursive = TRUE)` to check. 
+
+## Generate a plot for a single group/cohort.
+
+Alright,  you might be wondering how easy it is to generate the fragmentation 
+patterns...Let's move on...
+There are data from four groups at the very beginning, we want to simply peep 
+into  one cohort (e.g. cohort_1) to confirm that nothing has been messed up. 
+How to plot those three txt files in "cohort_1"?
+
+```{r}
+cohort1_plot <- cfDNAPro::callSize(path = data_path) %>%
+  dplyr::filter(group == as.character("cohort_1")) %>%
+  cfDNAPro::plotSingleGroup()
+```
+
+In cohort1_plot (actually it is a list in R!) 
+we could see three ggplot2 objects: 
+`prop_plot`, `cdf_plot`, and `one_minus_cdf_plot`. 
+This means you could modify those plots using ggplot2 syntax! Imagine how we 
+could multiplex the plot in one figure, here is a good example!
+
+
+## Matipulate your plots.
+
+```{r fragment size distribution, fig.height=6, fig.width=7.2, warning=FALSE}
+library(scales)
+library(ggpubr)
+library(ggplot2)
+library(dplyr)
+
+
+# Define a list for the groups/cohorts.
+grp_list<-list("cohort_1"="cohort_1",
+               "cohort_2"="cohort_2",
+               "cohort_3"="cohort_3",
+               "cohort_4"="cohort_4")
+
+# Generating the plots and store them in a list.
+result<-sapply(grp_list, function(x){
+  result <-callSize(path = data_path) %>% 
+    dplyr::filter(group==as.character(x)) %>% 
+    plotSingleGroup()
+}, simplify = FALSE)
+
+# Multiplexing the plots in one figure
+multiplex <-
+  ggarrange(result$cohort_1$prop_plot + 
+              theme(axis.title.x = element_blank()),
+            result$cohort_4$prop_plot + 
+              theme(axis.title = element_blank()),
+            result$cohort_1$cdf_plot,
+            result$cohort_4$cdf_plot + 
+              theme(axis.title.y = element_blank()),
+            labels = c("Cohort 1 (n=5)", "Cohort 4 (n=4)"),
+            label.x = 0.2,
+            ncol = 2,
+            nrow = 2)
+multiplex
+```
+
+***
+
+# Median Size Metrics
+
+In SESSION 2 we plotted all samples in each group. 
+However, you might be wondering how to calculate the median size fragment 
+distribution of each group and then plot those median distribution together?
+
+```{r Median distribution, fig.height=6, fig.width=7.2, warning=FALSE}
+# Set an order for those groups (i.e. the levels of factors).
+order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
+# Generate plots.
+compare_grps<-callMetrics(data_path) %>% plotMetrics(order=order)
+
+# Modify plots.
+p1<-compare_grps$median_prop_plot +
+  ylim(c(0, 0.028)) +
+  theme(axis.title.x = element_blank(),
+        axis.title.y = element_text(size=12,face="bold")) +
+  theme(legend.position = c(0.7, 0.5),
+        legend.text = element_text( size = 11),
+        legend.title = element_blank())
+
+p2<-compare_grps$median_cdf_plot +
+  scale_y_continuous(labels = scales::number_format(accuracy = 0.001)) +
+  theme(axis.title=element_text(size=12,face="bold")) +
+  theme(legend.position = c(0.7, 0.5),
+        legend.text = element_text( size = 11),
+        legend.title = element_blank())
+
+# Finalize plots.
+median_grps<-ggpubr::ggarrange(p1,
+                       p2,
+                       label.x = 0.3,
+                       ncol = 1,
+                       nrow = 2
+                       )
+
+median_grps
+```
+
+***
+
+# Modal Fragment Size
+
+## Bar chart.
+
+You might want to calculate the modal fragment size of each sample. 
+Remember that you could modify the object generated using ggplot2 syntax.
+
+```{r Modal size bar chart, fig.height=6, fig.width=7.2, warning=FALSE}
+# Set an order for your groups, it will affect the group order along x axis!
+order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
+# Generate mode bin chart.
+mode_bin <- callMode(data_path) %>% plotMode(order=order,hline = c(167,111,81))
+# Show the plot.
+mode_bin
+```
+
+
+## Stacked bar chart.
+
+We have another way to visualize the modal fragment size: stacked bar chart.
+.
+```{r, modal size stacked bar chart, fig.height=6, fig.width=7.2, warning=FALSE}
+# Set an order for your groups, it will affect the group order along x axis.
+order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
+
+# Generate mode stacked bar chart. You could specify how to stratify the modes
+# using 'mode_partition' arguments. If other modes exist other than you 
+# specified, an 'other' group will be added to the plot.
+
+mode_stacked <- 
+  callMode(data_path) %>% 
+  plotModeSummary(order=order,
+                  mode_partition = list(c(166,167)))
+# Modify the plot using ggplot syntax.
+mode_stacked <- mode_stacked + theme(legend.position = "top")
+# Show the plot.
+mode_stacked
+```
+
+***
+# Inter-peak/valley Distance
+
+10 bp periodical oscillations were observed in cell-free DNA fragment size 
+distributions. How to calculate them?
+
+## Inter-peak distance
+
+```{r interpeak distance, fig.height=6, fig.width=7.2, warning=FALSE}
+# Set an order for your groups, it will affect the group order.
+order <- c("cohort_1", "cohort_2", "cohort_4", "cohort_3")
+# Plot and modify inter-peak distances.
+inter_peak_dist<-callPeakDistance(path = data_path,  limit = c(50, 135)) %>%
+  plotPeakDistance(order = order) +
+  labs(y="Fraction") +
+  theme(axis.title =  element_text(size=12,face="bold"),
+        legend.title = element_blank(),
+        legend.position = c(0.91, 0.5),
+        legend.text = element_text(size = 11))
+# Show the plot.
+inter_peak_dist
+```
+
+## Inter-valley distance
+
+```{r intervalley distance, fig.height=6, fig.width=7.2, warning=FALSE}
+# Set an order for your groups, it will affect the group order.
+order <- c("cohort_1", "cohort_2", "cohort_4", "cohort_3")
+# Plot and modify inter-peak distances.
+inter_valley_dist<-callValleyDistance(path = data_path,  
+                                      limit = c(50, 135)) %>%
+  plotValleyDistance(order = order) +
+  labs(y="Fraction") +
+  theme(axis.title =  element_text(size=12,face="bold"),
+        legend.title = element_blank(),
+        legend.position = c(0.91, 0.5),
+        legend.text = element_text(size = 11))
+# Show the plot.
+inter_valley_dist
+```
+
+***
+
+# Others
+
+Imagine that you want to label the peaks and valleys in the size distribution 
+of a sample. How to do this? We use cohort_4 sample as an example:
+
+```{r what else,fig.height=6, fig.width=7.2,}
+library(ggplot2)
+library(cfDNAPro)
+# Set the path to the example sample.
+exam_path <- examplePath("step6")
+# Calculate peaks and valleys.
+peaks <- callPeakDistance(path = exam_path) 
+valleys <- callValleyDistance(path = exam_path) 
+# A line plot showing the fragmentation pattern of the example sample.
+exam_plot_all <- callSize(path=exam_path) %>% plotSingleGroup(vline = NULL)
+# Label peaks and valleys with dashed and solid lines.
+exam_plot_prop <- exam_plot_all$prop + 
+  coord_cartesian(xlim = c(90,135),ylim = c(0,0.0065)) +
+  geom_vline(xintercept=peaks$insert_size, colour="red",linetype="dashed") +
+  geom_vline(xintercept = valleys$insert_size,colour="blue")
+# Show the plot.
+exam_plot_prop
+
+# Label peaks and valleys with dots.
+exam_plot_prop_dot<- exam_plot_all$prop + 
+  coord_cartesian(xlim = c(90,135),ylim = c(0,0.0065)) +
+  geom_point(data= peaks, 
+             mapping = aes(x= insert_size, y= prop),
+             color="blue",alpha=0.5,size=3) +
+  geom_point(data= valleys, 
+             mapping = aes(x= insert_size, y= prop),
+             color="red",alpha=0.5,size=3) 
+# Show the plot.
+exam_plot_prop_dot
+
+```
+
+# Session Information  
+
+Here is the output of sessionInfo() on the system on which this document 
+was compiled:
+
+```{r}
+sessionInfo()
+```
+
