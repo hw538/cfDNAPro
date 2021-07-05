@@ -1,3 +1,6 @@
+# cfDNAPro 0.99.2 (5 July 2021)
+* Modified vignette.
+* 
 # cfDNAPro 0.99.1 (27 May 2021)
 * Added 'cfDNAPro' into the "watched tag".
 
