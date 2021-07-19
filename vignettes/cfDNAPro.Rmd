@@ -114,7 +114,7 @@ data_path <- examplePath("groups_picard")
 
 The example data has four groups separated into four sub-folders:
 "cohort_1", "cohort_2", "cohort_3", and "cohort_4". Each group contains
-their own samples (i.e. txt files). 
+their own samples (i.e. txt files).
 `list.files(data_path, full.names = TRUE,recursive = TRUE)` to check.
 
 ### Generate a plot for a single group/cohort
@@ -135,7 +135,7 @@ This means you could modify those plots using ggplot2 syntax.
 
 ### Matipulate your plots
 
-```{r fragment size distribution, fig.height=6, fig.width=7.2, warning=FALSE}
+```{r fragment size distribution, fig.height=6.5, fig.width=8, warning=FALSE}
 library(scales)
 library(ggpubr)
 library(ggplot2)
