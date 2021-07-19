@@ -26,46 +26,45 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+## Introduction
 
 <img src="logo.png" width="200" align="right">
 
+cell-free DNA (cfDNA) enters human blood circulation via various biological
+processes, such as necrosis(i.e. abnormal death) and apoptosis (i.e. normal death) of cell,
+and direct secretion etc. They could be sheded by both healthy and cancer cells. Thus, cfDNA molecules extracted
+from liquid biopsies will be a mixture of DNA fragments from both normal and abnormal
+cells. It contains critical information for cancer diagnosis, therapeutic decision-making
+and treatment response surveillance.
 
-cell-free DNA (cfDNA) enters human blood circulation via various biological 
-processes, such as necrosis(i.e. abnormal death) and apoptosis (i.e. normal death) of cell, 
-and direct secretion etc. They could be sheded by both healthy and cancer cells. Thus, cfDNA molecules extracted 
-from liquid biopsies will be a mixture of DNA fragments from both normal and abnormal 
-cells. It contains critical information for cancer diagnosis, therapeutic decision-making 
-and treatment response surveillance. 
+One of those information is the length of cfDNA fragments in base pair. A facinating
+phenomenon is its 10bp periodic oscillation in the fragmentation pattern plot.
+Many studies have proved that cfDNA from cancer cells (also called circulating-tumor DNA, ctDNA)
+in plasma are shorter than healthy cfDNA.This key feature have been used for
+cancer signal enrichment and sample classification by subsetting cfDNA fragments
+between 90 and 150bp from the sequencing data.
 
-One of those information is the length of cfDNA fragments in base pair. A facinating 
-phenomenon is its 10bp periodic oscillation in the fragmentation pattern plot. 
-Many studies have proved that cfDNA from cancer cells (also called circulating-tumor DNA, ctDNA) 
-in plasma are shorter than healthy cfDNA.This key feature have been used for 
-cancer signal enrichment and sample classification by subsetting cfDNA fragments 
-between 90 and 150bp from the sequencing data. 
-
-Although ploting the fragmentation patterns is an important step for cfDNA sequencing 
-data analysis, there isn't an R package designed for automated and standardized analysis 
-in this study area. Here, I wrote this tutorial showing how to use cfDNAPro functions to perform 
-characterisation and visualisation of cfDNA whole genome sequencing data. 
-The functions of cfDNAPro help reach a high degree of clarity, transparency 
+Although ploting the fragmentation patterns is an important step for cfDNA sequencing
+data analysis, there isn't an R package designed for automated and standardized analysis
+in this study area. Here, I wrote this tutorial showing how to use cfDNAPro functions to perform
+characterisation and visualisation of cfDNA whole genome sequencing data.
+The functions of cfDNAPro help reach a high degree of clarity, transparency
 and reproducibility of analyses.  
 
-cfDNAPro now includes two sets of functions for data characterisation and 
-visualisation respectively. Data characterisation functions consist of 
-`examplePath`, `callMode`, `callSize`, `callMetrics`, `callPeakDistance`, and 
+cfDNAPro now includes two sets of functions for data characterisation and
+visualisation respectively. Data characterisation functions consist of
+`examplePath`, `callMode`, `callSize`, `callMetrics`, `callPeakDistance`, and
 `callValleyDistance`;  
 
 Data visualisation functions are: `plotAllToOne`, 
-`plotMetrics`, `plotMode`, `plotModeSummary`, `plotPeakDistance`, 
+`plotMetrics`, `plotMode`, `plotModeSummary`, `plotPeakDistance`,
 `plotValleyDistance`, and `plotSingleGroup`.  
 
 Details about each function please
-refer to their built-in documentations in R. For example, typing 
-`?callMode` in R console will show documentation of `callMode`. 
+refer to their built-in documentations in R. For example, typing
+`?callMode` in R console will show documentation of `callMode`.
 
-# Installation
+## Installation
 
 For steady release, install via bioconductor:  
 
@@ -75,6 +74,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 
 BiocManager::install("cfDNAPro")
 ```
+
 For develop version, install via github:  
 
 ``` R
@@ -85,25 +85,26 @@ devtools::install_github("hw538/cfDNAPro")
 ```
 
 ***
-# Fragment Size Distribution of Each Group
 
-In the cfDNA study area, fragment size metrics data is usually generated using 
+## Fragment Size Distribution of Each Group
+
+In the cfDNA study area, fragment size metrics data is usually generated using
 [Picard tool](https://broadinstitute.github.io/picard/) developed by Broad Institute.
 
 > Picard is a set of command line tools for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. These file formats are defined in the Hts-specs repository. See especially the SAM specification and the VCF specification.
 
-Thus, cfDNAPro accepts as input the insert sizes metrics files (i.e. txt files ) generated by 
-`Picard` tools from Illumina NGS sequencing data using this function:[CollectInsertSizeMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectInsertSizeMetrics). 
+Thus, cfDNAPro accepts as input the insert sizes metrics files (i.e. txt files ) generated by
+`Picard` tools from Illumina NGS sequencing data using this function:[CollectInsertSizeMetrics](http://broadinstitute.github.io/picard/command-line-overview.html#CollectInsertSizeMetrics).
 
 In addition, cfDNAPro could also directly read fragment size information from bam files
-(Of note, the bam should be NGS data generated from Illumina sequencing platforms) 
-and extract the insert size data using these criteria: (a) reads have the “proper pair” flag, 
-(b) mapping quality >= 30, and (c) CIGAR string doesn’t include “I” or “D”. 
+(Of note, the bam should be NGS data generated from Illumina sequencing platforms)
+and extract the insert size data using these criteria: (a) reads have the “proper pair” flag,
+(b) mapping quality >= 30, and (c) CIGAR string doesn’t include “I” or “D”.
 
-To use cfDNAPro package, gathering all txt files generated by Picard or bam files into sub-folders 
-named by cohort name is required, even if when you have only one cohort. 
-Example txt files are installed together with this package. 
-Here is how to retrieve the example data: 
+To use cfDNAPro package, gathering all txt files generated by Picard or bam files into sub-folders
+named by cohort name is required, even if when you have only one cohort.
+Example txt files are installed together with this package.
+Here is how to retrieve the example data:
 
 ```{r get path to example data}
 library(cfDNAPro)
@@ -111,27 +112,28 @@ library(cfDNAPro)
 data_path <- examplePath("groups_picard")
 ```
 
-The example data has four groups separated into four sub-folders: 
-"cohort_1", "cohort_2", "cohort_3", and "cohort_4". Each group contains 
+The example data has four groups separated into four sub-folders:
+"cohort_1", "cohort_2", "cohort_3", and "cohort_4". Each group contains
 their own samples (i.e. txt files). 
-`list.files(data_path, full.names = TRUE,recursive = TRUE)` to check. 
+`list.files(data_path, full.names = TRUE,recursive = TRUE)` to check.
 
-## Generate a plot for a single group/cohort.
+### Generate a plot for a single group/cohort
 
-There are data from four groups, we want to simply plot one cohort (e.g. cohort_1) 
+There are data from four groups, we want to simply plot one cohort (e.g. cohort_1)
 How to plot those three txt files in "cohort_1"?
 
-```{r}
+```{r single group plot, }
 cohort1_plot <- cfDNAPro::callSize(path = data_path) %>%
   dplyr::filter(group == as.character("cohort_1")) %>%
   cfDNAPro::plotSingleGroup()
 ```
 
-In cohort1_plot (actually it is a list in R!) 
-we could see three ggplot2 objects: 
-`prop_plot`, `cdf_plot`, and `one_minus_cdf_plot`. 
-This means you could modify those plots using ggplot2 syntax. 
-## Matipulate your plots.
+In cohort1_plot (actually it is a list in R!)
+we could see three ggplot2 objects:
+`prop_plot`, `cdf_plot`, and `one_minus_cdf_plot`.
+This means you could modify those plots using ggplot2 syntax.
+
+### Matipulate your plots
 
 ```{r fragment size distribution, fig.height=6, fig.width=7.2, warning=FALSE}
 library(scales)
@@ -171,10 +173,10 @@ multiplex
 
 ***
 
-# Median Size Metrics
+## Median Size Metrics
 
 In last session we plotted all samples in each group.
-We will calculate the median size fragment distribution of each group and then 
+We will calculate the median size fragment distribution of each group and then
 plot those median distribution together.
 
 ```{r Median distribution, fig.height=6, fig.width=7.2, warning=FALSE}
@@ -212,9 +214,9 @@ median_grps
 
 ***
 
-# Modal Fragment Size
+## Modal Fragment Size
 
-## Bar chart.
+### Bar chart
 
 To calculate the modal fragment size of each sample:
 
@@ -228,7 +230,7 @@ mode_bin
 ```
 
 
-## Stacked bar chart.
+### Stacked bar chart
 
 We have another way to visualize the modal fragment size: stacked bar chart.
 .
@@ -252,12 +254,13 @@ mode_stacked
 ```
 
 ***
-# Inter-peak/valley Distance
+
+## Inter-peak/valley Distance
 
 10 bp periodical oscillations were observed in cell-free DNA fragmentation patterns,
 to quantify this feature, we could calculate the inter-peak and inter-valley distances.
 
-## Inter-peak distance
+### Inter-peak distance
 
 ```{r interpeak distance, fig.height=6, fig.width=7.2, warning=FALSE}
 # Set an order for your groups, it will affect the group order.
@@ -274,7 +277,7 @@ inter_peak_dist<-callPeakDistance(path = data_path,  limit = c(50, 135)) %>%
 inter_peak_dist
 ```
 
-## Inter-valley distance
+### Inter-valley distance
 
 ```{r intervalley distance, fig.height=6, fig.width=7.2, warning=FALSE}
 # Set an order for your groups, it will affect the group order.
@@ -294,9 +297,9 @@ inter_valley_dist
 
 ***
 
-# Others
+## Others
 
-Further modification of the plots generated by cfDNAPro package could be done by 
+Further modification of the plots generated by cfDNAPro package could be done by
 using ggplot2 syntax.
 For example, we could highlightthe peaks and valleys in the fragmentation patterns
 
@@ -332,12 +335,11 @@ exam_plot_prop_dot
 
 ```
 
-# Session Information
+## Session Information
 
-Here is the output of sessionInfo() on the system on which this document 
+Here is the output of sessionInfo() on the system on which this document
 was compiled:
 
 ```{r}
 sessionInfo()
 ```
-
