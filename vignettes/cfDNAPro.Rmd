@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Introduction
+# Introduction
 
 <img src="logo.png" width="200" align="right">
 
@@ -65,7 +65,7 @@ Details about each function please
 refer to their built-in documentations in R. For example, typing
 `?callMode` in R console will show documentation of `callMode`.
 
-## Installation
+# Installation
 
 For steady release, install via bioconductor:  
 
@@ -87,10 +87,10 @@ devtools::install_github("hw538/cfDNAPro")
 
 ***
 
-## Fragment Size Distribution of Each Group
+# Fragment Size Distribution of Each Group
 
 In the cfDNA study area, fragment size metrics data is usually generated using
-[Picard tool](https://broadinstitute.github.io/picard/) developed by Broad Institute.
+[Picard tool](https://broadinstitute.github.io/picard/).
 
 > Picard is a set of command line tools for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF. These file formats are defined in the Hts-specs repository. See especially the SAM specification and the VCF specification.
 
@@ -118,7 +118,17 @@ The example data has four groups separated into four sub-folders:
 their own samples (i.e. txt files).
 `list.files(data_path, full.names = TRUE,recursive = TRUE)` to check.
 
-### Generate a plot for a single group/cohort
+Note: the cohort 1, 2, 3 and 4 here are not biologically meaningful (i.e. these are
+simulated data, and without a cancer type related to them). 
+In the sessions below, you would see several plots with the typical 
+10bp period oscillations in cfDNA fragmentation profile. Please be aware that these 
+plots/data are for cfDNAPro function demonstration only. I aimed to show how cfDNAPro 
+offers a convenient way to do data analysis and visualization. 
+
+In your own study, you could utilize these functions to analyze your 
+cancer cfDNA NGS sequencing data, and to identify the fragmentation features useful for answering research questions.
+
+## Generate a plot for a single group/cohort
 
 There are data from four groups, we want to simply plot one cohort (e.g. cohort_1)
 How to plot those three txt files in "cohort_1"?
@@ -127,6 +137,7 @@ How to plot those three txt files in "cohort_1"?
 cohort1_plot <- cfDNAPro::callSize(path = data_path) %>%
   dplyr::filter(group == as.character("cohort_1")) %>%
   cfDNAPro::plotSingleGroup()
+
 ```
 
 In cohort1_plot (actually it is a list in R!)
@@ -134,7 +145,26 @@ we could see three ggplot2 objects:
 `prop_plot`, `cdf_plot`, and `one_minus_cdf_plot`.
 This means you could modify those plots using ggplot2 syntax.
 
-### Matipulate your plots
+## Matipulate your plots
+
+In this session I will show you could manipulate the ggplot2 objects and plot multiple
+panels in a figure.
+
+Explanation on how the metrics are calculated:
+
+Upper panels: x-axis is the fragment length (from 30bp, 31bp, ..., 500bp), these are
+discrete integers. y-axis is the proportion of reads with a specific read length.The
+line here is NOT a smoothed curve, it is a line connecting the different data points.
+
+Lower panels (i.e. the cumulative plot): x-axis is the fragment length (from 30bp, 31bp, ..., 500bp), these are
+discrete integers. The calculation of y is (1) count the number of reads <= 30bp (e.g. N); (2) normalize N to proportion
+Repeat step (1) and (2) for each fragment size (i.e. 30bp, 31bp, ..., 500bp). Then plot these data points 
+as a line graph. It is NOT a smoothed curve, it is a line connecting the different data points.
+
+For the x-axis, we only plot 30bp-500bp, as the proportion of fragments < 30 are noisy.
+And the proportion of fragments > 500 are usually too low, thus not useful at all. If users 
+want to expand the x-axis, there are parameters could be set in the `callSize`functions.
+
 
 ```{r fragment size distribution, fig.height=6.5, fig.width=10, warning=TRUE}
 library(scales)
@@ -176,7 +206,7 @@ multiplex
 
 ***
 
-## Median Size Metrics
+# Median Size Metrics
 
 In last session we plotted all samples in each group.
 We will calculate the median size fragment distribution of each group and then
@@ -219,9 +249,9 @@ median_grps
 
 ***
 
-## Modal Fragment Size
+# Modal Fragment Size
 
-### Bar chart
+## Bar chart
 
 To calculate the modal fragment size of each sample:
 
@@ -238,7 +268,7 @@ suppressWarnings(print(mode_bin))
 ```
 
 
-### Stacked bar chart
+## Stacked bar chart
 
 We have another way to visualize the modal fragment size: stacked bar chart.
 .
@@ -266,12 +296,12 @@ suppressWarnings(print(mode_stacked))
 
 ***
 
-## Inter-peak/valley Distance
+# Inter-peak/valley Distance
 
 10 bp periodical oscillations were observed in cell-free DNA fragmentation patterns,
 to quantify this feature, we could calculate the inter-peak and inter-valley distances.
 
-### Inter-peak distance
+## Inter-peak distance
 
 ```{r interpeak distance, fig.height=6, fig.width=7.2, warning=TRUE}
 # Set an order for your groups, it will affect the group order.
@@ -293,7 +323,7 @@ suppressWarnings(print(inter_peak_dist))
 
 ```
 
-### Inter-valley distance
+## Inter-valley distance
 
 ```{r intervalley distance, fig.height=6, fig.width=7.2, warning=FALSE}
 # Set an order for your groups, it will affect the group order.
@@ -315,7 +345,7 @@ suppressWarnings(print(inter_valley_dist))
 
 ***
 
-## Others
+# Others
 
 Further modification of the plots generated by cfDNAPro package could be done by
 using ggplot2 syntax.
