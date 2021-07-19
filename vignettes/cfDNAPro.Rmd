@@ -19,8 +19,9 @@ vignette: |
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  tidy.opts=list(width.cutoff=80),
-  tidy=FALSE,
+  tidy.opts = list(width.cutoff=80),
+  tidy = FALSE,
+  message = FALSE,
   collapse = TRUE,
   comment = "#>"
 )
@@ -135,7 +136,7 @@ This means you could modify those plots using ggplot2 syntax.
 
 ### Matipulate your plots
 
-```{r fragment size distribution, fig.height=6.5, fig.width=8, warning=FALSE}
+```{r fragment size distribution, fig.height=6.5, fig.width=10, warning=TRUE}
 library(scales)
 library(ggpubr)
 library(ggplot2)
@@ -156,8 +157,9 @@ result<-sapply(grp_list, function(x){
 }, simplify = FALSE)
 
 # Multiplexing the plots in one figure
-multiplex <-
-  ggarrange(result$cohort_1$prop_plot + 
+suppressWarnings(
+  multiplex <-
+    ggarrange(result$cohort_1$prop_plot + 
               theme(axis.title.x = element_blank()),
             result$cohort_4$prop_plot + 
               theme(axis.title = element_blank()),
@@ -167,7 +169,8 @@ multiplex <-
             labels = c("Cohort 1 (n=5)", "Cohort 4 (n=4)"),
             label.x = 0.2,
             ncol = 2,
-            nrow = 2)
+            nrow = 2))
+
 multiplex
 ```
 
@@ -179,7 +182,7 @@ In last session we plotted all samples in each group.
 We will calculate the median size fragment distribution of each group and then
 plot those median distribution together.
 
-```{r Median distribution, fig.height=6, fig.width=7.2, warning=FALSE}
+```{r Median distribution, fig.height=6, fig.width=7.2, warning=TRUE}
 # Set an order for those groups (i.e. the levels of factors).
 order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
 # Generate plots.
@@ -202,12 +205,14 @@ p2<-compare_grps$median_cdf_plot +
         legend.title = element_blank())
 
 # Finalize plots.
-median_grps<-ggpubr::ggarrange(p1,
+suppressWarnings(
+  median_grps<-ggpubr::ggarrange(p1,
                        p2,
                        label.x = 0.3,
                        ncol = 1,
                        nrow = 2
-                       )
+                       ))
+
 
 median_grps
 ```
@@ -220,13 +225,16 @@ median_grps
 
 To calculate the modal fragment size of each sample:
 
-```{r Modal size bar chart, fig.height=6, fig.width=7.2, warning=FALSE}
+```{r Modal size bar chart, fig.height=6, fig.width=7.2, warning=TRUE}
 # Set an order for your groups, it will affect the group order along x axis!
 order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
+
 # Generate mode bin chart.
 mode_bin <- callMode(data_path) %>% plotMode(order=order,hline = c(167,111,81))
+
 # Show the plot.
-mode_bin
+suppressWarnings(print(mode_bin))
+
 ```
 
 
@@ -235,7 +243,7 @@ mode_bin
 We have another way to visualize the modal fragment size: stacked bar chart.
 .
 
-```{r, modal size stacked bar chart, fig.height=6, fig.width=7.2, warning=FALSE}
+```{r, modal size stacked bar chart, fig.height=6, fig.width=7.2, warning=TRUE}
 # Set an order for your groups, it will affect the group order along x axis.
 order <- c("cohort_1", "cohort_2", "cohort_3", "cohort_4")
 
@@ -247,10 +255,13 @@ mode_stacked <-
   callMode(data_path) %>% 
   plotModeSummary(order=order,
                   mode_partition = list(c(166,167)))
+
 # Modify the plot using ggplot syntax.
 mode_stacked <- mode_stacked + theme(legend.position = "top")
+
 # Show the plot.
-mode_stacked
+suppressWarnings(print(mode_stacked))
+
 ```
 
 ***
@@ -262,19 +273,24 @@ to quantify this feature, we could calculate the inter-peak and inter-valley dis
 
 ### Inter-peak distance
 
-```{r interpeak distance, fig.height=6, fig.width=7.2, warning=FALSE}
+```{r interpeak distance, fig.height=6, fig.width=7.2, warning=TRUE}
 # Set an order for your groups, it will affect the group order.
 order <- c("cohort_1", "cohort_2", "cohort_4", "cohort_3")
+
 # Plot and modify inter-peak distances.
-inter_peak_dist<-callPeakDistance(path = data_path,  limit = c(50, 135)) %>%
+
+  inter_peak_dist<-callPeakDistance(path = data_path,  limit = c(50, 135)) %>%
   plotPeakDistance(order = order) +
   labs(y="Fraction") +
   theme(axis.title =  element_text(size=12,face="bold"),
         legend.title = element_blank(),
         legend.position = c(0.91, 0.5),
         legend.text = element_text(size = 11))
+
+
 # Show the plot.
-inter_peak_dist
+suppressWarnings(print(inter_peak_dist))
+
 ```
 
 ### Inter-valley distance
@@ -291,8 +307,10 @@ inter_valley_dist<-callValleyDistance(path = data_path,
         legend.title = element_blank(),
         legend.position = c(0.91, 0.5),
         legend.text = element_text(size = 11))
+
 # Show the plot.
-inter_valley_dist
+suppressWarnings(print(inter_valley_dist))
+
 ```
 
 ***
@@ -318,8 +336,9 @@ exam_plot_prop <- exam_plot_all$prop +
   coord_cartesian(xlim = c(90,135),ylim = c(0,0.0065)) +
   geom_vline(xintercept=peaks$insert_size, colour="red",linetype="dashed") +
   geom_vline(xintercept = valleys$insert_size,colour="blue")
+
 # Show the plot.
-exam_plot_prop
+suppressWarnings(print(exam_plot_prop))
 
 # Label peaks and valleys with dots.
 exam_plot_prop_dot<- exam_plot_all$prop + 
@@ -331,7 +350,7 @@ exam_plot_prop_dot<- exam_plot_all$prop +
              mapping = aes(x= insert_size, y= prop),
              color="red",alpha=0.5,size=3) 
 # Show the plot.
-exam_plot_prop_dot
+suppressWarnings(print(exam_plot_prop_dot))
 
 ```
 
