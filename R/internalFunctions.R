@@ -487,3 +487,136 @@ check_dup_mode <- function(x) {
         print(dup)
     }
 }
+
+# Fragment curation functions ----------------------------------------------
+
+
+
+bam_to_galp <- function(bamfile,
+                        chromosome_to_keep = paste0("chr", 1:22),
+                        strand_mode = 1,
+                        ...) {
+    # Check parameters
+    
+    if (!file.exists(bamfile)) {
+        m <- paste0(bamfile, " doesn't exist, please check your input.")
+        stop(m)
+    }
+    
+    
+    # Read bam into galp
+    message("Reading bam into galp...")
+    
+    flag <- Rsamtools::scanBamFlag(
+        isPaired = TRUE,
+        isDuplicate = FALSE,
+        isSecondaryAlignment = FALSE,
+        isUnmappedQuery = FALSE,
+        isSupplementaryAlignment = FALSE
+    )
+    
+    what <- c("cigar", "mapq", "isize")
+    
+    
+    param <- Rsamtools::ScanBamParam(flag = flag,
+                                     what = what)
+    
+    # read bam file as galp object
+    galp <- GenomicAlignments::readGAlignmentPairs(
+        bamfile,
+        index = bamfile,
+        param = param,
+        use.names = TRUE,
+        strandMode = strand_mode
+    )
+    
+    # strandMode should be one for downstream operations
+    stopifnot(GenomicAlignments::strandMode(galp) == 1)
+    
+    # remove read pairs without correct seqnames and strand information
+    
+    message("Curating seqnames and strand information...")
+    # only keep chr1:22
+    galp <-
+        keepSeqlevels(galp, chromosome_to_keep, pruning.mode = "coarse")
+    
+    # remove read pairs without seqname information
+    galp2 <- galp[!is.na(GenomicAlignments::seqnames(galp))]
+    
+    # remove read pairs without strand information
+    galp3 <- galp2[strand(galp2) != '*']
+    
+    return(galp3)
+    
+}
+
+
+
+
+remove_outward_facing_readpairs <- function(galp) {
+    message("Removing outward facing fragmetns ...")
+    # Get FR read pairs(i.e. first read aligned to positive strand)
+    
+    FR_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "+")
+    FR_galp <- galp[FR_id]
+    
+    # Get RF read pairs(i.e. second read aligned to positive strand)
+    RF_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "-")
+    RF_galp <- galp[RF_id]
+    
+    # Get FR inward facing pairs
+    FR_galp_inward <-
+        FR_galp[GenomicAlignments::start(GenomicAlignments::first(FR_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::second(FR_galp))]
+    
+    # Get RF inward facing pairs
+    RF_galp_inward <-
+        RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
+    
+    # Combine RF and FR inward read pairs
+    galp_corrected <- c(FR_galp_inward, RF_galp_inward)
+    
+    return(galp_corrected)
+    
+}
+
+
+
+curate_start_and_end <- function(galp)  {
+    message("Correcting start and end coordinates of fragments ...")
+    get_start <- function(galp_object) {
+        ifelse(
+            strand(GenomicAlignments::first(galp_object)) == "+",
+            start(GenomicAlignments::first(galp_object)),
+            start(GenomicAlignments::second(galp_object))
+        )
+    }
+    
+    get_end <- function(galp_object) {
+        ifelse(
+            strand(GenomicAlignments::first(galp_object)) == "-",
+            end(GenomicAlignments::first(galp_object)),
+            end(GenomicAlignments::second(galp_object))
+        )
+    }
+    
+    # Add the strand information back to fragmentwise object
+    fragmentwise <-  GRanges(
+        seqnames = seqnames(GenomicAlignments::first(galp)),
+        ranges = IRanges(start = get_start(galp),
+                         end = get_end(galp)),
+        strand = strand(galp)
+    )
+    
+    return(fragmentwise)
+}
+
+remove_out_of_bound_reads <- function(granges_object){
+    message("Removing out-of-bound reads ...")
+    idx <- GenomicRanges:::get_out_of_bound_index(granges_object)
+    if(length(idx) != 0L)  granges_object <- granges_object[-idx]
+    return(granges_object)
+}
