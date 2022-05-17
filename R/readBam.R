@@ -14,7 +14,8 @@
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
 #' @param chromosome_to_keep Should be a character vector containing the 
-#'    seqnames to be kept in the GRanges object. Default is paste0("chr", 1:22).
+#'    seqnames to be kept in the GRanges object. 
+#'    Default is paste0("chr", 1:22).
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @return This function returns curated GRanges object.
@@ -99,7 +100,8 @@ readBam <- function(
     bamfile_no_suffix <- gsub(bamfile, ".bam", "")
     out_rds_file_name <- paste0(bamfile_no_suffix, "_GRanges_clean.rds")
     saveRDS(object = frag, file = file.path(outdir, out_rds_file_name))
-    message(paste0("Saved", " ", out_rds_file_name, "."))
+    message("Saved ")
+    message(out_rds_file_name)
   }
   
   return(frag)
