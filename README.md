@@ -19,7 +19,7 @@ devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
 
 Or install the released/steady version (i.e., not newest version) 
 via Bioconductor:
-
+```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
