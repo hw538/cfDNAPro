@@ -7,7 +7,7 @@
 examplePath(data = NULL)
 }
 \arguments{
-\item{data}{Name of data set. Such as "groups_picard" or "step6".
+\item{data}{Name of data set. Such as "groups" or "step6".
 If `NULL`, the path of extdata folder will be returned.}
 }
 \value{

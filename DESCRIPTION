@@ -1,7 +1,7 @@
 Package: cfDNAPro
 Type: Package
-Title: cfDNAPro extracts and Visualises biological features from whole genome sequencing data of cell-free DNA
-Version: 1.3.2
+Title: cfDNAPro Helps Characterise and Visualise Whole Genome Sequencing Data from Liquid Biopsy
+Version: 1.3.0
 biocViews: Visualization, Sequencing, WholeGenome
 Authors@R: c(
     person("Haichao","Wang", email="hw538@cam.ac.uk", role =c("aut","cre")),
@@ -15,9 +15,6 @@ Description: cfDNA fragments carry important features for building cancer sample
 Depends:
     R (>= 4.0),
     magrittr (>= 1.5.0),
-    GenomicAlignments,
-    BSgenome.Hsapiens.UCSC.hg19,
-    BSgenome.Hsapiens.UCSC.hg38
 Imports:
     BiocGenerics,
     stats,
@@ -38,7 +35,7 @@ Suggests:
     testthat
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 URL: https://github.com/hw538/cfDNAPro
 BugRePORTS: https://github.com/hw538/cfDNAPro/issues
