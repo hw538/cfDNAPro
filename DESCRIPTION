@@ -5,12 +5,13 @@ Version: 1.3.1
 biocViews: Visualization, Sequencing, WholeGenome
 Authors@R: c(
     person("Haichao","Wang", email="hw538@cam.ac.uk", role =c("aut","cre")),
-    person("Nitzan","Rosenfeld", email="nitzan.rosenfeld@cruk.cam.ac.uk", role =c("ctb")),
     person("Hui","Zhao", email="hui.zhao@cruk.cam.ac.uk", role =c("ctb")),
-    person("Christopher", "Smith", email="Christopher.Smith@cruk.cam.ac.uk", role = c("ctb")))
-Description: cfDNA fragment size metrics are important features for utilizing liquid biopsy in tumor early detection, diagnosis, therapy personlization and monitoring.
-    Analyzing and visualizing insert size metrics could be time intensive.
-    This package intends to simplify this exploration process, and it offers two sets of functions for data characterization and data visualization.
+    person("Elkie","Chan", email="elkie.chan@cruk.cam.ac.uk", role =c("ctb")),
+    person("Christopher", "Smith", email="Christopher.Smith@cruk.cam.ac.uk", role = c("ctb")),
+    person("Nitzan","Rosenfeld", email="nitzan.rosenfeld@cruk.cam.ac.uk", role =c("ctb")))
+Description: cfDNA fragments carry important features for building cancer sample classification ML models, such as fragment size, and fragment end motif etc.
+    Analyzing and visualizing fragment size metrics, as well as other biological features in a curated, standardized, scalable, well-documented, and reproducible way might be time intensive.
+    This package intends to resolve these problems and simplify the process. It offers two sets of functions for cfDNA feature characterization and visualization.
 Depends:
     R (>= 4.0),
     magrittr (>= 1.5.0),
@@ -18,6 +19,7 @@ Depends:
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38
 Imports:
+    BiocGenerics,
     stats,
     utils,
     dplyr (>= 0.8.3),
