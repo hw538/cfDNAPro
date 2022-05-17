@@ -1,6 +1,6 @@
 Package: cfDNAPro
 Type: Package
-Title: cfDNAPro Helps Characterise and Visualise Whole Genome Sequencing Data from Liquid Biopsy
+Title: cfDNAPro extracts and Visualises biological features from whole genome sequencing data of cell-free DNA
 Version: 1.3.0
 biocViews: Visualization, Sequencing, WholeGenome
 Authors@R: c(
