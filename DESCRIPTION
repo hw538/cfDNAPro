@@ -15,6 +15,9 @@ Description: cfDNA fragments carry important features for building cancer sample
 Depends:
     R (>= 4.0),
     magrittr (>= 1.5.0),
+    GenomicAlignments,
+    BSgenome.Hsapiens.UCSC.hg19,
+    BSgenome.Hsapiens.UCSC.hg38
 Imports:
     BiocGenerics,
     stats,
@@ -35,7 +38,7 @@ Suggests:
     testthat
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 VignetteBuilder: knitr
 URL: https://github.com/hw538/cfDNAPro
 BugRePORTS: https://github.com/hw538/cfDNAPro/issues
