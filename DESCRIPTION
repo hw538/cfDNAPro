@@ -7,7 +7,9 @@ Authors@R: c(
     person("Haichao","Wang", email="hw538@cam.ac.uk", role =c("aut","cre")),
     person("Hui","Zhao", email="hui.zhao@cruk.cam.ac.uk", role =c("ctb")),
     person("Elkie","Chan", email="elkie.chan@cruk.cam.ac.uk", role =c("ctb")),
-    person("Christopher", "Smith", email="Christopher.Smith@cruk.cam.ac.uk", role = c("ctb")),
+    person("Christopher", "Smith", email="christopher.smith@cruk.cam.ac.uk", role = c("ctb")),
+    person("Tomer", "Kaplan", email="tomer.kaplan@cruk.cam.ac.uk", role = c("ctb")),
+    person("Florian", "Markowetz", email="florian.markowetz@cruk.cam.ac.uk", role = c("ctb")),
     person("Nitzan","Rosenfeld", email="nitzan.rosenfeld@cruk.cam.ac.uk", role =c("ctb")))
 Description: cfDNA fragments carry important features for building cancer sample classification ML models, such as fragment size, and fragment end motif etc.
     Analyzing and visualizing fragment size metrics, as well as other biological features in a curated, standardized, scalable, well-documented, and reproducible way might be time intensive.
