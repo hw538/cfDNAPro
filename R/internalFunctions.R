@@ -614,9 +614,25 @@ curate_start_and_end <- function(galp)  {
     return(fragmentwise)
 }
 
+
+
+get_out_of_bound_index <- function (x) {
+    if (length(x) == 0L)
+        return(integer(0))
+    
+    x_seqnames_id <- as.integer(seqnames(x))
+    x_seqlengths <- unname(seqlengths(x))
+    seqlevel_is_circ <- unname(isCircular(x)) %in% TRUE
+    seqlength_is_na <- is.na(x_seqlengths)
+    seqlevel_has_bounds <- !(seqlevel_is_circ | seqlength_is_na)
+    
+    which(seqlevel_has_bounds[x_seqnames_id] &
+              (start(x) < 1L | end(x) > x_seqlengths[x_seqnames_id]))
+}
+
 remove_out_of_bound_reads <- function(granges_object){
     message("Removing out-of-bound reads ...")
-    idx <- GenomicRanges:::get_out_of_bound_index(granges_object)
+    idx <-get_out_of_bound_index(granges_object)
     if(length(idx) != 0L)  granges_object <- granges_object[-idx]
     return(granges_object)
 }

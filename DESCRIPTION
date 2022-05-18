@@ -21,6 +21,8 @@ Depends:
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38
 Imports:
+    GenomeInfoDb,
+    GenomicRanges,
     BiocGenerics,
     stats,
     utils,

@@ -6,6 +6,8 @@
 #' @import GenomicAlignments 
 #' @import magrittr
 #' @import BiocGenerics
+#' @import GenomeInfoDb
+#' @import GenomicRanges
 #'
 #' @param genome_label The Genome you used in the alignment. 
 #'    Should be "hg19" or "hg38". Default is "hg19".
