@@ -13,13 +13,22 @@ More feature extraction utilities will be added.
 
 ## Quick Start
 
-A straight forward user case: calculate the fragment size of a bam file, use the following code:
+A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
 
 ```R
+
+# install cfDNAPro newest version 
+
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
+
+# calculate insert size of a bam file
+
 library(cfDNAPro)
  dataframe <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
 ```
-The dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length).
+The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length).
+
 
 ## Installation
 
