@@ -11,6 +11,16 @@
 cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
 More feature extraction utilities will be added.
 
+## Quick Start
+
+A straight forward user case: calculate the fragment size of a bam file, use the following code:
+
+```R
+library(cfDNAPro)
+ dataframe <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
+```
+The dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length).
+
 ## Installation
 
 Please install our latest version(recommended):
