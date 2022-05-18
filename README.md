@@ -6,6 +6,10 @@
 
 > As the first R package for the analysis of cfDNA fragmentation profiles, we anticipate that cfDNAPro will improve the efficiency and reproducibility of cfDNA fragmentation analyses. We plan to regularly add support for other analyses and visualisations such as copy number variation, nucleosome position calling, GC content, fragment end motif analysis of fragments and others. cfDNAPro provides a foundation for follow-up analyses of fragmentation patterns by more advanced machine learning and data science methods. The package has been accepted by Bioconductor: https://bioconductor.org/packages/release/bioc/html/cfDNAPro.html 
 
+## Highlights
+
+cfDNAPro is under active development, its internal quality controls steps ensures accurate calculation fragment lengths. 
+More feature extraction utilities will be added.
 
 ## Installation
 
@@ -39,4 +43,4 @@ browseVignettes("cfDNAPro")
 
 Please cite package ‘cfDNAPro’ in publications:
 
-Haichao Wang, Hui Zhao, Elkie Chan, Christopher G. Smith, Tommy Kaplan, Florian Markowetz, Nitzan Rosenfeld(2020). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.3.1 <https://github.com/hw538/cfDNAPro>
+Haichao Wang, Hui Zhao, Elkie Chan, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2020). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.3.1 <https://github.com/hw538/cfDNAPro>
