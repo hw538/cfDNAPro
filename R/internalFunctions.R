@@ -61,7 +61,7 @@ read_picard_insert_metrics <- function(x) {
 #' @importFrom Rsamtools scanBam
 #' @importFrom rlang .data
 
-read_bam_insert_metrics <- function(file, ...) {
+read_bam_insert_metrics_from_tlen <- function(file, ...) {
     flags <- Rsamtools::scanBamFlag(
         isPaired = TRUE,
         isProperPair = TRUE,
@@ -126,7 +126,7 @@ loop_read_insert_metrics_in_list <- function(x, input_type, ...) {
     if (input_type == "picard") {
         d <- lapply(x, read_picard_insert_metrics)
     } else if (input_type == "bam") {
-        d <- lapply(x, read_bam_insert_metrics)
+        d <- lapply(x, read_bam_insert_metrics_from_tlen)
     }
     return(d)
 }
