@@ -8,7 +8,7 @@
 
 ## Highlights
 
-cfDNAPro is under active development, its internal quality controls steps ensures accurate calculation fragment lengths. 
+cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
 More feature extraction utilities will be added.
 
 ## Installation
