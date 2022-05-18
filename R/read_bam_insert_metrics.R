@@ -17,9 +17,21 @@
 #' @importFrom Rsamtools ScanBamParam
 #' @importFrom Rsamtools scanBam
 #' @importFrom plyranges filter
-#' @importFrom dplyr filter rename select group_by summarise n
-#' @importFrom tibble as_tibble
-
+#' @importFrom dplyr filter rename select group_by summarise 
+#' @importFrom BiocGenerics start end strand width
+#' @importFrom rlang .data
+#' 
+#' @return This function returns a dataframe with two columns: "insert_size" 
+#'    and "All_Reads.fr_count".
+#' @export
+#' @author Haichao Wang
+#'
+#' @examples 
+#' \dontrun{
+#' 
+#' object <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
+#' }
+#' 
 read_bam_insert_metrics <- function(bamfile,
                                     chromosome_to_keep =paste0("chr", 1:22),
                                     strand_mode = 1,
@@ -29,7 +41,7 @@ read_bam_insert_metrics <- function(bamfile,
                                     isize_max = 1000L,
                                     ...) {
  
-  
+  insert_size <- NULL
   frag <- readBam(bamfile = bamfile, 
                   chromosome_to_keep = chromosome_to_keep,
                   strand_mode = strand_mode,
@@ -38,7 +50,7 @@ read_bam_insert_metrics <- function(bamfile,
   
   # calculating insert sizes
   message("Calculating insert sizes...")
-  frag$insert_size <- width(frag)
+  frag$insert_size <- BiocGenerics::width(frag)
   
   # size analysis
   frag <- plyranges::filter(frag, 

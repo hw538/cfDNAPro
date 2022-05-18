@@ -15,12 +15,14 @@ Description: cfDNA fragments carry important features for building cancer sample
     Analyzing and visualizing fragment size metrics, as well as other biological features in a curated, standardized, scalable, well-documented, and reproducible way might be time intensive.
     This package intends to resolve these problems and simplify the process. It offers two sets of functions for cfDNA feature characterization and visualization.
 Depends:
-    R (>= 4.0),
+    R (>= 4.1.0),
     magrittr (>= 1.5.0),
     GenomicAlignments,
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.UCSC.hg38
 Imports:
+    IRanges,
+    plyranges,
     GenomeInfoDb,
     GenomicRanges,
     BiocGenerics,

@@ -490,7 +490,7 @@ check_dup_mode <- function(x) {
 
 # Fragment curation functions ----------------------------------------------
 
-
+#' @importFrom GenomeInfoDb keepSeqlevels
 
 bam_to_galp <- function(bamfile,
                         chromosome_to_keep = paste0("chr", 1:22),
@@ -584,7 +584,7 @@ remove_outward_facing_readpairs <- function(galp) {
 }
 
 
-
+#' @importFrom BiocGenerics start end strand
 curate_start_and_end <- function(galp)  {
     message("Correcting start and end coordinates of fragments ...")
     get_start <- function(galp_object) {
@@ -615,7 +615,8 @@ curate_start_and_end <- function(galp)  {
 }
 
 
-
+#' @importFrom GenomeInfoDb isCircular
+#' @importFrom BiocGenerics start end strand
 get_out_of_bound_index <- function (x) {
     if (length(x) == 0L)
         return(integer(0))

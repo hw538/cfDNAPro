@@ -1,13 +1,13 @@
 
 #' Read bam file into a curated GRanges object
-#' @importFrom  Rsamtools scanBamFlag ScanBamParam
-#' @import BSgenome.Hsapiens.UCSC.hg19
-#' @import BSgenome.Hsapiens.UCSC.hg38
-#' @import GenomicAlignments 
+#' @importFrom Rsamtools scanBamFlag ScanBamParam
 #' @import magrittr
-#' @import BiocGenerics
-#' @import GenomeInfoDb
-#' @import GenomicRanges
+#' @importFrom BiocGenerics which
+#' @importFrom GenomeInfoDb seqinfo genome seqlengths
+#' @importFrom GenomeInfoDb seqlengths<-
+#' @importFrom GenomeInfoDb genome<-
+#' @importFrom GenomicRanges GRanges seqnames
+#' @importFrom IRanges IRanges
 #'
 #' @param genome_label The Genome you used in the alignment. 
 #'    Should be "hg19" or "hg38". Default is "hg19".

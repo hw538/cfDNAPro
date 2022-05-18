@@ -30,12 +30,26 @@ Should be "hg19" or "hg38". Default is "hg19".}
 
 \item{outdir}{The path for saving rds file. Default is NA, i.e. not saving.}
 
-\item{isize_min}{min fragment lenght to keep, default is 1L.}
+\item{isize_min}{min fragment length to keep, default is 1L.}
 
 \item{isize_max}{max fragment length to keep, default is 1000L.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+This function returns a dataframe with two columns: "insert_size" 
+   and "All_Reads.fr_count".
+}
 \description{
 Calculate insert sizes from a curated GRanges object
+}
+\examples{
+\dontrun{
+
+object <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
+}
+
+}
+\author{
+Haichao Wang
 }
