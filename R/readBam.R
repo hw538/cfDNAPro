@@ -45,7 +45,7 @@ readBam <- function(
   
   if (is.na(outdir)) {message("GRanges object won't be saved as an RDS file.")}
   
-  if (!genome_label %in% c("hg19", "hg38")) {
+  if (!genome_label %in% c("hg19", "hg38") | is.na(genome_label)) {
     stop("Only accept hg19 or hg38 as the genome_label...")
   }
   
