@@ -20,6 +20,7 @@
 #' @importFrom dplyr filter rename select group_by summarise 
 #' @importFrom BiocGenerics start end strand width
 #' @importFrom rlang .data
+#' @importFrom tibble tibble
 #' 
 #' @return This function returns a dataframe with two columns: "insert_size" 
 #'    and "All_Reads.fr_count".
@@ -57,7 +58,7 @@ read_bam_insert_metrics <- function(bamfile,
                           insert_size >= isize_min & insert_size <= isize_max)
   isize <- frag$insert_size 
   
-  isize_tibble <- tibble::tibble("insert_size" = isize, "count" = 1 )
+  isize_tibble <- tibble("insert_size" = isize, "count" = 1 )
   
   result <- isize_tibble %>%
     dplyr::group_by(.data$insert_size) %>%

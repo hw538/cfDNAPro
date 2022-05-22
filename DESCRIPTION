@@ -17,10 +17,11 @@ Description: cfDNA fragments carry important features for building cancer sample
 Depends:
     R (>= 4.1.0),
     magrittr (>= 1.5.0),
+Imports:
+    tibble,
     GenomicAlignments,
     BSgenome.Hsapiens.UCSC.hg19,
-    BSgenome.Hsapiens.UCSC.hg38
-Imports:
+    BSgenome.Hsapiens.UCSC.hg38,
     IRanges,
     plyranges,
     GenomeInfoDb,
