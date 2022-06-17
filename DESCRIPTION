@@ -20,8 +20,6 @@ Depends:
 Imports:
     tibble,
     GenomicAlignments,
-    BSgenome.Hsapiens.UCSC.hg19,
-    BSgenome.Hsapiens.UCSC.hg38,
     IRanges,
     plyranges,
     GenomeInfoDb,
@@ -36,6 +34,8 @@ Imports:
     Rsamtools (>= 2.4.0),
     rlang (>= 0.4.0)
 Suggests:
+    BSgenome.Hsapiens.UCSC.hg19,
+    BSgenome.Hsapiens.UCSC.hg38,
     scales,
     ggpubr,
     knitr (>= 1.23),
