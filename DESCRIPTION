@@ -16,7 +16,7 @@ Description: cfDNA fragments carry important features for building cancer sample
     This package intends to resolve these problems and simplify the process. It offers two sets of functions for cfDNA feature characterization and visualization.
 Depends:
     R (>= 4.1.0),
-    magrittr (>= 1.5.0),
+    magrittr (>= 1.5.0)
 Imports:
     tibble,
     GenomicAlignments,
