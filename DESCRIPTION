@@ -36,6 +36,7 @@ Imports:
 Suggests:
     BSgenome.Hsapiens.UCSC.hg38,
     BSgenome.Hsapiens.UCSC.hg19,
+    BSgenome.Hsapiens.NCBI.GRCh38,
     scales,
     ggpubr,
     knitr (>= 1.23),
