@@ -1,3 +1,6 @@
+# cfDNAPro 1.5.1
+* added support for hg38-NCBI version, i.e. GRCh38
+
 # cfDNAPro 0.99.3 (19 July 2021)
 * Modified vignette.
 # cfDNAPro 0.99.2 (5 July 2021)
