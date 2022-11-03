@@ -10,7 +10,7 @@
 #' @importFrom IRanges IRanges
 #'
 #' @param genome_label The Genome you used in the alignment. 
-#'    Should be "hg19" or "hg38". Default is "hg19".
+#'    Should be "hg19" or "hg38" or "hg38-NCBI. Default is "hg19".
 #' @param bamfile The bam file name.
 #' @param outdir The path for saving rds file. Default is NA, i.e. not saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
@@ -47,8 +47,8 @@ readBam <- function(
   
   if (is.na(outdir)) {message("GRanges object won't be saved as an RDS file.")}
   
-  if (!genome_label %in% c("hg19", "hg38") | is.na(genome_label)) {
-    stop("Only accept hg19 or hg38 as the genome_label...")
+  if (!genome_label %in% c("hg19", "hg38", "hg38-NCBI") | is.na(genome_label)) {
+    stop("Only accept hg19 or hg38 or hg38-NCBI as the genome_label...")
   }
   
   if (genome_label == "hg19") {
@@ -58,6 +58,10 @@ readBam <- function(
   } else if (genome_label == "hg38") {
     
   genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+  
+  } else if (genome_label == "hg38-NCBI") {
+    
+  genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
   
   }
   
