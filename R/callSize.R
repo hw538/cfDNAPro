@@ -10,8 +10,8 @@
 #'    could specify as 'list' or 'dataframe' or 'df',
 #'    default is dataframe.
 #' @param input_type Character. The input file format,
-#'    should be one of these: 'picard', 'bam'. The bam files has to be 
-#'    marked duplicates.
+#'    should be one of these: 'picard', 'bam', 'cfdnapro'. 
+#'    The bam files has to be marked duplicates.
 #' @param ... Further arguments passed to or from other methods.
 #' @return  The function returns the insert size metrics
 #'   of each group in list or dataframe format.

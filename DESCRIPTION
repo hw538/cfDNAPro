@@ -46,7 +46,7 @@ Suggests:
     testthat
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 VignetteBuilder: knitr
 URL: https://github.com/hw538/cfDNAPro
 BugRePORTS: https://github.com/hw538/cfDNAPro/issues

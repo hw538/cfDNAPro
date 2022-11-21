@@ -35,7 +35,7 @@ default is dataframe.}
 \item{mincount}{The minimum count value of inter-valley distance.}
 
 \item{input_type}{Character. The input file format
-should be 'picard' or 'bam'. The bam files has to be 
+should be 'picard' or 'bam', or 'cfdnapro'. The bam files has to be 
 marked duplicates.}
 
 \item{...}{Further arguments passed to or from other methods.}

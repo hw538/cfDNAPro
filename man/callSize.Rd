@@ -19,8 +19,8 @@ could specify as 'list' or 'dataframe' or 'df',
 default is dataframe.}
 
 \item{input_type}{Character. The input file format,
-should be one of these: 'picard', 'bam'. The bam files has to be 
-marked duplicates.}
+should be one of these: 'picard', 'bam', 'cfdnapro'. 
+The bam files has to be marked duplicates.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

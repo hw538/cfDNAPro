@@ -15,7 +15,8 @@
 #' @param summary If TRUE, summarize the output.
 #' @param mincount The minimum count value of inter-peak distance
 #'     in the summary.
-#' @param input_type Character. The input file format, 'picard' or 'bam'.
+#' @param input_type Character. The input file format,
+#'     should be one of these: 'picard', 'bam', 'cfdnapro'. 
 #'     The bam files has to be marked duplicates.
 #' @param ... Further arguments passed to or from other methods.
 #' @return  The function returns the inter peak distance in list

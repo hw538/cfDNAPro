@@ -38,8 +38,8 @@ in the summarized output.
 Only significant when 'summary = TRUE'.}
 
 \item{input_type}{Character. The input file format,
-should be one of these: 'picard', 'bam'. The bam files has to be 
-marked duplicates.}
+should be one of these: 'picard', 'bam', 'cfdnapro'. 
+The bam files has to be marked duplicates.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

@@ -16,7 +16,7 @@
 #' @param summary If TRUE, summarize the output.
 #' @param mincount The minimum count value of inter-valley distance.
 #' @param input_type Character. The input file format
-#'   should be 'picard' or 'bam'. The bam files has to be 
+#'   should be 'picard' or 'bam', or 'cfdnapro'. The bam files has to be 
 #'   marked duplicates.
 #' @param ... Further arguments passed to or from other methods.
 #' @return  The inter-valley distance in a list or dataframe.

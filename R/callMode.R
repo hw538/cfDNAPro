@@ -20,8 +20,8 @@
 #'     in the summarized output.
 #'     Only significant when 'summary = TRUE'.
 #' @param input_type Character. The input file format,
-#'     should be one of these: 'picard', 'bam'. The bam files has to be 
-#'     marked duplicates.
+#'     should be one of these: 'picard', 'bam', 'cfdnapro'. 
+#'     The bam files has to be marked duplicates.
 #' @param ... Further arguments passed to or from other methods.
 #' @return  The function returns the inter valley distance
 #'     in list or dataframe format.
