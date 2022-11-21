@@ -38,7 +38,10 @@ get_full_sample_name <- function(x, input_type) {
     } else if (input_type == "picard") {
         full_sample_name <-
             list.files(x, full.names = TRUE, pattern = "\\.txt$")
-    }
+    } else if (input_type == "cfdnapro") {
+        full_sample_name <-
+            list.files(x, full.names = TRUE, pattern = "\\.txt$")
+    } 
 
     # Change vector to a named list.
     named_vector <- stats::setNames(full_sample_name, full_sample_name)
@@ -54,6 +57,15 @@ read_picard_insert_metrics <- function(x) {
         sep = "\t"
     )
     return(insert_metrics)
+}
+
+read_cfdnapro_insert_metrics <- function(x) {
+  insert_metrics <- read.table(x,
+                               header = TRUE,
+                               skip = 0,
+                               sep = "\t"
+  )
+  return(insert_metrics)
 }
 
 #' @importFrom Rsamtools scanBamFlag
@@ -125,8 +137,12 @@ loop_read_insert_metrics_in_list <- function(x, input_type, ...) {
 
     if (input_type == "picard") {
         d <- lapply(x, read_picard_insert_metrics)
+        
     } else if (input_type == "bam") {
         d <- lapply(x, read_bam_insert_metrics)
+        
+    } else if (input_type == "cfdnapro") {
+        d <- lapply(x, read_cfdnapro_insert_metrics)
     }
     return(d)
 }
