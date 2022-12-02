@@ -14,7 +14,7 @@ As the first R package for the analysis of cfDNA fragmentation profiles, we anti
 ## Highlights
 
 cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
-More feature extraction utilities will be added.
+More feature extraction utilities will be added. For issues, or feature requests, raise an issue or email me: haichao.wang@cruk.cam.ac.uk
 
 
 ## News
