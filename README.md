@@ -16,6 +16,31 @@ As the first R package for the analysis of cfDNA fragmentation profiles, we anti
 cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
 More feature extraction utilities will be added.
 
+
+## News
+
+### cfDNAPro 1.5.4 (Nov 2022)
+* In addition to "bam" and "picard" files as the input, now we accept 
+"cfdnapro" as input_type to various functions, this 'cfdnapro' input is exactly 
+the output of `read_bam_insert_metrics` function in cfDNAPro package. It is a 
+tsv file containing two columns, i.e., "insert_size" (fragment length) and 
+"All_Reads.fr_count" (the count of the fragment length).
+### cfDNAPro 1.5.3 (Oct 2022)
+* added support for hg38-NCBI version, i.e. GRCh38
+### cfDNAPro 0.99.3 (July 2021)
+* Modified vignette.
+### cfDNAPro 0.99.2 (July 2021)
+* Modified vignette.
+### cfDNAPro 0.99.1 (May 2021)
+* Added 'cfDNAPro' into the "watched tag".
+### cfDNAPro 0.99.0 (May 2021)
+* Now cfDNAPro supports bam file as input for data characterisation.
+* Coding style improvements.
+* Documentation improvements.
+* Submitted to Bioconductor.
+
+
+
 ## Quick Start
 
 A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
@@ -58,7 +83,6 @@ BiocManager::install("cfDNAPro")
 
 See Bioconductor official documentation:  
 https://bioconductor.org/packages/release/bioc/vignettes/cfDNAPro/inst/doc/cfDNAPro.html
-
 
 ## Citation
 
