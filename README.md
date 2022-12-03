@@ -5,7 +5,7 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhw538%2FcfDNAPro&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=GitHub+view&edge_flat=true)](https://hits.seeyoufarm.com)
 
 
-An R/Bioconductor package to extract and visualise cell-free DNA biological features.
+An R/Bioconductor package to extract and visualise cell-free DNA biological features in an open, standardized, robust and reproducible way.
 
 Cell-free DNA (cfDNA) enters human blood circulation by various biological processes, and includes tumour-derived circulating tumour DNA (ctDNA). There is increasing evidence that differences in biological features between cfDNA and ctDNA could be exploited to improve cancer detection, treatment selection and minimal residual disease detection. However, there are currently no R packages that support analysis of cfDNA biological features such as fragment length, nucleotide frequency, nucleosome occupancy etc. Here we present a Bioconductor R package, cfDNAPro, which provides an easy-to-use framework for automated data characterisation and visualisation of cfDNA sequencing data. The cfDNAPro R package implements functions for calculating overall, median and modal fragment size distributions, calculating the peaks and troughs, as well as the periodicity of oscillations in the fragment size profile and it includes functions for data visualisation. 
 
