@@ -32,11 +32,11 @@ Imports:
     quantmod (>= 0.4),
     ggplot2 (>= 3.2.1),
     Rsamtools (>= 2.4.0),
-    rlang (>= 0.4.0)
-Suggests:
+    rlang (>= 0.4.0),
     BSgenome.Hsapiens.UCSC.hg38,
     BSgenome.Hsapiens.UCSC.hg19,
-    BSgenome.Hsapiens.NCBI.GRCh38,
+    BSgenome.Hsapiens.NCBI.GRCh38
+Suggests:
     scales,
     ggpubr,
     knitr (>= 1.23),
