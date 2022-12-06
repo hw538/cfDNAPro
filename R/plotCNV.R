@@ -1,6 +1,7 @@
 
 plotCNV <- function(x, ylim = c(-2, 2)) {
   
-  plot(x, ylim=ylim)
+  p <- plot(x, ylim=ylim)
+  return(p)
   
 }

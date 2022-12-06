@@ -653,3 +653,75 @@ remove_out_of_bound_reads <- function(granges_object){
     if(length(idx) != 0L)  granges_object <- granges_object[-idx]
     return(granges_object)
 }
+
+
+# motif functions
+
+# Motif annotation
+
+#' @importFrom GenomeInfoDb seqinfo seqnames seqlevels genome
+#' @importFrom BiocGenerics start end strand unstrand
+#' @importFrom BSgenome getSeq
+
+get_motif <- function(obj,
+                      genome,
+                      motif_type, 
+                      motif_length){
+  
+  obj <- BiocGenerics::unstrand(obj)
+  
+  if(motif_type == "s") {
+    coord <- GenomicRanges::GRanges(seqnames = seqnames(obj),
+                     ranges = IRanges::IRanges(start = GenomicAlignments::start(obj) ,
+                                      end = GenomicAlignments::start(obj) + 
+                                        motif_length - 1))
+  }
+  
+  
+  if(motif_type == "e") {
+    coord <- GenomicRanges::GRanges(seqnames = seqnames(obj),
+                     ranges = IRanges::IRanges(start = GenomicAlignments::end(obj) - 
+                                        motif_length + 1 ,
+                                      end = GenomicAlignments::end(obj)))
+  }
+  
+  if(motif_type == "u") {
+    coord <- GenomicRanges::GRanges(seqnames = seqnames(obj),
+                     ranges = IRanges::IRanges(start = GenomicAlignments::start(obj) - 
+                                        motif_length,
+                                      end = GenomicAlignments::start(obj) - 1))
+  }
+  
+  if(motif_type == "d") {
+    coord <- GenomicRanges::GRanges(seqnames = seqnames(obj),
+                     ranges = IRanges::IRanges(start = GenomicAlignments::end(obj) + 1,
+                                      end = GenomicAlignments::end(obj) + 
+                                        motif_length))
+  }
+  
+  seqlengths(coord) <- seqlengths(genome)[levels(seqnames(coord))]
+  genome(coord) <- seqinfo(genome)@genome %>% unique()
+  
+  id <- get_out_of_bound_index(coord)
+  
+  if(length(id) != 0)  {
+    coord <- plyranges::mutate(coord, index = 1:length(coord)) 
+    coord_tidy <- coord[-id]
+    coord_tidy <- plyranges::mutate(coord_tidy, 
+                                    anno  = getSeq(genome, 
+                                                   coord_tidy, 
+                                                   as.character = TRUE))
+    
+    df <- tibble::tibble(index = coord_tidy$index, anno = coord_tidy$anno)
+    result <- dplyr::bind_rows(df, tibble(index = id)) %>% 
+      dplyr::arrange(index) %>%
+      dplyr::pull(anno)
+    
+  } else {
+    result <- BSgenome::getSeq(genome, coord, as.character = TRUE)
+  }
+  
+  return(result)
+  
+}
+
