@@ -60,38 +60,37 @@ callMotif <- function(fragment_obj,
   missing_motif <- dplyr::anti_join(motif_ref, result, by = "motif")
   
   if(nrow(ambiguous_motif) != 0) {
-    print("ambiguous motif (i.e. 'N' base exists) detected: ")
+    message("ambiguous motif (i.e. 'N' base exists) detected: ")
     print(ambiguous_motif)
     
     
     result <- dplyr::filter(result, 
                             !stringr::str_detect(motif, "N"))
     
-    print("Ambiguous motif(s) removed from result!")
+    message("Ambiguous motif(s) removed from result!")
   }
   
   # handle missing motif(s)
   
   if(nrow(missing_motif) != 0) {
-    print("Missing motif detected: ")
+    message("Missing motif detected: ")
     print(missing_motif)
     
     result <- dplyr::right_join(result, motif_ref, by = "motif") %>%
       tidyr::replace_na(replace = list(n = 0)) 
     
-    print("Missing motif added back to the final result with count of 0!")
+    message("Missing motif added back to the final result with count of 0!")
     
   }
 
-  
   # calculate the fraction
   result_frac <- result %>%
     dplyr::mutate(fraction = n / sum(n))
   
   # set the factor level of motifs
-  
   result_frac$motif <- factor(result_frac$motif,  levels = sort(motif_ref$motif))
   
+  message("Job completed successfully. ")
   return(result_frac)
   
 }
