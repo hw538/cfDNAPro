@@ -43,7 +43,7 @@ callMotif <- function(fragment_obj,
   
   # Create a vector of elements
   pos <- c("C", "G", "A", "T")
-  base_index <- 1:as.numeric(motif_length)
+  base_index <- seq.int(1, motif_length, by = 1)
   
   letter_list <- lapply(base_index, function(x, y) return(y), y = pos) %>%
     setNames(paste0("base", base_index))
