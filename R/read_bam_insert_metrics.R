@@ -84,7 +84,8 @@ read_bam_insert_metrics <- function(bamfile = NULL,
                           insert_size >= isize_min & insert_size <= isize_max)
   isize <- frag$insert_size 
   
-  isize_tibble <- tibble("insert_size" = isize, "count" = 1 )
+  isize_tibble <- tibble("insert_size" = isize, "count" = 1 ) %>%
+    dplyr::filter(!is.na(insert_size))
   
   result <- isize_tibble %>%
     dplyr::group_by(.data$insert_size) %>%
@@ -92,6 +93,32 @@ read_bam_insert_metrics <- function(bamfile = NULL,
   
   
   # quality control results
+  # Create a vector of elements
+  isize_ref <- seq.int(isize_min, isize_max, by = 1L) %>% 
+    as_tibble()
+  
+  colnames(isize_ref) <- c("insert_size")
+  
+  # report abnormal isizes
+  
+  missing_isize <- dplyr::anti_join(isize_ref, result, by = "insert_size")
+
+  # handle missing isize(s)
+  
+  if(nrow(missing_isize) != 0) {
+    print("Missing isize detected: ")
+    print(missing_isize)
+    
+    result <- dplyr::right_join(result, isize_ref, by = "insert_size") %>%
+      tidyr::replace_na(replace = list(All_Reads.fr_count = 0)) %>% 
+      dplyr::arrange(insert_size)
+    
+    print("Missing isize(s) added back to the final result with count of 0!")
+    
+    message("Job completed successfully. ")
+    
+  }
+
   
   return(result)
 }
