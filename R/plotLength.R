@@ -4,8 +4,17 @@ plotLength <- function(x,
                        xlim = c(30, 500),
                        vline = c(167),
                        ylim = NA_real_ ,
+                       x_breaks = c(50, 100, 167, 200, 300, 400 , 500),
+                       x_labels = c("50", "100", "167", "200", "300", "400", "500"),
+                       line_color = "grey1",
+                       line_size = 0.8,
+                       line_alpha = 0.8,
+                       vline_color = "grey",
+                       vline_type = "dashed",
+                       vline_size = 0.7,
                        ...
                        ){
+  
   
   
   y_use <- NULL
@@ -26,13 +35,15 @@ plotLength <- function(x,
     
   x$insert_size <- as.numeric(x$insert_size)
   plot_type <- stringr::str_to_title(plot_type)
-  x_breaks <- c(xlim[[1]], 50, 100, 167, 200, 300, 400 , 500, 600, 700, 800, 900, 1000)
-  x_labels <- c(xlim[[1]], "50", "100", "167", "200", "300", "400", "500", "600", "700", "800", "900", "1000")
+  
       
 
       p <-  ggplot(x) +
-        geom_line(aes(.data$insert_size, .data[[y_use]]), color = "grey2", size = 0.8, alpha = 0.8) +
-        geom_vline(xintercept = vline, linetype = "dashed", color = "grey") + 
+        geom_line(aes(.data$insert_size, .data[[y_use]]), 
+                  color = line_color, 
+                  size = line_size, 
+                  alpha = line_alpha) +
+        geom_vline(xintercept = vline, linetype = vline_type, color = vline_color, size = vline_size) + 
         coord_cartesian(xlim = xlim) +
         labs(x = "cfDNA Fragment Length (bp)", y = plot_type) +
         scale_x_continuous(limits = xlim, 
