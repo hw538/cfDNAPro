@@ -1,8 +1,8 @@
 
 plotLength <- function(x,
+                       plot_type = c("fraction"),
                        xlim = c(30, 500),
                        vline = c(167),
-                       plot_type = c("fraction"),
                        ylim = NA_real_ ,
                        ...
                        ){
