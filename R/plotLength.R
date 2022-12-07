@@ -39,13 +39,8 @@ plotLength <- function(x,
                            breaks = x_breaks, 
                            labels = x_labels) + 
         scale_y_continuous(expand = c(0, 0)) +
-        theme_classic() +
-        theme(
-          axis.text = element_text(size = 10),
-          axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5),
-          axis.title = element_text(size = 14, face = "bold"),
-          legend.position = "none"
-        )
+        theme_length_plot()
+
       
       
       return(p)
