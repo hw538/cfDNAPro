@@ -41,7 +41,8 @@ callLength <- function(fragment_obj,
     
     result <- dplyr::right_join(result, isize_ref, by = "insert_size") %>%
       tidyr::replace_na(replace = list(All_Reads.fr_count = 0)) %>% 
-      dplyr::arrange(insert_size)
+      dplyr::arrange(insert_size) %>%
+      dplyr::mutate(prop = All_Reads.fr_count / sum(All_Reads.fr_count))
     
     message("Missing isize(s) added back to the final result with count of 0!")
     
