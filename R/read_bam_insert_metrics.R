@@ -42,7 +42,8 @@
 #' object <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
 #' }
 #' 
-read_bam_insert_metrics <- function(bamfile,
+read_bam_insert_metrics <- function(bamfile = NULL,
+                                    fragment_obj = NULL,
                                     chromosome_to_keep =paste0("chr", 1:22),
                                     strand_mode = 1,
                                     genome_label = "hg19",
@@ -52,11 +53,27 @@ read_bam_insert_metrics <- function(bamfile,
                                     ...) {
  
   insert_size <- NULL
-  frag <- readBam(bamfile = bamfile, 
+  
+  # users are required to supply only one of 'bamfile' or 'fragment_obj" from
+  # readBam() function
+  switch(
+    rlang::check_exclusive(bamfile, fragment_obj),
+    bamfile = message("`bamfile` was supplied."),
+    fragment_obj = message("`fragment_obj` was supplied.")
+  )
+  
+  if(!is.null(bamfile)) {
+    frag <- readBam(bamfile = bamfile, 
                   chromosome_to_keep = chromosome_to_keep,
                   strand_mode = strand_mode,
                   genome_label = genome_label,
                   outdir = outdir)
+  } else if(!is.null(fragment_obj)) {
+    
+    frag <- fragment_obj
+    
+  }
+  
   
   # calculating insert sizes
   message("Calculating insert sizes...")
@@ -72,6 +89,9 @@ read_bam_insert_metrics <- function(bamfile,
   result <- isize_tibble %>%
     dplyr::group_by(.data$insert_size) %>%
     dplyr::summarise("All_Reads.fr_count" = sum(count))
+  
+  
+  # quality control results
   
   return(result)
 }
