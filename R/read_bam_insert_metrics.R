@@ -106,18 +106,19 @@ read_bam_insert_metrics <- function(bamfile = NULL,
   # handle missing isize(s)
   
   if(nrow(missing_isize) != 0) {
-    print("Missing isize detected: ")
-    print(missing_isize)
+    message("Missing isize detected: ")
+    print(dplyr::pull(missing_isize, insert_size))
     
     result <- dplyr::right_join(result, isize_ref, by = "insert_size") %>%
       tidyr::replace_na(replace = list(All_Reads.fr_count = 0)) %>% 
       dplyr::arrange(insert_size)
     
-    print("Missing isize(s) added back to the final result with count of 0!")
+    message("Missing isize(s) added back to the final result with count of 0!")
     
     message("Job completed successfully. ")
     
   }
+  
 
   
   return(result)
