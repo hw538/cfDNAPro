@@ -1,6 +1,6 @@
 
 plotLength <- function(x,
-                       plot_type = c("fraction"),
+                       plot_type = c("Fraction"),
                        xlim = c(30, 500),
                        ylim  ,
                        x_breaks,
@@ -93,7 +93,7 @@ plotLength <- function(x,
   
   p <- p + 
     coord_cartesian(xlim = xlim) +
-    labs(x = "cfDNA Fragment Length (bp)", y = plot_type) +
+    labs(x = "cfDNA Fragment Length (bp)", y = stringr::str_to_title(plot_type)) +
     scale_x_continuous(limits = xlim, 
                        breaks = x_breaks, 
                        labels = x_labels) + 
