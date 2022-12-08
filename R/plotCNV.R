@@ -1,8 +1,31 @@
 
-plotCNV <- function(x, ylim = c(-2, 2)) {
+plotCNV <- function(x, 
+                    ylim = c(-2, 2), 
+                    chromosome = c(seq(1, 22, 1), "X"), 
+                    point_color = c("Loss" = "royalblue", 
+                                    "Deletion" = "darkblue", 
+                                    "Neutral" = "darkgrey", 
+                                    "Amplification" = "darkorange", 
+                                    "Gain" = "orange3"),
+                    x_title = "Chromosome",
+                    y_title = "Log2 Ratio",
+                    point_size = 0.3, 
+                    point_alpha = 0.9,
+                    chr_edge_color = "black",
+                    chr_edge_line_size = 0.2, 
+                    chr_edge_alpha = 0.8,
+                    chr_edge_type = "dotted",
+                    segment_color = "red",
+                    segment_alpha = 1, 
+                    segment_line_end = "round",
+                    segment_line_size = 0.75,
+                    legend_position = "none",
+                    ...) {
   
   
   sample_name <- x@phenoData@data$name
+  
+  chr_levels <- as.character(c(seq(1, 22, 1), "X", "Y"))
   
   cnv_tibble <- tibble::tibble(
     chr = x@featureData@data$chromosome,
@@ -14,23 +37,37 @@ plotCNV <- function(x, ylim = c(-2, 2)) {
     call = x@assayData$calls[, sample_name]
   )
   
+  cnv_tibble$chr <- factor(cnv_tibble$chr, levels = chr_levels)
   
   
   cnv_tibble2 <- cnv_tibble %>%
-    dplyr::filter(chr %in% seq(1, 22, by = 1)) %>%
+    dplyr::filter(.data$chr %in% chromosome) %>%
+    dplyr::filter(.data$use == TRUE) %>%
+    dplyr::filter(is.finite(.data$copynumber)) %>%
+    dplyr::mutate(call = dplyr::case_when(
+      .data$call == -2 ~ "Deletion",
+      .data$call == -1 ~ "Loss",
+      .data$call == 0 ~ "Neutral",
+      .data$call == 1 ~ "Gain",
+      .data$call == 2 ~ "Amplification"
+    )) %>%
     dplyr::mutate(x_index = dplyr::row_number()) %>%
-    dplyr::mutate(logratio = log2(copynumber)) %>%
-    dplyr::mutate(logseg = log2(seg)) %>%
-    dplyr::mutate(color = case_when(
-      call == -1 ~ "lightred",
-      call == 0 ~ "grey2",
-      call == 1 ~ "lightorange",
-      call == -2 ~ "red",
-      call == 2 ~ "orange"
-    ))
+    dplyr::mutate(logratio = log2(.data$copynumber)) %>%
+    dplyr::mutate(logseg = log2(.data$seg))
   
-  cnv_tibble2$call <- forcats::as_factor(cnv_tibble2$call)
+  cnv_tibble2$call <- factor(cnv_tibble2$call, 
+                             levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
   
+  # create segments
+  rleid <- function(x) {
+    1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
+  }
+  
+  segment_lines <- cnv_tibble2 %>%
+    dplyr::mutate(seg_id = rleid(.data$logseg)) %>%
+    dplyr::select(seg_id, x_index, logseg, call) 
+  
+  # create chromosome boundries
   chr_edge <- cnv_tibble2 %>% 
     dplyr::group_by(chr) %>%
     dplyr::filter(row_number() == n()) %>%
@@ -45,29 +82,37 @@ plotCNV <- function(x, ylim = c(-2, 2)) {
   
   x_labels <- as.character(unique(cnv_tibble2$chr))
     
-  
-  p <- ggplot(data = cnv_tibble2) +
-    geom_point(
+  # ggplot2 plot 
+  p <- ggplot() +
+    # copy number points
+    geom_point(data = cnv_tibble2,
                aes(x = .data[["x_index"]], 
                    y = .data[["logratio"]], 
                    color = .data[["call"]]),
-               size = 0.35) +
-    scale_color_manual(values = c("-1" = "royalblue", 
-                                 "-2" = "darkblue", 
-                                 "0" = "grey", 
-                                 "2" = "darkorange", 
-                                 "1" = "orange3")) +
-    geom_line(aes(x = .data[["x_index"]], y = .data[["logseg"]], group = 1)) +
-    geom_vline(xintercept = chr_edge, linetype = "dotted", color = "black", size = 0.2) +
-    labs(x = "Chromosome", y = "Log2Ratio") +
-    scale_x_continuous( 
+               size = point_size, 
+               alpha = point_alpha) +
+    scale_color_manual(values = point_color) +
+    # segmentation line
+    geom_line(data = segment_lines, 
+              mapping = aes(x = .data$x_index, y = .data$logseg, group = .data$seg_id), 
+              colour = segment_color, 
+              alpha = segment_alpha, 
+              size = segment_line_size,
+              lineend = segment_line_end) +
+    # chr edges 
+    geom_vline(xintercept = chr_edge, 
+               linetype = chr_edge_type, 
+               color = chr_edge_color, 
+               size = chr_edge_line_size) +
+    # chr names 
+    scale_x_continuous(
                        breaks = x_breaks, 
                        labels = x_labels) + 
-    theme_classic() +
-    theme(axis.ticks.x = element_blank(),
-          axis.line.x = element_blank())
+    scale_y_continuous(limits = ylim) +
+    labs(x = x_title, y = y_title, color = "Status") +
+    theme_cnv_plot()  +
+    theme(legend.position = legend_position)
   
-  p
   return(p)
   
 }

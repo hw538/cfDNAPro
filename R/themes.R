@@ -9,3 +9,11 @@ theme_length_plot <- function(){
       legend.position = "none"
     )
 }
+
+
+theme_cnv_plot <- function(){
+  theme_classic() %+replace%
+    theme(axis.ticks.x = element_blank(),
+        axis.line.x = element_blank(),
+        axis.title = element_text(face = "bold"))
+}
