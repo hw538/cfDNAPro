@@ -3,6 +3,9 @@
 plotMotif <- function(x){
   
   
+  
+  
+  
   p <- ggplot(x, aes(.data$motif, .data$fraction)) +
     geom_col() +
     theme_classic() +

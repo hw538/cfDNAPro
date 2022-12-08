@@ -53,19 +53,12 @@ plotCNV <- function(x,
     )) %>%
     dplyr::mutate(x_index = dplyr::row_number()) %>%
     dplyr::mutate(logratio = log2(.data$copynumber)) %>%
-    dplyr::mutate(logseg = log2(.data$seg))
+    dplyr::mutate(logseg = log2(.data$seg)) %>%
+    dplyr::mutate(seg_id = rleid_cfdnapro(.data$logseg))
   
   cnv_tibble2$call <- factor(cnv_tibble2$call, 
                              levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
-  
-  # create segments
-  rleid <- function(x) {
-    1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
-  }
-  
-  segment_lines <- cnv_tibble2 %>%
-    dplyr::mutate(seg_id = rleid(.data$logseg)) %>%
-    dplyr::select(seg_id, x_index, logseg, call) 
+
   
   # create chromosome boundries
   chr_edge <- cnv_tibble2 %>% 
@@ -83,18 +76,14 @@ plotCNV <- function(x,
   x_labels <- as.character(unique(cnv_tibble2$chr))
     
   # ggplot2 plot 
-  p <- ggplot() +
+  p <- ggplot(data = cnv_tibble2) +
     # copy number points
-    geom_point(data = cnv_tibble2,
-               aes(x = .data[["x_index"]], 
-                   y = .data[["logratio"]], 
-                   color = .data[["call"]]),
+    geom_point(aes(x = .data$x_index, y = .data$logratio, color = .data$call),
                size = point_size, 
                alpha = point_alpha) +
     scale_color_manual(values = point_color) +
     # segmentation line
-    geom_line(data = segment_lines, 
-              mapping = aes(x = .data$x_index, y = .data$logseg, group = .data$seg_id), 
+    geom_line(aes(x = .data$x_index, y = .data$logseg, group = .data$seg_id), 
               colour = segment_color, 
               alpha = segment_alpha, 
               size = segment_line_size,
