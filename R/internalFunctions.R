@@ -659,7 +659,7 @@ remove_out_of_bound_reads <- function(granges_object){
 
 # Motif annotation
 
-#' @importFrom GenomeInfoDb seqinfo seqnames seqlevels genome
+#' @importFrom GenomeInfoDb seqinfo seqnames seqlevels genome seqlengths
 #' @importFrom BiocGenerics start end strand unstrand
 #' @importFrom BSgenome getSeq
 
@@ -724,4 +724,11 @@ get_motif <- function(obj,
   return(result)
   
 }
+
+
+# rle id 
+rleid_cfdnapro <- function(x) {
+  1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
+}
+
 
