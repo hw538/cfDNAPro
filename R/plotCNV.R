@@ -94,11 +94,9 @@ plotCNV <- function(x,
                color = chr_edge_color, 
                size = chr_edge_line_size) +
     # chr names 
-    scale_x_continuous(
-                       breaks = x_breaks, 
-                       labels = x_labels) + 
+    scale_x_continuous(breaks = x_breaks, labels = x_labels) + 
     scale_y_continuous(limits = ylim) +
-    labs(x = x_title, y = y_title, color = "Status") +
+    labs(x = x_title, y = y_title) +
     theme_cnv_plot()  +
     theme(legend.position = legend_position)
   
