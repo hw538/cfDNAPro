@@ -20,6 +20,8 @@ plotCNV <- function(x,
                     segment_line_end = "round",
                     segment_line_size = 0.75,
                     legend_position = "none",
+                    x_axis_expand = c(0.1, 0.1),
+                    y_axis_expand = c(0, 0),
                     ...) {
   
   
@@ -94,8 +96,12 @@ plotCNV <- function(x,
                color = chr_edge_color, 
                size = chr_edge_line_size) +
     # chr names 
-    scale_x_continuous(breaks = x_breaks, labels = x_labels) + 
-    scale_y_continuous(limits = ylim) +
+    scale_x_continuous(
+                       breaks = x_breaks, 
+                       labels = x_labels,
+                       expand = x_axis_expand) + 
+    scale_y_continuous(limits = ylim,
+                       expand = y_axis_expand) +
     labs(x = x_title, y = y_title) +
     theme_cnv_plot()  +
     theme(legend.position = legend_position)
