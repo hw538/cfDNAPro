@@ -8,11 +8,12 @@ plotLength <- function(x,
                        vline,
                        add_vline = TRUE,
                        line_color = "grey1",
-                       line_size = 0.8,
+                       line_size = 0.6,
                        line_alpha = 0.8,
                        vline_color = "grey",
                        vline_type = "dashed",
                        vline_size = 0.7,
+                       area_highlight = NULL,
                        ...
                        ){
   
@@ -80,8 +81,8 @@ plotLength <- function(x,
   }
   
   # plot
-  p <-  ggplot(x) +
-    geom_line(aes(.data$insert_size, .data[[y_use]]), 
+  p <-  ggplot(data = x, aes(.data$insert_size, .data[[y_use]])) +
+    geom_line(
               color = line_color, 
               size = line_size, 
               alpha = line_alpha)
@@ -89,6 +90,42 @@ plotLength <- function(x,
   if(add_vline) {
     p <- p +
     geom_vline(xintercept = vline, linetype = vline_type, color = vline_color, size = vline_size)
+  }
+  
+  
+  if(is.list(area_highlight)){
+    
+   plot_length_add_hightlight_area <- function(params, plot) {
+     
+    if (rlang::has_name(params, "fill")) {
+     fill <- params[["fill"]] 
+    } else {
+      fill <- "lightgrey"
+    }
+     
+    if (rlang::has_name(params, "alpha")) {
+     alpha <- params[["alpha"]]
+    } else {
+     alpha <- 0.7 
+    }
+     
+     left_boundary <- params[["range"]][[1]] %>% as.numeric()
+     right_boundary <- params[["range"]][[2]] %>% as.numeric()
+    
+     p <- plot +
+       geom_area(
+         mapping = aes(x = ifelse( .data$insert_size >= left_boundary & .data$insert_size <= right_boundary , insert_size, 0)), 
+         fill = fill,
+         alpha  = alpha)
+     
+     return(p)
+   }
+   
+   for (area in area_highlight){
+     p <- plot_length_add_hightlight_area(params = area, plot = p)
+   }
+   
+    
   }
   
   p <- p + 
@@ -100,10 +137,8 @@ plotLength <- function(x,
     scale_y_continuous(limits = ylim) +
     theme_length_plot()
   
-
       
-      
-      return(p)
+  return(p)
   
 }
 
