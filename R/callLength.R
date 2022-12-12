@@ -9,7 +9,7 @@
 #' @param isize_max 
 #' @param ... 
 #'
-#' @return
+#' @return a tibble
 #' @export
 #'
 #' @examples

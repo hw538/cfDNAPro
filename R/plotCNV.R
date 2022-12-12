@@ -25,7 +25,7 @@
 #' @param y_axis_expand 
 #' @param ... 
 #'
-#' @return
+#' @return This function returns ggplot2 object.
 #' @export
 #'
 #' @examples

@@ -6,7 +6,7 @@
 #' @param bin_size 
 #' @param genome_label 
 #'
-#' @return
+#' @return QDNAseqCopyNumbers object
 #' @export
 #'
 #' @examples

@@ -5,7 +5,8 @@
 \title{Calculate insert sizes from a curated GRanges object}
 \usage{
 read_bam_insert_metrics(
-  bamfile,
+  bamfile = NULL,
+  fragment_obj = NULL,
   chromosome_to_keep = paste0("chr", 1:22),
   strand_mode = 1,
   genome_label = "hg19",

@@ -10,7 +10,7 @@
 #' @param motif_levels 
 #' @param ... 
 #'
-#' @return
+#' @return ggplot2 object
 #' @export
 #'
 #' @examples

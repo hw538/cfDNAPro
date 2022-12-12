@@ -7,7 +7,7 @@
 #' @param motif_length 
 #' @param ... 
 #'
-#' @return
+#' @return tibble object
 #' @export
 #'
 #' @examples

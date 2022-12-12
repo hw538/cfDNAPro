@@ -22,7 +22,7 @@
 #' @param area_highlight 
 #' @param ... 
 #'
-#' @return
+#' @return ggplot2 object
 #' @export
 #'
 #' @examples

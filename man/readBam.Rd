@@ -24,7 +24,7 @@ Default is paste0("chr", 1:22).}
 aligned to positive strand. Details please see GenomicAlignments docs.}
 
 \item{genome_label}{The Genome you used in the alignment. 
-Should be "hg19" or "hg38" or "hg38-NCBI. Default is "hg19". 
+Should be "hg19" or "hg38" or "hg38-NCBI". Default is "hg19". 
 Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is 
 Full genome sequences for Homo sapiens (Human) as provided by 
 UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects; 
