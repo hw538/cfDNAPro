@@ -1,4 +1,18 @@
 
+#' call fragment length
+#' @import ggplot2
+#' @import dplyr
+#' @import plyranges
+#'
+#' @param fragment_obj 
+#' @param isize_min 
+#' @param isize_max 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 callLength <- function(fragment_obj, 
                        isize_min = 1L,
                        isize_max = 1000L,

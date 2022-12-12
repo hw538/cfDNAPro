@@ -1,4 +1,34 @@
 
+#' plot copy number profile 
+#' @import ggplot2
+#' @import tibble
+#' @import dplyr
+#' @importFrom rlang has_name
+#' @param x 
+#' @param ylim 
+#' @param chromosome 
+#' @param point_color 
+#' @param x_title 
+#' @param y_title 
+#' @param point_size 
+#' @param point_alpha 
+#' @param chr_edge_color 
+#' @param chr_edge_line_size 
+#' @param chr_edge_alpha 
+#' @param chr_edge_type 
+#' @param segment_color 
+#' @param segment_alpha 
+#' @param segment_line_end 
+#' @param segment_line_size 
+#' @param legend_position 
+#' @param x_axis_expand 
+#' @param y_axis_expand 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plotCNV <- function(x, 
                     ylim = c(-2, 2), 
                     chromosome = c(seq(1, 22, 1), "X"), 
@@ -24,7 +54,24 @@ plotCNV <- function(x,
                     y_axis_expand = c(0, 0),
                     ...) {
   
+  names(point_color) <- stringr::str_to_title(names(point_color))
   
+  if(!rlang::has_name(point_color, "Loss")){
+    point_color["Loss"] <- "royalblue"
+  }
+  if(!rlang::has_name(point_color, "Deletion")){
+    point_color["Deletion"] <- "darkblue"
+  }
+  if(!rlang::has_name(point_color, "Neutral")){
+    point_color["Neutral"] <- "darkgrey"
+  }
+  if(!rlang::has_name(point_color, "Amplification")){
+    point_color["Amplification"] <- "darkorange"
+  }
+  if(!rlang::has_name(point_color, "Gain")){
+    point_color["Gain"] <- "orange3"
+  }
+   
   sample_name <- x@phenoData@data$name
   
   chr_levels <- as.character(c(seq(1, 22, 1), "X", "Y"))

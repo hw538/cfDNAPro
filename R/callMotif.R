@@ -1,4 +1,16 @@
 
+#' Call Motif
+#' @import dplyr tibble purrr tidyr
+#' @param fragment_obj 
+#' @param genome_label 
+#' @param motif_type 
+#' @param motif_length 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 callMotif <- function(fragment_obj, 
                       genome_label  = "hg19", 
                       motif_type = "s",

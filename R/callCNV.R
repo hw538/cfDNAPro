@@ -1,5 +1,16 @@
 
 
+#' call copy number variation using QDNAseq utilities
+#' @import QDNAseq
+#' @param bamfile 
+#' @param bin_size 
+#' @param genome_label 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+
 callCNV <- function(bamfile,
                     bin_size = 1000,
                     genome_label = "hg19"

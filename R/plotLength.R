@@ -1,4 +1,31 @@
 
+#' plot fragment length profile
+#' @import ggplot2
+#' @import stringr
+#' @import tibble
+#' @importFrom rlang has_name
+#'
+#' @param x 
+#' @param plot_type 
+#' @param xlim 
+#' @param ylim 
+#' @param x_breaks 
+#' @param x_labels 
+#' @param vline 
+#' @param add_vline 
+#' @param line_color 
+#' @param line_size 
+#' @param line_alpha 
+#' @param vline_color 
+#' @param vline_type 
+#' @param vline_size 
+#' @param area_highlight 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plotLength <- function(x,
                        plot_type = c("Fraction"),
                        xlim = c(30, 500),

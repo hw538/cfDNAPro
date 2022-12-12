@@ -1,5 +1,19 @@
 
 
+#' plot motif count or fraction as bar plot 
+#' @import  ggplot2 tidyr dplyr 
+#' @param x 
+#' @param ylim 
+#' @param x_title 
+#' @param plot_type 
+#' @param bar_color 
+#' @param motif_levels 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plotMotif <- function(x,
                       ylim,
                       x_title = "Motif",
