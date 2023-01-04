@@ -2,8 +2,8 @@
 
 #' call copy number variation using QDNAseq utilities
 #' @import QDNAseq
-#' @param bamfile 
-#' @param bin_size 
+#' @param bamfile string. path to a single bam file.
+#' @param bin_size numerical. available options are 
 #' @param genome_label 
 #'
 #' @return QDNAseqCopyNumbers object

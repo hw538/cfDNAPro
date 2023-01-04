@@ -7,9 +7,9 @@
 callCNV(bamfile, bin_size = 1000, genome_label = "hg19")
 }
 \arguments{
-\item{bamfile}{}
+\item{bamfile}{string. path to a single bam file.}
 
-\item{bin_size}{}
+\item{bin_size}{numerical. available options are}
 
 \item{genome_label}{}
 }
