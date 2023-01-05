@@ -37,6 +37,26 @@ bam_count <- function(bamfile, param , ...){
 
 
 
+#' Summarise descriptive Bam stats
+#'
+#' @param bamfile 
+#' @param total_count 
+#' @param total_mapped_count 
+#' @param chrM_count 
+#' @param duplicate_count 
+#' @param ... 
+#'
+#' @return tibble object (i.e. a dataframe)
+#' @export
+#' @author Haichao Wang
+#'
+#' @examples
+#' \dontrun{
+#' 
+#'  summarizeBam(bamfile = "/path/to/bamfile.bam")
+#' }
+#' 
+
 summarizeBam <- function(bamfile,
                          total_count = TRUE,
                          total_mapped_count = TRUE,
@@ -95,4 +115,12 @@ summarizeBam <- function(bamfile,
   
   
 }
+
+#' @rdname summariseBam
+#' @export
+
+summariseBam <- summarizeBam
+
+
+
 
