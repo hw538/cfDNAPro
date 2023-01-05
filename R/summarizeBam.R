@@ -18,19 +18,19 @@ bam_count <- function(bamfile, param , ...){
     param <- Rsamtools::ScanBamParam()
   } 
   
+  suppressWarnings(
+    result <- Rsamtools::countBam(file = bamfile, param = param)  %>%
+      tibble::as_tibble() %>%
+      dplyr::select(.data$file, .data$records, .data$nucleotides)  %>%
+      dplyr::mutate(file = bamfile)  %>%
+      dplyr::rename(
+        n_read = records,
+        n_nucleotide = nucleotides
+      )
+  )
   
-  result <- Rsamtools::countBam(file = bamfile, param = param)  %>%
-    tibble::as_tibble() %>%
-    dplyr::select(.data$file, .data$records, .data$nucleotides)  %>%
-    dplyr::mutate(file = bamfile)  %>%
-    dplyr::rename(
-      n_read = records,
-      n_nucleotide = nucleotides
-    )
-  
-  
-  result$n_read <- as.integer(result$n_read)
-  result$n_nucleotide = as.integer(result$n_nucleotide)
+  result$n_read <- as.numeric(result$n_read)
+  result$n_nucleotide = as.numeric(result$n_nucleotide)
   return(result)
 }
 
