@@ -113,7 +113,7 @@ summarizeBam <- function(bamfile,
     message("Count chrM reads...")
     
     chrM_count <- chr_count(bamfile = bamfile, chr = c("M", "chrM", "ChrM") ) %>%
-      dplyr::rename(chrM_count_mapped = chr_count_mapped)
+      dplyr::rename(n_read_mapped_chrM = chr_count_mapped)
     summary_metrics <- dplyr::full_join(summary_metrics, chrM_count, 
                                         by = "file")
   }
