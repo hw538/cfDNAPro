@@ -47,12 +47,17 @@ readBam <- function(
                      chromosome_to_keep = paste0("chr", 1:22),
                      strand_mode = 1,
                      genome_label = "hg19",
-                     outdir = NA,
+                     outdir = NA_real_,
                      ...){
   
   ############################################################################
   # Check parameters
   ############################################################################
+  
+  # check if the input bam is paired-end
+  if (!Rsamtools::testPairedEndBam(bamfile)) {
+    stop("Input is not paired-end Bam file.")
+  }
   
   if (!genome_label %in% c("hg19", "hg38", "hg38-NCBI") | is.na(genome_label)) {
     stop("Only accept hg19 or hg38 or hg38-NCBI as the genome_label...")
