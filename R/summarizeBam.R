@@ -116,6 +116,9 @@ summarizeBam <- function(bamfile,
   
 }
 
+
+# add synonym function
+
 #' @rdname summariseBam
 #' @export
 
