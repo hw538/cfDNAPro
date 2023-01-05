@@ -70,6 +70,8 @@ summarizeBam <- function(bamfile,
   
   if(total_count) {
     
+    message("Count total reads (mapped + unmapped)...")
+    
     total_count <- bam_count(bamfile = bamfile)
     
     summary_metrics <- dplyr::full_join(summary_metrics, total_count, 
@@ -79,6 +81,7 @@ summarizeBam <- function(bamfile,
   
   if(total_mapped_count) {
     
+    message("Count total mapped reads...")
     param <- Rsamtools::ScanBamParam(flag = scanBamFlag(isUnmappedQuery = FALSE))
     
     total_mapped_count <- bam_count(bamfile = bamfile, param = param) %>%
@@ -91,6 +94,8 @@ summarizeBam <- function(bamfile,
   }
   
   if(duplicate_count) {
+    
+    message("Count duplicate reads...")
     
     param <- Rsamtools::ScanBamParam(flag = scanBamFlag(isDuplicate = TRUE))
     
@@ -105,11 +110,16 @@ summarizeBam <- function(bamfile,
   
   if(chrM_count) {
     
+    message("Count chrM reads...")
+    
     chrM_count <- chr_count(bamfile = bamfile, chr = c("M", "chrM", "ChrM") ) %>%
       dplyr::rename(chrM_count_mapped = chr_count_mapped)
     summary_metrics <- dplyr::full_join(summary_metrics, chrM_count, 
                                         by = "file")
   }
+  
+  
+  message("Done!")
   
   return(summary_metrics)
   
