@@ -1,43 +1,4 @@
 
-###############################################################################
-# helpers for summariseBam function
-###############################################################################
-
-chr_count <- function(bamfile, chr) {
-  library(Rsamtools)
-  library(tidyverse)
-  a <- Rsamtools::idxstatsBam(bamfile)
-  b <- a %>% 
-    dplyr::filter(seqnames %in% as.vector(chr)) %>% 
-    dplyr::select(mapped) %>%
-    dplyr::rename(chr_count_mapped = mapped) %>%
-    dplyr::mutate(file = bamfile)
-  return(b)
-}
-
-
-bam_count <- function(bamfile, param , ...){
-  
-  if(missing(param)) {
-    param <- Rsamtools::ScanBamParam()
-  } 
-  
-  suppressWarnings(
-    result <- Rsamtools::countBam(file = bamfile, param = param)  %>%
-      tibble::as_tibble() %>%
-      dplyr::select(.data$file, .data$records, .data$nucleotides)  %>%
-      dplyr::mutate(file = bamfile)  %>%
-      dplyr::rename(
-        n_read = records,
-        n_nucleotide = nucleotides
-      )
-  )
-  
-  result$n_read <- as.numeric(result$n_read)
-  result$n_nucleotide = as.numeric(result$n_nucleotide)
-  return(result)
-}
-
 
 ###############################################################################
 # summariseBam function
@@ -46,8 +7,6 @@ bam_count <- function(bamfile, param , ...){
 #' Summarise descriptive Bam stats
 #'
 #' @param bamfile 
-#' @param path 
-#' @param ext 
 #' @param total_count 
 #' @param total_mapped_count 
 #' @param chrM_count 
@@ -66,8 +25,6 @@ bam_count <- function(bamfile, param , ...){
 #' 
 
 summarizeBam <- function(bamfile = NULL,
-                         path = NULL,
-                         ext = "bam",
                          total_count = TRUE,
                          total_mapped_count = TRUE,
                          chrM_count = TRUE,
@@ -166,5 +123,44 @@ summarizeBam <- function(bamfile = NULL,
 summariseBam <- summarizeBam
 
 
+
+###############################################################################
+# helpers for summariseBam function
+###############################################################################
+
+chr_count <- function(bamfile, chr) {
+  library(Rsamtools)
+  library(tidyverse)
+  a <- Rsamtools::idxstatsBam(bamfile)
+  b <- a %>% 
+    dplyr::filter(seqnames %in% as.vector(chr)) %>% 
+    dplyr::select(mapped) %>%
+    dplyr::rename(chr_count_mapped = mapped) %>%
+    dplyr::mutate(file = bamfile)
+  return(b)
+}
+
+
+bam_count <- function(bamfile, param , ...){
+  
+  if(missing(param)) {
+    param <- Rsamtools::ScanBamParam()
+  } 
+  
+  suppressWarnings(
+    result <- Rsamtools::countBam(file = bamfile, param = param)  %>%
+      tibble::as_tibble() %>%
+      dplyr::select(.data$file, .data$records, .data$nucleotides)  %>%
+      dplyr::mutate(file = bamfile)  %>%
+      dplyr::rename(
+        n_read = records,
+        n_nucleotide = nucleotides
+      )
+  )
+  
+  result$n_read <- as.numeric(result$n_read)
+  result$n_nucleotide = as.numeric(result$n_nucleotide)
+  return(result)
+}
 
 
