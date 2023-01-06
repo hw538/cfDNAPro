@@ -20,7 +20,6 @@
 #' @param customized_count_isMateMinusStrand 
 #' @param customized_count_isFirstMateRead 
 #' @param customized_count_isSecondMateRead 
-#' @param customized_count_isNotPrimaryRead 
 #' @param customized_count_isSecondaryAlignment 
 #' @param customized_count_isNotPassingQualityControls 
 #' @param customized_count_isDuplicate 
