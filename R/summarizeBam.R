@@ -62,6 +62,8 @@ summarizeBam <- function(bamfile,
                          total_mapped_count = TRUE,
                          chrM_count = TRUE,
                          duplicate_count = TRUE,
+                         coverage_by_mapped = TRUE,
+                         genome_length_bp = 3200000000,
                          ...) {
   
   
@@ -119,8 +121,20 @@ summarizeBam <- function(bamfile,
   }
   
   
-  message("Done!")
   
+  if(coverage_by_mapped) {
+    
+    if (isFALSE(total_mapped_count)) {
+      stop("Please set total_mapped_count = TRUE in order to calculate coverage.")
+    }
+    
+    
+    message("Calculate coverage...")
+    summary_metrics <- dplyr::mutate(summary_metrics, 
+                                     coverage_by_mapped_reads = n_nucleotide_mapped / !!genome_length_bp )
+  }
+  
+  message("Done!")
   return(summary_metrics)
   
   
