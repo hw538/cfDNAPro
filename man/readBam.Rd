@@ -9,7 +9,7 @@ readBam(
   chromosome_to_keep = paste0("chr", 1:22),
   strand_mode = 1,
   genome_label = "hg19",
-  outdir = NA,
+  outdir = NA_real_,
   ...
 )
 }
