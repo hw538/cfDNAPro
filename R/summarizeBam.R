@@ -1,4 +1,8 @@
 
+###############################################################################
+# helpers for summariseBam function
+###############################################################################
+
 chr_count <- function(bamfile, chr) {
   library(Rsamtools)
   library(tidyverse)
@@ -35,11 +39,15 @@ bam_count <- function(bamfile, param , ...){
 }
 
 
-
+###############################################################################
+# summariseBam function
+###############################################################################
 
 #' Summarise descriptive Bam stats
 #'
 #' @param bamfile 
+#' @param path 
+#' @param ext 
 #' @param total_count 
 #' @param total_mapped_count 
 #' @param chrM_count 
@@ -57,7 +65,9 @@ bam_count <- function(bamfile, param , ...){
 #' }
 #' 
 
-summarizeBam <- function(bamfile,
+summarizeBam <- function(bamfile = NULL,
+                         path = NULL,
+                         ext = "bam",
                          total_count = TRUE,
                          total_mapped_count = TRUE,
                          chrM_count = TRUE,
@@ -66,6 +76,12 @@ summarizeBam <- function(bamfile,
                          genome_length_bp = 3200000000,
                          ...) {
   
+  
+  #if (is.null(bamfile))
+  #  bamfiles <- list.files(ifelse(is.null(path), '.', path),
+  #                         pattern=sprintf('%s$', ext), full.names=TRUE)
+  #if (length(bamfile) == 0L)
+  #  stop('No files to process.')
   
   summary_metrics <- tibble::tibble(file = bamfile) 
   
@@ -84,7 +100,8 @@ summarizeBam <- function(bamfile,
   if(total_mapped_count) {
     
     message("Count total mapped reads...")
-    param <- Rsamtools::ScanBamParam(flag = scanBamFlag(isUnmappedQuery = FALSE))
+    param <- Rsamtools::ScanBamParam(flag = 
+                                       Rsamtools::scanBamFlag(isUnmappedQuery = FALSE))
     
     total_mapped_count <- bam_count(bamfile = bamfile, param = param) %>%
       dplyr::rename(n_read_mapped = n_read, 
