@@ -44,7 +44,7 @@
 
 readBam <- function(
                      bamfile,
-                     chromosome_to_keep = paste0("chr", 1:22),
+                     chromosome_to_keep = paste("chr", 1:22, sep = ""),
                      strand_mode = 1,
                      genome_label = "hg19",
                      outdir = NA_real_,
@@ -77,13 +77,15 @@ readBam <- function(
   
   }
   
+  genome_name <- seqinfo(genome)@genome %>% unique()
+  
   ############################################################################
   # Read bam into galp
   ############################################################################
   
   galp <- bam_to_galp(bamfile = bamfile, 
                        chromosome_to_keep = chromosome_to_keep,
-                       strand_mode = strand_mode) 
+                       strand_mode = strand_mode, genome_name = genome_name) 
   
   ############################################################################
   # Remove outward facing pairs
@@ -100,7 +102,7 @@ readBam <- function(
   
   names(fragmentwise) <- names(galp)
   seqlengths(fragmentwise) <- seqlengths(genome)[1:22]
-  genome(fragmentwise) <- seqinfo(genome)@genome %>% unique()
+  genome(fragmentwise) <- genome_name
   
   #############################################################################
   # remove out-of-bound reads

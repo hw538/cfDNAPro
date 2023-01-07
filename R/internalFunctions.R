@@ -511,6 +511,7 @@ check_dup_mode <- function(x) {
 bam_to_galp <- function(bamfile,
                         chromosome_to_keep = paste0("chr", 1:22),
                         strand_mode = 1,
+                        genome_name = NULL,
                         ...) {
     # Check parameters
     
@@ -546,6 +547,10 @@ bam_to_galp <- function(bamfile,
         strandMode = strand_mode
     )
     
+    if(!is.null(genome_name)) {
+      genome(galp) <- genome_name
+    }
+    
     # strandMode should be one for downstream operations
     stopifnot(GenomicAlignments::strandMode(galp) == 1)
     
@@ -561,6 +566,7 @@ bam_to_galp <- function(bamfile,
     
     # remove read pairs without strand information
     galp3 <- galp2[strand(galp2) != '*']
+    
     
     return(galp3)
     
