@@ -1,7 +1,7 @@
 
 #' Summarise descriptive Bam stats
 #'
-#' @param bamfile A Bam file
+#' @param bamfile  Bam file
 #' @param total_count Boolean. default = TRUE, which means calculating the total 
 #' number of reads. 
 #' @param total_mapped_count Boolean. Default = TRUE, which mean calculating the
@@ -115,7 +115,7 @@ summarizeBam <- function(bamfile = NULL,
     
     message("Count chrM reads...")
     
-    chrM_count <- chr_count(bamfile = bamfile, chr = c("M", "chrM", "ChrM") ) %>%
+    chrM_count <- chr_count(bamfile = bamfile, chr = c("M", "chrM", "MT") ) %>%
       dplyr::rename(n_read_mapped_chrM = chr_count_mapped)
     summary_metrics <- dplyr::full_join(summary_metrics, chrM_count, 
                                         by = "file")
