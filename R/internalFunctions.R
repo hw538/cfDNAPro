@@ -565,7 +565,7 @@ bam_to_galp <- function(bamfile,
     galp2 <- galp[!is.na(GenomicAlignments::seqnames(galp))]
     
     # remove read pairs without strand information
-    galp3 <- galp2[strand(galp2) != '*']
+    galp3 <- galp2[GenomicAlignments::strand(galp2) != '*']
     
     
     return(galp3)
