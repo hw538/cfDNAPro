@@ -1,12 +1,10 @@
 
 #' Read bam file into a curated GRanges object
-#' @importFrom Rsamtools scanBamFlag ScanBamParam
-#' @importFrom GenomeInfoDb keepSeqlevels
 #' @import magrittr
-#' @importFrom BiocGenerics which strand
-#' @importFrom GenomeInfoDb seqinfo genome seqlengths
-#' @importFrom GenomeInfoDb seqlengths<-
-#' @importFrom GenomeInfoDb genome<-
+#' @import GenomeInfoDb
+#' @import GenomicAlignments
+#' @import S4Vectors
+#' @importFrom Rsamtools scanBamFlag ScanBamParam
 #' @importFrom GenomicRanges GRanges seqnames
 #' @importFrom IRanges IRanges
 #'
@@ -199,7 +197,7 @@ bam_to_galp2 <- function(bamfile,
   message("Curating seqnames and strand information...")
   # remove read pairs without correct seqnames and strand information
   galp2 <- galp[!is.na(GenomicAlignments::seqnames(galp))]
-  galp3 <- galp2[BiocGenerics::strand(galp2) != '*']
+  galp3 <- galp2[GenomicAlignments::strand(galp2) != '*']
   
   
   return(galp3)
