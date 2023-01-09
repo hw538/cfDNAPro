@@ -158,8 +158,11 @@ readBam <- function(
 #-----------------------------------------------------------------------------
 
 
-#' @importFrom GenomeInfoDb keepSeqlevels
+#' @import magrittr
+#' @import GenomeInfoDb
 #' @import GenomicAlignments
+#' @import S4Vectors
+#' @import Rsamtools 
 
 bam_to_galp2 <- function(bamfile,
                          use_names  = TRUE, 
