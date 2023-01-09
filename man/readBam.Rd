@@ -6,18 +6,27 @@
 \usage{
 readBam(
   bamfile,
-  chromosome_to_keep = paste0("chr", 1:22),
+  use_names = TRUE,
+  chromosome_to_keep = paste("chr", 1:22, sep = ""),
   strand_mode = 1,
   genome_label = "hg19",
-  outdir = NA_real_,
+  outdir = FALSE,
+  galp_flag = Rsamtools::scanBamFlag(isPaired = TRUE, isDuplicate = FALSE,
+    isSecondaryAlignment = FALSE, isUnmappedQuery = FALSE, isSupplementaryAlignment =
+    FALSE),
+  galp_what = c("cigar", "mapq", "isize"),
+  galp_tag = c("NM", "MD"),
+  galp_mapqFilter = 30,
   ...
 )
 }
 \arguments{
 \item{bamfile}{The bam file name.}
 
+\item{use_names}{}
+
 \item{chromosome_to_keep}{Should be a character vector containing the 
-seqnames to be kept in the GRanges object. 
+seqnames to be kept in the GRanges object or boolean FALSE. FALSE means not filtering.
 Default is paste0("chr", 1:22).}
 
 \item{strand_mode}{Usually the strand_mode  = 1 means the First read is 
@@ -36,6 +45,16 @@ full genome sequences for Homo sapiens (Human) as provided by
 NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.}
 
 \item{outdir}{The path for saving rds file. Default is NA, i.e. not saving.}
+
+\item{galp_flag}{}
+
+\item{galp_what}{A character vector naming the fields to return 
+Rsamtools::scanBamWhat() returns a vector of available fields. Fields are 
+described on the Rsamtools::scanBam help page.}
+
+\item{galp_tag}{}
+
+\item{galp_mapqFilter}{}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

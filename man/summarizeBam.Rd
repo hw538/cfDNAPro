@@ -30,7 +30,7 @@ summarizeBam(
 )
 }
 \arguments{
-\item{bamfile}{A Bam file}
+\item{bamfile}{Bam file}
 
 \item{total_count}{Boolean. default = TRUE, which means calculating the total 
 number of reads.}
