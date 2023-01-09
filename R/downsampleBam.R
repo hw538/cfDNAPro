@@ -8,7 +8,7 @@
 #' @param genome Single String or NA. Supported values: "hg19", "hg38", or "GRCh38".
 #' Used for setting the seqinfo in the resulting GALP object.
 #' @param input_depth Numerical. If not supplied, infer the depth based on the 
-#' total mapped reads in the input bam file.
+#' total mapped paired reads in the input bam file.
 #' @param input_count Numerical. If not supplied, infer the depth based on the 
 #' total reads in the input bam file.
 #' @param output_depth Numerical. Default is 0.1, which mean 0.1x target depth 
@@ -17,6 +17,8 @@
 #' the downsampled bam as bam file AND rds file (i.e. GAlignmentPairs object).
 #' @param output_dir String. If not supplied, it will be set as the same folder 
 #' with input bamfile. 
+#' @param return_result Boolean. TRUE(default) means the result will be returned
+#' as an R object to console or the designated object.
 #' @param ... further parameters for bam_to_galp2 function.
 #'
 #' @return GAlignmentPairs object containg the downsampled reads.
@@ -31,6 +33,7 @@ downsampleBam <- function(bamfile,
                           output_depth = 0.1, 
                           output_type = c("bam", "rds"),
                           output_dir = NULL,
+                          return_result = TRUE,
                           ...) {
   
   #----------------------------------------------------------------------------
@@ -113,8 +116,15 @@ downsampleBam <- function(bamfile,
     }
     
   }
+  #----------------------------------------------------------------------------
+  # return result 
+  #----------------------------------------------------------------------------
   
-  return(bam_sample)
+  if(return_result) {
+    return(bam_sample)
+  }
+  
+  message("Done.")
   
 }
 

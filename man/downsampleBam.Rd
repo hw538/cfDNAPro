@@ -12,6 +12,7 @@ downsampleBam(
   output_depth = 0.1,
   output_type = c("bam", "rds"),
   output_dir = NULL,
+  return_result = TRUE,
   ...
 )
 }
@@ -22,7 +23,7 @@ downsampleBam(
 Used for setting the seqinfo in the resulting GALP object.}
 
 \item{input_depth}{Numerical. If not supplied, infer the depth based on the 
-total mapped reads in the input bam file.}
+total mapped paired reads in the input bam file.}
 
 \item{input_count}{Numerical. If not supplied, infer the depth based on the 
 total reads in the input bam file.}
@@ -35,6 +36,9 @@ the downsampled bam as bam file AND rds file (i.e. GAlignmentPairs object).}
 
 \item{output_dir}{String. If not supplied, it will be set as the same folder 
 with input bamfile.}
+
+\item{return_result}{Boolean. TRUE(default) means the result will be returned
+as an R object to console or the designated object.}
 
 \item{...}{further parameters for bam_to_galp2 function.}
 }
