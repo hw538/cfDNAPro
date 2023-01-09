@@ -36,7 +36,7 @@ summarizeBam(
 number of reads.}
 
 \item{total_mapped_count}{Boolean. Default = TRUE, which mean calculating the
-number of mapped reads.}
+number of mapped reads, and these reads must have mate reads.}
 
 \item{chrM_count}{}
 

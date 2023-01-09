@@ -5,7 +5,7 @@
 #' @param total_count Boolean. default = TRUE, which means calculating the total 
 #' number of reads. 
 #' @param total_mapped_count Boolean. Default = TRUE, which mean calculating the
-#' number of mapped reads.
+#' number of mapped reads, and these reads must have mate reads.
 #' @param chrM_count 
 #' @param duplicate_count 
 #' @param coverage_by_mapped 
@@ -85,7 +85,19 @@ summarizeBam <- function(bamfile = NULL,
     
     message("Count total mapped reads...")
     param <- Rsamtools::ScanBamParam(flag = 
-                                       Rsamtools::scanBamFlag(isUnmappedQuery = FALSE))
+                                       Rsamtools::scanBamFlag(isPaired = TRUE, 
+                                                              isProperPair = NA, 
+                                                              isUnmappedQuery = FALSE, 
+                                                              hasUnmappedMate = FALSE, 
+                                                              isMinusStrand = NA, 
+                                                              isMateMinusStrand = NA,
+                                                              isFirstMateRead = NA, 
+                                                              isSecondMateRead = NA, 
+                                                              isSecondaryAlignment = NA, 
+                                                              isNotPassingQualityControls = NA,
+                                                              isDuplicate = NA, 
+                                                              isSupplementaryAlignment = NA
+                                                              ))
     
     total_mapped_count <- bam_count(bamfile = bamfile, param = param) %>%
       dplyr::rename(n_read_mapped = n_read, 
