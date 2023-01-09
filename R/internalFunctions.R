@@ -576,7 +576,7 @@ bam_to_galp <- function(bamfile,
 
 
 remove_outward_facing_readpairs <- function(galp) {
-    message("Removing outward facing fragmetns ...")
+    message("Removing outward facing fragments ...")
     # Get FR read pairs(i.e. first read aligned to positive strand)
     
     FR_id <-
