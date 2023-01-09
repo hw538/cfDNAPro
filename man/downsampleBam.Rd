@@ -8,7 +8,7 @@ downsampleBam(
   bamfile,
   genome = NA_character_,
   input_depth = NULL,
-  input_count = NULL,
+  input_mapped_reads_count = NULL,
   output_depth = 0.1,
   output_type = c("bam", "rds"),
   output_dir = NULL,
@@ -25,8 +25,8 @@ Used for setting the seqinfo in the resulting GALP object.}
 \item{input_depth}{Numerical. If not supplied, infer the depth based on the 
 total mapped paired reads in the input bam file.}
 
-\item{input_count}{Numerical. If not supplied, infer the depth based on the 
-total reads in the input bam file.}
+\item{input_mapped_reads_count}{Numerical. If not supplied, infer the depth based on the 
+total mapped reads in the input bam file.}
 
 \item{output_depth}{Numerical. Default is 0.1, which mean 0.1x target depth 
 after downsampling.}
