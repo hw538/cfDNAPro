@@ -3,8 +3,12 @@
 #' @import ggplot2
 #' @import tibble
 #' @import dplyr
+#' @import Homo.sapiens 
 #' @importFrom rlang has_name
+#' @importFrom GenomicFeatures genes
 #' @param x 
+#' @param gene 
+#' @param genome 
 #' @param ylim 
 #' @param chromosome 
 #' @param point_color 
@@ -30,6 +34,10 @@
 #'
 #' @examples
 plotCNV <- function(x, 
+                    gene = list("ENTREZID" = NULL, 
+                                "ENSEMBL" = NULL, 
+                                "SYMBOL" = c("EGFR", "HER2")),
+                    genome = "hg19",
                     ylim = c(-2, 2), 
                     chromosome = c(seq(1, 22, 1), "X"), 
                     point_color = c("Loss" = "royalblue", 
@@ -71,6 +79,8 @@ plotCNV <- function(x,
   if(!rlang::has_name(point_color, "Gain")){
     point_color["Gain"] <- "orange3"
   }
+  
+  
    
   sample_name <- x@phenoData@data$name
   
@@ -107,6 +117,25 @@ plotCNV <- function(x,
   
   cnv_tibble2$call <- factor(cnv_tibble2$call, 
                              levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
+  
+  # obtain gene position
+  if(genome == "hg38"){
+    message("Switching to UCSC hg38 reference genome.")
+    TxDb(Homo.sapiens) <- TxDb.Hsapiens.UCSC.hg38.knownGene
+  }
+  hs <- Homo.sapiens
+  all_genes <- suppressMessages(genes(hs, columns=c("ENTREZID", "ENSEMBL", "SYMBOL")))
+  
+  expanded_all_genes <- plyranges::expand_ranges(all_genes, 
+                                                 "ENSEMBL", 
+                                                 .keep_empty = TRUE) %>%
+    plyranges::expand_ranges("SYMBOL", .keep_empty = TRUE) %>%
+    plyranges::expand_ranges("ENTREZID", .keep_empty = TRUE)
+  
+  # filter by targeted regions/genes
+  
+  
+  
 
   
   # create chromosome boundaries
