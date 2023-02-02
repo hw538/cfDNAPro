@@ -109,7 +109,7 @@ plotCNV <- function(x,
                              levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
 
   
-  # create chromosome boundries
+  # create chromosome boundaries
   chr_edge <- cnv_tibble2 %>% 
     dplyr::group_by(chr) %>%
     dplyr::filter(row_number() == n()) %>%
