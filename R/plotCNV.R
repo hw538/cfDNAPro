@@ -34,9 +34,9 @@
 #'
 #' @examples
 plotCNV <- function(x, 
-                    gene = list("ENTREZID" = NULL, 
+                    gene_to_highlight = list("ENTREZID" = NULL, 
                                 "ENSEMBL" = NULL, 
-                                "SYMBOL" = c("EGFR", "HER2")),
+                                "SYMBOL" = c("EGFR", "ERBB2")),
                     genome = "hg19",
                     ylim = c(-2, 2), 
                     chromosome = c(seq(1, 22, 1), "X"), 
@@ -111,12 +111,21 @@ plotCNV <- function(x,
       .data$call == 2 ~ "Amplification"
     )) %>%
     dplyr::mutate(x_index = dplyr::row_number()) %>%
+    dplyr::mutate(strand = "*") %>%
     dplyr::mutate(logratio = log2(.data$copynumber)) %>%
     dplyr::mutate(logseg = log2(.data$seg)) %>%
     dplyr::mutate(seg_id = rleid_cfdnapro(.data$logseg))
   
   cnv_tibble2$call <- factor(cnv_tibble2$call, 
                              levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
+  
+  cnv_tibble3 <- cnv_tibble2 %>%
+    dplyr::mutate(seqnames = paste("chr", chr, sep = ""))
+  
+  cnv_tibble3_gr <- GenomicRanges::makeGRangesFromDataFrame(df = cnv_tibble3, 
+                                                            seqnames.field = "seqnames",
+                                                            keep.extra.columns = TRUE
+                                                            )
   
   # obtain gene position
   if(genome == "hg38"){
@@ -134,6 +143,33 @@ plotCNV <- function(x,
   
   # filter by targeted regions/genes
   
+  expanded_all_genes_tb <- tibble::as_tibble(expanded_all_genes)
+  ensembl <- gene_to_highlight[["ENSEMBL"]]
+  symbol <- gene_to_highlight[["SYMBOL"]]
+  entrezid <- gene_to_highlight[["ENTREZID"]]
+  
+  filter_fun <- function(x){
+    col <- names(gene_to_highlight)[[x]] 
+    
+    if(is.null(gene_to_highlight[[x]])) {
+      
+      return(NULL)
+    } else {
+    plyranges::filter(expanded_all_genes_tb, 
+                     .data[[col]] %in% gene_to_highlight[[x]])
+    }
+  }
+  
+  filter_ans <- lapply(seq_len(length(gene_to_highlight)), FUN = filter_fun ) %>%
+    dplyr::bind_rows() %>%
+    dplyr::select(-width)
+  
+  filter_ans_gr <-makeGRangesFromDataFrame(df = filter_ans, 
+                                           keep.extra.columns = TRUE
+                                          )
+  # overlap bin and gene
+  
+  olap <- plyranges::join_overlap_inner(cnv_tibble3_gr, filter_ans_gr)
   
   
 
