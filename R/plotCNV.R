@@ -12,6 +12,7 @@
 #' @importFrom plyranges join_overlap_inner expand_ranges
 #'
 #' @param x 
+#' @param gene_to_highlight 
 #' @param genome 
 #' @param ylim 
 #' @param chromosome 
@@ -31,13 +32,18 @@
 #' @param legend_position 
 #' @param x_axis_expand 
 #' @param y_axis_expand 
-#' @param ... 
-#' @param gene_to_highlight 
+#' @param ... Other params to geom_txt_repel
 #'
 #' @return This function returns ggplot2 object.
 #' @export
+#' @author Haichao Wang
 #'
-#' @examples
+#' @examples 
+#' \dontrun{
+#' 
+#' p <- plotCNV(bamfile = "/path/to/bamfile.bam")
+#' }
+#'
 plotCNV <- function(x, 
                     gene_to_highlight = list("ENTREZID" = NULL, 
                                              "ENSEMBL" = NULL, 
@@ -241,7 +247,8 @@ plotCNV <- function(x,
                     segment.linetype = 1, 
                     segment.size = segment_line_size/2,
                     segment.color = "black",
-                    max.overlaps = Inf )
+                    max.overlaps = Inf,
+                    ...)
   
   return(p_gene)
   
