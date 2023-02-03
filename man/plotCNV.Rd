@@ -6,6 +6,8 @@
 \usage{
 plotCNV(
   x,
+  gene_to_highlight = list(ENTREZID = NULL, ENSEMBL = NULL, SYMBOL = c("EGFR", "ERBB2")),
+  genome = "hg19",
   ylim = c(-2, 2),
   chromosome = c(seq(1, 22, 1), "X"),
   point_color = c(Loss = "royalblue", Deletion = "darkblue", Neutral = "darkgrey",
@@ -29,49 +31,63 @@ plotCNV(
 )
 }
 \arguments{
-\item{x}{}
+\item{x}{QDNAseqCopyNumbers object}
 
-\item{ylim}{}
+\item{gene_to_highlight}{A named list.}
 
-\item{chromosome}{}
+\item{genome}{string. hg19 or hg38}
 
-\item{point_color}{}
+\item{ylim}{vector. default is c(-2, 2).}
 
-\item{x_title}{}
+\item{chromosome}{vector, default is c(seq(1, 22, 1), "X").}
 
-\item{y_title}{}
+\item{point_color}{named vector}
 
-\item{point_size}{}
+\item{x_title}{string.}
 
-\item{point_alpha}{}
+\item{y_title}{string.}
 
-\item{chr_edge_color}{}
+\item{point_size}{numerical. default is 0.3.}
 
-\item{chr_edge_line_size}{}
+\item{point_alpha}{numerical. default is 0.9.}
 
-\item{chr_edge_alpha}{}
+\item{chr_edge_color}{string. default is "black".}
 
-\item{chr_edge_type}{}
+\item{chr_edge_line_size}{numerical. default is 0.2.}
 
-\item{segment_color}{}
+\item{chr_edge_alpha}{numerical. default is 0.8.}
 
-\item{segment_alpha}{}
+\item{chr_edge_type}{string. default is "dotted".}
 
-\item{segment_line_end}{}
+\item{segment_color}{string. default is "red".}
 
-\item{segment_line_size}{}
+\item{segment_alpha}{numerical. default is 1.}
 
-\item{legend_position}{}
+\item{segment_line_end}{string. default is "round".}
 
-\item{x_axis_expand}{}
+\item{segment_line_size}{numerical. default is 0.75.}
 
-\item{y_axis_expand}{}
+\item{legend_position}{string. default is "none", which mean no legends.}
 
-\item{...}{}
+\item{x_axis_expand}{numerical vector. default is c(0.1, 0.1).}
+
+\item{y_axis_expand}{numerical vector. default is c(0, 0).}
+
+\item{...}{Other params to geom_txt_repel()}
 }
 \value{
 This function returns ggplot2 object.
 }
 \description{
 plot copy number profile
+}
+\examples{
+\dontrun{
+
+p <- plotCNV(bamfile = "/path/to/bamfile.bam")
+}
+
+}
+\author{
+Haichao Wang
 }
