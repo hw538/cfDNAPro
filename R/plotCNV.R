@@ -6,8 +6,12 @@
 #' @import Homo.sapiens 
 #' @importFrom rlang has_name
 #' @importFrom GenomicFeatures genes
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom purrr map
+#' @importFrom GenomicRanges makeGRangesFromDataFrame
+#' @importFrom plyranges join_overlap_inner expand_ranges
+#'
 #' @param x 
-#' @param gene 
 #' @param genome 
 #' @param ylim 
 #' @param chromosome 
@@ -28,6 +32,7 @@
 #' @param x_axis_expand 
 #' @param y_axis_expand 
 #' @param ... 
+#' @param gene_to_highlight 
 #'
 #' @return This function returns ggplot2 object.
 #' @export
@@ -35,8 +40,8 @@
 #' @examples
 plotCNV <- function(x, 
                     gene_to_highlight = list("ENTREZID" = NULL, 
-                                "ENSEMBL" = NULL, 
-                                "SYMBOL" = c("EGFR", "ERBB2")),
+                                             "ENSEMBL" = NULL, 
+                                             "SYMBOL" = c("EGFR", "ERBB2")),
                     genome = "hg19",
                     ylim = c(-2, 2), 
                     chromosome = c(seq(1, 22, 1), "X"), 
@@ -81,7 +86,7 @@ plotCNV <- function(x,
   }
   
   
-   
+  
   sample_name <- x@phenoData@data$name
   
   chr_levels <- as.character(c(seq(1, 22, 1), "X", "Y"))
@@ -117,15 +122,15 @@ plotCNV <- function(x,
     dplyr::mutate(seg_id = rleid_cfdnapro(.data$logseg))
   
   cnv_tibble2$call <- factor(cnv_tibble2$call, 
-                             levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
+            levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
   
   cnv_tibble3 <- cnv_tibble2 %>%
     dplyr::mutate(seqnames = paste("chr", chr, sep = ""))
   
-  cnv_tibble3_gr <- GenomicRanges::makeGRangesFromDataFrame(df = cnv_tibble3, 
-                                                            seqnames.field = "seqnames",
-                                                            keep.extra.columns = TRUE
-                                                            )
+  cnv_tibble3_gr <- makeGRangesFromDataFrame(df = cnv_tibble3, 
+                                             seqnames.field = "seqnames",
+                                             keep.extra.columns = TRUE
+  )
   
   # obtain gene position
   if(genome == "hg38"){
@@ -133,13 +138,14 @@ plotCNV <- function(x,
     TxDb(Homo.sapiens) <- TxDb.Hsapiens.UCSC.hg38.knownGene
   }
   hs <- Homo.sapiens
-  all_genes <- suppressMessages(genes(hs, columns=c("ENTREZID", "ENSEMBL", "SYMBOL")))
+  all_genes <- suppressMessages(genes(hs, 
+                                      columns=c("ENTREZID", "ENSEMBL", "SYMBOL")))
   
-  expanded_all_genes <- plyranges::expand_ranges(all_genes, 
-                                                 "ENSEMBL", 
-                                                 .keep_empty = TRUE) %>%
-    plyranges::expand_ranges("SYMBOL", .keep_empty = TRUE) %>%
-    plyranges::expand_ranges("ENTREZID", .keep_empty = TRUE)
+  expanded_all_genes <- expand_ranges(all_genes, 
+                                      "ENSEMBL", 
+                                      .keep_empty = TRUE) %>%
+    expand_ranges("SYMBOL", .keep_empty = TRUE) %>%
+    expand_ranges("ENTREZID", .keep_empty = TRUE)
   
   # filter by targeted regions/genes
   
@@ -155,24 +161,23 @@ plotCNV <- function(x,
       
       return(NULL)
     } else {
-    plyranges::filter(expanded_all_genes_tb, 
-                     .data[[col]] %in% gene_to_highlight[[x]])
+      plyranges::filter(expanded_all_genes_tb, 
+                        .data[[col]] %in% gene_to_highlight[[x]])
     }
   }
   
-  filter_ans <- lapply(seq_len(length(gene_to_highlight)), FUN = filter_fun ) %>%
+  filter_ans <- map(seq_len(length(gene_to_highlight)), .f = filter_fun ) %>%
     dplyr::bind_rows() %>%
     dplyr::select(-width)
   
-  filter_ans_gr <-makeGRangesFromDataFrame(df = filter_ans, 
-                                           keep.extra.columns = TRUE
-                                          )
+  filter_ans_gr <- makeGRangesFromDataFrame(df = filter_ans, 
+                                            keep.extra.columns = TRUE
+  )
   # overlap bin and gene
   
   olap <- plyranges::join_overlap_inner(cnv_tibble3_gr, filter_ans_gr)
   
-  
-
+  olap_df <- as.data.frame(olap)
   
   # create chromosome boundaries
   chr_edge <- cnv_tibble2 %>% 
@@ -188,7 +193,7 @@ plotCNV <- function(x,
     dplyr::pull(x_index)
   
   x_labels <- as.character(unique(cnv_tibble2$chr))
-    
+  
   # ggplot2 plot 
   p <- ggplot(data = cnv_tibble2) +
     # copy number points
@@ -209,15 +214,35 @@ plotCNV <- function(x,
                size = chr_edge_line_size) +
     # chr names 
     scale_x_continuous(
-                       breaks = x_breaks, 
-                       labels = x_labels,
-                       expand = x_axis_expand) + 
+      breaks = x_breaks, 
+      labels = x_labels,
+      expand = x_axis_expand) + 
     scale_y_continuous(limits = ylim,
                        expand = y_axis_expand) +
     labs(x = x_title, y = y_title) +
     theme_cnv_plot()  +
     theme(legend.position = legend_position)
   
-  return(p)
+  # add ggrepel text annotation to target points
+  
+  p_gene <- p +
+    geom_point(data = olap_df, 
+               mapping = aes(x = .data$x_index, y = .data$logratio), 
+               size = point_size + 1,
+               color = "black",
+               shape = 1
+    ) +
+    geom_text_repel(data = olap_df, 
+                    aes(x = .data$x_index, 
+                        y = .data$logratio, 
+                        label = .data$SYMBOL),
+                    box.padding = 0.5,
+                    min.segment.length = 0,
+                    segment.linetype = 1, 
+                    segment.size = segment_line_size/2,
+                    segment.color = "black",
+                    max.overlaps = Inf )
+  
+  return(p_gene)
   
 }
