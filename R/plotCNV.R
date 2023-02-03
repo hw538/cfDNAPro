@@ -175,9 +175,11 @@ plotCNV <- function(x,
       return(NULL)
     } else {
       ans <- plyranges::filter(expanded_all_genes_tb, 
-                        .data[[col]] %in% gene_to_highlight[[x]])
+                               .data[[col]] %in% gene_to_highlight[[x]])
+      message("Found these entries: \n") 
+      print(ans)
       
-      items_not_found <- setdiff( gene_to_highlight[[3]], ans[["SYMBOL"]])
+      items_not_found <- setdiff( gene_to_highlight[[x]], ans[[col]])
       
       if(length(items_not_found) != 0) {
         message("These entries are not found: \n" )
