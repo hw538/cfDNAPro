@@ -11,28 +11,28 @@
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom plyranges join_overlap_inner expand_ranges
 #'
-#' @param x 
-#' @param gene_to_highlight 
-#' @param genome 
-#' @param ylim 
-#' @param chromosome 
-#' @param point_color 
-#' @param x_title 
-#' @param y_title 
-#' @param point_size 
-#' @param point_alpha 
-#' @param chr_edge_color 
-#' @param chr_edge_line_size 
-#' @param chr_edge_alpha 
-#' @param chr_edge_type 
-#' @param segment_color 
-#' @param segment_alpha 
-#' @param segment_line_end 
-#' @param segment_line_size 
-#' @param legend_position 
-#' @param x_axis_expand 
-#' @param y_axis_expand 
-#' @param ... Other params to geom_txt_repel
+#' @param x QDNAseqCopyNumbers object
+#' @param gene_to_highlight A named list.  
+#' @param genome string. hg19 or hg38 
+#' @param ylim vector. default is c(-2, 2).
+#' @param chromosome vector, default is c(seq(1, 22, 1), "X").
+#' @param point_color named vector 
+#' @param x_title string.
+#' @param y_title string. 
+#' @param point_size numerical. default is 0.3. 
+#' @param point_alpha numerical. default is 0.9. 
+#' @param chr_edge_color string. default is "black". 
+#' @param chr_edge_line_size numerical. default is 0.2. 
+#' @param chr_edge_alpha numerical. default is 0.8. 
+#' @param chr_edge_type string. default is "dotted". 
+#' @param segment_color string. default is "red". 
+#' @param segment_alpha numerical. default is 1. 
+#' @param segment_line_end string. default is "round". 
+#' @param segment_line_size numerical. default is 0.75. 
+#' @param legend_position string. default is "none", which mean no legends. 
+#' @param x_axis_expand numerical vector. default is c(0.1, 0.1).
+#' @param y_axis_expand numerical vector. default is c(0, 0).
+#' @param ... Other params to geom_txt_repel()
 #'
 #' @return This function returns ggplot2 object.
 #' @export
@@ -92,52 +92,59 @@ plotCNV <- function(x,
   }
   
   
+  # extract QDNAseqCopyNumbers data
+  if(is(x, "QDNAseqCopyNumbers")){
+    
+    sample_name <- x@phenoData@data$name
+    
+    chr_levels <- as.character(c(seq(1, 22, 1), "X", "Y"))
+    
+    cnv_tibble <- tibble::tibble(
+      chr = x@featureData@data$chromosome,
+      start = x@featureData@data$start,
+      end = x@featureData@data$end,
+      use = x@featureData@data$use,
+      copynumber = x@assayData$copynumber[, sample_name],
+      seg = x@assayData$segmented[, sample_name],
+      call = x@assayData$calls[, sample_name]
+    )
+    
+    cnv_tibble$chr <- factor(cnv_tibble$chr, levels = chr_levels)
+    
+    
+    cnv_tibble2 <- cnv_tibble %>%
+      dplyr::filter(.data$chr %in% chromosome) %>%
+      dplyr::filter(.data$use == TRUE) %>%
+      dplyr::filter(is.finite(.data$copynumber)) %>%
+      dplyr::mutate(call = dplyr::case_when(
+        .data$call == -2 ~ "Deletion",
+        .data$call == -1 ~ "Loss",
+        .data$call == 0 ~ "Neutral",
+        .data$call == 1 ~ "Gain",
+        .data$call == 2 ~ "Amplification"
+      )) %>%
+      dplyr::mutate(x_index = dplyr::row_number()) %>%
+      dplyr::mutate(strand = "*") %>%
+      dplyr::mutate(logratio = log2(.data$copynumber)) %>%
+      dplyr::mutate(logseg = log2(.data$seg)) %>%
+      dplyr::mutate(seg_id = rleid_cfdnapro(.data$logseg))
+    
+    cnv_tibble2$call <- factor(cnv_tibble2$call, 
+                               levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
+    
+    cnv_tibble3 <- cnv_tibble2 %>%
+      dplyr::mutate(seqnames = paste("chr", chr, sep = ""))
+    
+    cnv_tibble3_gr <- makeGRangesFromDataFrame(df = cnv_tibble3, 
+                                               seqnames.field = "seqnames",
+                                               keep.extra.columns = TRUE
+    )
+
+  } else {
+    stop("Only QDNAseqCopyNumbers object is accepted as input for the moment. ")
+  }
   
-  sample_name <- x@phenoData@data$name
-  
-  chr_levels <- as.character(c(seq(1, 22, 1), "X", "Y"))
-  
-  cnv_tibble <- tibble::tibble(
-    chr = x@featureData@data$chromosome,
-    start = x@featureData@data$start,
-    end = x@featureData@data$end,
-    use = x@featureData@data$use,
-    copynumber = x@assayData$copynumber[, sample_name],
-    seg = x@assayData$segmented[, sample_name],
-    call = x@assayData$calls[, sample_name]
-  )
-  
-  cnv_tibble$chr <- factor(cnv_tibble$chr, levels = chr_levels)
-  
-  
-  cnv_tibble2 <- cnv_tibble %>%
-    dplyr::filter(.data$chr %in% chromosome) %>%
-    dplyr::filter(.data$use == TRUE) %>%
-    dplyr::filter(is.finite(.data$copynumber)) %>%
-    dplyr::mutate(call = dplyr::case_when(
-      .data$call == -2 ~ "Deletion",
-      .data$call == -1 ~ "Loss",
-      .data$call == 0 ~ "Neutral",
-      .data$call == 1 ~ "Gain",
-      .data$call == 2 ~ "Amplification"
-    )) %>%
-    dplyr::mutate(x_index = dplyr::row_number()) %>%
-    dplyr::mutate(strand = "*") %>%
-    dplyr::mutate(logratio = log2(.data$copynumber)) %>%
-    dplyr::mutate(logseg = log2(.data$seg)) %>%
-    dplyr::mutate(seg_id = rleid_cfdnapro(.data$logseg))
-  
-  cnv_tibble2$call <- factor(cnv_tibble2$call, 
-            levels = c("Amplification", "Gain", "Neutral", "Loss", "Deletion"))
-  
-  cnv_tibble3 <- cnv_tibble2 %>%
-    dplyr::mutate(seqnames = paste("chr", chr, sep = ""))
-  
-  cnv_tibble3_gr <- makeGRangesFromDataFrame(df = cnv_tibble3, 
-                                             seqnames.field = "seqnames",
-                                             keep.extra.columns = TRUE
-  )
-  
+
   # obtain gene position
   if(genome == "hg38"){
     message("Switching to UCSC hg38 reference genome.")
@@ -179,8 +186,8 @@ plotCNV <- function(x,
   filter_ans_gr <- makeGRangesFromDataFrame(df = filter_ans, 
                                             keep.extra.columns = TRUE
   )
-  # overlap bin and gene
   
+  # overlap bin and gene
   olap <- plyranges::join_overlap_inner(cnv_tibble3_gr, filter_ans_gr)
   
   olap_df <- as.data.frame(olap)
