@@ -1,5 +1,5 @@
 
-#' Read bam file into a curated GRanges object
+#' Read bam file into a curated galp object
 #' @import magrittr
 #' @import GenomeInfoDb
 #' @import GenomicAlignments
@@ -48,23 +48,23 @@
 #' }
 #' 
 
-readBam <- function(
-                     bamfile,
-                     use_names = TRUE,
-                     chromosome_to_keep = paste("chr", 1:22, sep = ""),
-                     strand_mode = 1,
-                     genome_label = "hg19",
-                     outdir = FALSE,
-                     galp_flag =  Rsamtools::scanBamFlag(
-                       isPaired = TRUE,
-                       isDuplicate = FALSE,
-                       isSecondaryAlignment = FALSE,
-                       isUnmappedQuery = FALSE,
-                       isSupplementaryAlignment = FALSE),
-                     galp_what =  c("cigar", "mapq", "isize"),
-                     galp_tag = c("NM", "MD"),
-                     galp_mapqFilter = 30,
-                     ...){
+readGALP <- function(
+    bamfile,
+    use_names = TRUE,
+    chromosome_to_keep = paste("chr", 1:22, sep = ""),
+    strand_mode = 1,
+    genome_label = "hg19",
+    outdir = FALSE,
+    galp_flag =  Rsamtools::scanBamFlag(
+      isPaired = TRUE,
+      isDuplicate = FALSE,
+      isSecondaryAlignment = FALSE,
+      isUnmappedQuery = FALSE,
+      isSupplementaryAlignment = FALSE),
+    galp_what =  c("cigar", "mapq", "isize"),
+    galp_tag = c("NM", "MD"),
+    galp_mapqFilter = 30,
+    ...){
   
   ############################################################################
   # Check parameters
@@ -81,16 +81,16 @@ readBam <- function(
   
   if (genome_label == "hg19") {
     
-  genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-  
+    genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+    
   } else if (genome_label == "hg38") {
     
-  genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
-  
+    genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+    
   } else if (genome_label == "hg38-NCBI") {
     
-  genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
-  
+    genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
+    
   }
   
   genome_name <- seqinfo(genome)@genome %>% unique()
@@ -100,9 +100,9 @@ readBam <- function(
   ############################################################################
   
   galp_param <- Rsamtools::ScanBamParam(flag = galp_flag, 
-                                   what = galp_what,
-                                   tag = galp_tag,
-                                   mapqFilter = galp_mapqFilter, ...)
+                                        what = galp_what,
+                                        tag = galp_tag,
+                                        mapqFilter = galp_mapqFilter, ...)
   
   galp <- bam_to_galp2(bamfile = bamfile, 
                        use_names = use_names,
@@ -110,7 +110,7 @@ readBam <- function(
                        strand_mode = strand_mode, 
                        genome = genome_name,
                        param = galp_param
-                       ) 
+  ) 
   
   ############################################################################
   # Remove outward facing pairs
@@ -120,89 +120,19 @@ readBam <- function(
   
   
   ############################################################################
-  # Curate starts and ends 
+  # Save galp object if given outdir 
   ############################################################################
-  
-  fragmentwise <- curate_start_and_end(galp = galp) 
-  
-  names(fragmentwise) <- names(galp)
-  seqlengths(fragmentwise) <- seqlengths(genome)[1:22]
-  genome(fragmentwise) <- genome_name
-  
-  #############################################################################
-  # remove out-of-bound reads
-  #############################################################################
-  
-  # remove out-of-bound fragments and sort the galp
-  frag <- remove_out_of_bound_reads(fragmentwise) %>% GenomicRanges::sort() 
-
-  #############################################################################
-  # Saving RDS file 
-  #############################################################################
-  
   if(!isFALSE(outdir)) {
     
     bamfile_no_suffix <- gsub(bamfile, ".bam", "")
-    out_rds_file_name <- paste0(bamfile_no_suffix, "_GRanges_clean.rds")
-    saveRDS(object = frag, file = file.path(outdir, out_rds_file_name))
+    out_rds_file_name <- paste0(bamfile_no_suffix, "_galp.rds")
+    saveRDS(object = galp, file = file.path(outdir, out_rds_file_name))
     message("Saved ")
     message(out_rds_file_name)
   }
   
-  return(frag)
-}
+  return(galp)
+  
+  
 
-
-
-
-#-----------------------------------------------------------------------------
-
-
-#' @import magrittr
-#' @import GenomeInfoDb
-#' @import GenomicAlignments
-#' @import S4Vectors
-#' @import Rsamtools 
-
-bam_to_galp2 <- function(bamfile,
-                         use_names  = TRUE, 
-                         param = Rsamtools::ScanBamParam(...), 
-                         chromosome_to_keep = FALSE,
-                         strand_mode = 1,
-                         genome = NA_character_,
-                         ...) {
-  # Check parameters
-  stopifnot(file.exists(bamfile))
-  stopifnot(isSingleStringOrNA(genome) || is(genome, "Seqinfo"))
-  
-  # Read bam into galp
-  message("Reading bam into galp...")
-  
-  galp <- readGAlignmentPairs(file = bamfile, 
-                              use.names = use_names, 
-                              strandMode = strand_mode, 
-                              param = param)
-  # add genome information
-  if (isSingleStringOrNA(genome)) {
-    genome <- Seqinfo(genome=genome)
-  }
-  seqinfo(galp) <- merge(seqinfo(galp), genome)
-  
-  # strandMode should be one for downstream operations
-  stopifnot(GenomicAlignments::strandMode(galp) == 1)
-  
-  # only keep needed seqnames
-  if (!isFALSE(chromosome_to_keep)) {
-  galp <- keepSeqlevels(galp, chromosome_to_keep, pruning.mode = "coarse")
-    
-  }
-  
-  message("Curating seqnames and strand information...")
-  # remove read pairs without correct seqnames and strand information
-  galp2 <- galp[!is.na(GenomicAlignments::seqnames(galp))]
-  galp3 <- galp2[GenomicAlignments::strand(galp2) != '*']
-  
-  
-  return(galp3)
-  
 }
