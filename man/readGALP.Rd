@@ -2,7 +2,7 @@
 % Please edit documentation in R/readGALP.R
 \name{readGALP}
 \alias{readGALP}
-\title{Read bam file into a curated galp object}
+\title{Read bam file into GAlignmentPairs object}
 \usage{
 readGALP(
   bamfile,
@@ -62,7 +62,7 @@ described on the Rsamtools::scanBam help page.}
 This function returns curated GRanges object.
 }
 \description{
-Read bam file into a curated galp object
+Read bam file into GAlignmentPairs object
 }
 \examples{
 \dontrun{

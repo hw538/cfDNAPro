@@ -1,5 +1,5 @@
 
-#' Read bam file into a curated galp object
+#' Read bam file into GAlignmentPairs object
 #' @import magrittr
 #' @import GenomeInfoDb
 #' @import GenomicAlignments
