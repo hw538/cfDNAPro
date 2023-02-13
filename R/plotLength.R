@@ -152,6 +152,33 @@ plotLength <- function(x,
      p <- plot_length_add_hightlight_area(params = area, plot = p)
    }
    
+   
+   sum_hightlight_area <- function(params, length_tibble) {
+     
+     left_boundary <- params[["range"]][[1]] %>% as.numeric()
+     right_boundary <- params[["range"]][[2]] %>% as.numeric()
+     
+     x_filtered <- length_tibble %>%
+       dplyr::filter(.data$insert_size >= left_boundary) %>%
+       dplyr::filter(.data$insert_size <= right_boundary)
+     
+     if(plot_type == c("fraction")) {
+       y_use <- "prop"
+     } else if (plot_type == c("count")) {
+       y_use <- "All_Reads.fr_count"
+     }
+     
+     area_sum <- sum(x_filtered[[y_use]])
+     
+     params["area_sum"] <- area_sum
+     return(params)
+     
+     
+   }
+   
+   area_highlight <- purrr::map(area_highlight, sum_hightlight_area, length_tibble = x)
+   
+   
     
   }
   
