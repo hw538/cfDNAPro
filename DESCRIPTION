@@ -38,6 +38,7 @@ Imports:
     BSgenome.Hsapiens.NCBI.GRCh38,
     QDNAseq,
     QDNAseq.hg19
+    Homo.sapiens
 Suggests:
     scales,
     ggpubr,
