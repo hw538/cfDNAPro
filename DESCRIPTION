@@ -37,7 +37,7 @@ Imports:
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Hsapiens.NCBI.GRCh38,
     QDNAseq,
-    QDNAseq.hg19
+    QDNAseq.hg19,
     Homo.sapiens
 Suggests:
     scales,
