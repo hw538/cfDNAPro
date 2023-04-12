@@ -10,7 +10,7 @@ read_bam_insert_metrics(
   chromosome_to_keep = paste0("chr", 1:22),
   strand_mode = 1,
   genome_label = "hg19",
-  outdir = NA,
+  outdir = FALSE,
   isize_min = 1L,
   isize_max = 1000L,
   ...
@@ -38,7 +38,7 @@ UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
 full genome sequences for Homo sapiens (Human) as provided by 
 NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.}
 
-\item{outdir}{The path for saving rds file. Default is NA, i.e. not saving.}
+\item{outdir}{The path for saving rds file. Default is FALSE, i.e. not saving.}
 
 \item{isize_min}{min fragment length to keep, default is 1L.}
 

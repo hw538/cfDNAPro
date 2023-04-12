@@ -140,7 +140,7 @@ readBam <- function(
   # Saving RDS file 
   #############################################################################
   
-  if(!isFALSE(outdir) | !is.na(outdir) {
+  if(!isFALSE(outdir) | !is.na(outdir)) {
     
     bamfile_no_suffix <- gsub(bamfile, ".bam", "")
     out_rds_file_name <- paste0(bamfile_no_suffix, "_GRanges_clean.rds")
