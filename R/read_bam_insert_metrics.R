@@ -12,7 +12,7 @@
 #'    "hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is 
 #'    full genome sequences for Homo sapiens (Human) as provided by 
 #'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
-#' @param outdir The path for saving rds file. Default is NA, i.e. not saving.
+#' @param outdir The path for saving rds file. Default is FALSE, i.e. not saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
 #' @param chromosome_to_keep Should be a character vector containing the 
@@ -47,7 +47,7 @@ read_bam_insert_metrics <- function(bamfile = NULL,
                                     chromosome_to_keep =paste0("chr", 1:22),
                                     strand_mode = 1,
                                     genome_label = "hg19",
-                                    outdir = NA,
+                                    outdir = FALSE,
                                     isize_min = 1L,
                                     isize_max = 1000L,
                                     ...) {
