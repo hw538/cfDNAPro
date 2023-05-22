@@ -140,16 +140,23 @@ readBam <- function(
   # Saving RDS file 
   #############################################################################
   
-  if(!outdir) {
-    
+  if(isFALSE(outdir)) {
+  
+    return(frag)
+
+  } else {
+        
     bamfile_no_suffix <- stringr::str_remove(bamfile, "\\.bam$")
     out_rds_file_name <- paste0(bamfile_no_suffix, "_GRanges_clean.rds")
     saveRDS(object = frag, file = file.path(outdir, out_rds_file_name))
     message("Saved ")
     message(out_rds_file_name)
+    
+    return(frag)
+  
   }
   
-  return(frag)
+
 }
 
 
