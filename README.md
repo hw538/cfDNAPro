@@ -21,6 +21,10 @@ More feature extraction utilities will be added. For issues/feature requests/com
 
 ## News
 
+### cfDNAPro 1.7.1 (May 2023)
+* Resolved issues when building vignette
+* Various updates
+* Added/Updated readBam() functions
 ### cfDNAPro 1.5.4 (Nov 2022)
 * In addition to "bam" and "picard" files as the input, now we accept 
 "cfdnapro" as input_type to various functions, this 'cfdnapro' input is exactly 
@@ -70,7 +74,11 @@ Please install our latest version(highly recommended):
 if (!require(devtools)) install.packages("devtools")
 library(devtools)
 devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
+# run below instead if you don't want to build vignettes inside R
+devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
+
 ```
+
 
 Or install the released/steady version (i.e., not newest version, some functions might be missing in comparison to functions shown in this webpage) 
 via Bioconductor:
