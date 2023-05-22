@@ -136,13 +136,13 @@ loop_read_insert_metrics_in_list <- function(x, input_type, ...) {
     }
 
     if (input_type == "picard") {
-        d <- lapply(x, read_picard_insert_metrics)
+        d <- lapply(x, read_picard_insert_metrics, ...)
         
     } else if (input_type == "bam") {
-        d <- lapply(x, read_bam_insert_metrics)
+        d <- lapply(x, read_bam_insert_metrics, ...)
         
     } else if (input_type == "cfdnapro") {
-        d <- lapply(x, read_cfdnapro_insert_metrics)
+        d <- lapply(x, read_cfdnapro_insert_metrics, ...)
     }
     return(d)
 }
