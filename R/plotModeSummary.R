@@ -1,6 +1,7 @@
 #' Summarize and plot mode fragment size in a stacked bar chart
 #'
 #' @importFrom magrittr %>%
+#' @importFrom dplyr n
 #' @import ggplot2
 #' @import stringr
 #' @import dplyr
