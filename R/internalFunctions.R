@@ -246,7 +246,7 @@ read_raw_data <- function(groups, path, input_type, ...) {
         # Get the full file name of each sample.
         lapply(get_full_sample_name, input_type = input_type) %>%
         # Read the insert size and frequency.
-        lapply(loop_read_insert_metrics_in_list, input_type = input_type)
+        lapply(loop_read_insert_metrics_in_list, input_type = input_type, ...)
 
     return(result)
 }
