@@ -57,10 +57,10 @@ plotModeSummary <- function(x,
     if (summarized == FALSE) {
         x <-
             x %>%
-            filter(.data$group %in% order) %>%
-            group_by(.data$group, .data$insert_size) %>%
+            dplyr::filter(.data$group %in% order) %>%
+            dplyr::group_by(.data$group, .data$insert_size) %>%
             dplyr::summarise(count = n()) %>%
-            mutate(prop = count / sum(count))
+            dplyr::mutate(prop = count / sum(count))
     }
 
 
