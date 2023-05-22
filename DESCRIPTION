@@ -47,6 +47,7 @@ Suggests:
     rmarkdown (>= 1.14),
     devtools (>= 2.3.0),
     BiocStyle,
+    magick,
     testthat
 License: GPL-3
 Encoding: UTF-8
