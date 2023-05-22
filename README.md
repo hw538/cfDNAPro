@@ -64,15 +64,15 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 ## Installation
 
-Please install our latest version(recommended):
+Please install our latest version(highly recommended):
 
 ```R
 if (!require(devtools)) install.packages("devtools")
 library(devtools)
-devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
+devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
 ```
 
-Or install the released/steady version (i.e., not newest version) 
+Or install the released/steady version (i.e., not newest version, some functions might be missing in comparison to functions shown in this webpage) 
 via Bioconductor:
 ```R
 if (!requireNamespace("BiocManager", quietly = TRUE))
