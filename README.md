@@ -75,7 +75,7 @@ if (!require(devtools)) install.packages("devtools")
 library(devtools)
 devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
 # run below instead if you don't want to build vignettes inside R
-devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
+# devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
 
 ```
 
@@ -91,7 +91,9 @@ BiocManager::install("cfDNAPro")
 
 ## Vignettes
 
-See Bioconductor official documentation:  
+If build vignettes during installation, you can see it via `utils::vignette("cfDNAPro")`
+
+Otherwise, you can always refer to the online version, see Bioconductor:  
 https://bioconductor.org/packages/release/bioc/vignettes/cfDNAPro/inst/doc/cfDNAPro.html
 
 ## Citation
