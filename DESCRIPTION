@@ -48,6 +48,7 @@ Suggests:
     devtools (>= 2.3.0),
     BiocStyle,
     magick,
+    bookdown,
     testthat
 License: GPL-3
 Encoding: UTF-8
