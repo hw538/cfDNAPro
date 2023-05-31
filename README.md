@@ -34,7 +34,7 @@ devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
 library(cfDNAPro)
  frag_lengths <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
 ```
-The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length). A screenshot of the output:
+The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length). A screenshot of the output:  
 <img width="298" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/cba6709d-c49c-4c0d-8ae3-4ee7e82884f0">
 
 
@@ -47,7 +47,7 @@ library(cfDNAPro)
  frags <- readBam(bamfile = "/path/to/bamfile.bam")
 
 ```
-A screenshot of the output:
+A screenshot of the output:  
 <img width="558" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/e47b5901-2762-48ba-aeee-3426b9611c6a">
 
 
