@@ -18,6 +18,38 @@ As the first R package for the analysis of cfDNA fragmentation profiles, we anti
 cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
 More feature extraction utilities will be added. For issues/feature requests/comments, please raise an issue or email me: haichao.wang@cruk.cam.ac.uk
 
+## Quick Start 1
+Read in bam file, return the fragment length counts.
+A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
+
+```R
+
+# install cfDNAPro newest version 
+
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
+
+# calculate insert size of a bam file
+
+library(cfDNAPro)
+ frag_lengths <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
+```
+The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length). A screenshot of the output:
+<img width="298" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/cba6709d-c49c-4c0d-8ae3-4ee7e82884f0">
+
+
+## Quick Start 2
+Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
+
+```R
+
+library(cfDNAPro)
+ frags <- readBam(bamfile = "/path/to/bamfile.bam")
+
+```
+A screenshot of the output:
+<img width="558" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/e47b5901-2762-48ba-aeee-3426b9611c6a">
+
 
 ## News
 
@@ -47,23 +79,7 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 
 
 
-## Quick Start
 
-A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
-
-```R
-
-# install cfDNAPro newest version 
-
-if (!require(devtools)) install.packages("devtools")
-devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
-
-# calculate insert size of a bam file
-
-library(cfDNAPro)
- dataframe <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
-```
-The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length).
 
 
 ## Installation
