@@ -40,15 +40,22 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 ## Quick Start 2
 Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
+If needed, you can convert the GRanges into a dataframe.
 
 ```R
 
 library(cfDNAPro)
+
+# read bam file, do alignment curation
  frags <- readBam(bamfile = "/path/to/bamfile.bam")
+# convert GRanges object to a dataframe in R
+ frag_df <- as.data.frame(frag)
 
 ```
 A screenshot of the output:  
-<img width="558" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/e47b5901-2762-48ba-aeee-3426b9611c6a">
+
+<img width="545" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/49f9cc93-d6af-4503-9b65-bbfea7b5ba87">
+
 
 
 ## News
