@@ -40,7 +40,7 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 ## Quick Start 2
 Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
-If needed, you can convert the GRanges into a dataframe.
+If needed, you can convert the GRanges into a dataframe and the fragment length is stored in the "width" column.
 
 ```R
 
