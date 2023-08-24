@@ -32,7 +32,7 @@ A straightforward and frequent user case: calculate the fragment size of a bam f
 # install cfDNAPro newest version 
 
 if (!require(devtools)) install.packages("devtools")
-devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE)
+devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE)
 
 # calculate insert size of a bam file
 
