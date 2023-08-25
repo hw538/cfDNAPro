@@ -46,15 +46,18 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 ## Quick Start 2
 Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
 If needed, you can convert the GRanges into a dataframe and the fragment length is stored in the "width" column.
+The mutational annotation can be written to an output file as shown below.
 
 ```R
 
 library(cfDNAPro)
 
 # read bam file, do alignment curation
- frags <- readBam(bamfile = "/path/to/bamfile.bam")
+ frags <- readBam(bamfile = "/path/to/bamfile.bam", mutation_file = "/path/to/mutation/file.tsv")
 # convert GRanges object to a dataframe in R
  frag_df <- as.data.frame(frag)
+# write mutation annotation output to .tsv file
+outputMutationTable(frags, "./output_file.tsv")
 
 ```
 A screenshot of the output:  
