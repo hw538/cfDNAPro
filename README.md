@@ -54,7 +54,7 @@ library(cfDNAPro)
 # read bam file, do alignment curation
  frags <- readBam(bamfile = "/path/to/bamfile.bam")
 # convert GRanges object to a dataframe in R
- frag_df <- as.data.frame(frag)
+ frag_df <- as.data.frame(frags)
 
 ```
 A screenshot of the output:  
