@@ -47,8 +47,17 @@ callMIDS <- function(fragment_obj,
   } else {
     
     overlap = findOverlaps(fragment_obj, regions)
+    
+    # check if there is overlap between fragment_obj and regions.
+    
     if (length(overlap) > 0) {
+
+      # collect cummulative vplot information for given fragment_obj in given regions.
+      
       vplotfrag = VplotR::plotVmat(fragment_obj, regions, xlim = xlimits, return_Vmat = TRUE)
+
+      # collect cummulative vplot information for given fragment_obj aroound given regions for background correction.
+      
       vplotfragbf = VplotR::plotVmat(
         fragment_obj,
         flank(regions, 2000, start = TRUE),
@@ -61,12 +70,25 @@ callMIDS <- function(fragment_obj,
         xlim = xlimits,
         return_Vmat = TRUE
       )
+
+      # local background correction.
+      
       bgcorr = vplotfrag - ((vplotfragbf + vplotfragaf) / 2)
+
+      # cumulation of vplot scores for fragment length ranges
+      
       final = do.call(rbind.data.frame, lapply(fraglen, getscore, vmat = bgcorr))
       colnames(final) = rownames(bgcorr)
+      
     } else {
+      
+      # matrix with zeros if no overlap found
+      
       final = data.frame(matrix(0, length(fraglen), 1999))
     }
+
+    #  
+    
     windowscored=zoo::rollapply(t(final),width=10, FUN=function(x) {mean(x)},by=10)
     windowscored=zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
     windowscored=data.frame(t(windowscored))
