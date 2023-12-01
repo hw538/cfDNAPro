@@ -71,13 +71,31 @@ callMIDS <- function(fragment_obj,
     windowscored=zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
     windowscored=data.frame(t(windowscored))
     xlims = xlimits[[1]]:xlimits[[2]]
-    xlimval = xlims[c(-1,-length(xlims))]
-    colnames(windowscored)[1:197]=round(zoo::rollapply(zoo::rollapply(xlimval,width=10, FUN=function(x) {mean(x)},by=10),width=3,FUN=function(x) {mean(x)}))
-    windowscored$fraglen=as.character(paste0("from",lapply(fraglen, `[[`, 1),"to",lapply(fraglen, `[[`, 2)))
-    windowscored_spread = tidyr::gather(windowscored, key = "name", value = "value", -fraglen) %>%
-      tidyr::unite(col="name.fraglen", name, fraglen,sep = ".") %>% 
-      tidyr::spread(key = name.fraglen, value=value)
-    windowscored_spread = (windowscored_spread/(as.numeric(length(regions))*as.numeric(length(fragment_obj))))*1000000
+    xlimval = xlims[c(-1, -length(xlims))]
+    colnames(windowscored)[1:197] = round(zoo::rollapply(
+      zoo::rollapply(
+        xlimval,
+        width = 10,
+        FUN = function(x) {
+          mean(x)
+        },
+        by = 10
+      ),
+      width = 3,
+      FUN = function(x) {
+        mean(x)
+      }
+    ))
+    windowscored$fraglen = as.character(paste0("from", lapply(fraglen, `[[`, 1),
+      "to", lapply(fraglen, `[[`, 2)))
+    windowscored_spread = tidyr::gather(windowscored, key = "name", 
+      value = "value", -fraglen) %>%
+      tidyr::unite(col = "name.fraglen", name, fraglen, sep = ".") %>%
+      tidyr::spread(key = name.fraglen, value = value)
+    windowscored_spread = (windowscored_spread / (as.numeric(length(regions)) *
+        as.numeric(length(fragment_obj)))) * 1000000
     return(windowscored_spread)
   }
+  
+  
 }
