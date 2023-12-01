@@ -1,4 +1,4 @@
-#' Title
+#' getscore - helps to collect vplot score for a given fragment length range
 #'
 #' @param vmat 
 #' @param x 
