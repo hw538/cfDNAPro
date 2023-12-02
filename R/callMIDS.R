@@ -24,6 +24,7 @@ getscore <- function(vmat, x) {
 #'
 #' @param fragment_obj GRange object of the cfDNA sequence data
 #' @param regions GRange object of the regions of interest
+#' @param regnm string with a name for the regions of interest
 #' @param xlimits gives the number of bp to look for signals from the midpoint of region of interest; deafults to -1000 to 1000 bp
 #' @param fraglen gives the list of fragment length ranges to cumulate the signals; defaults to short 0 to 150 bp, medium 151 to 200 bp and long 201 to 1000 bp
 #'
@@ -33,6 +34,7 @@ getscore <- function(vmat, x) {
 #' @examples
 callMIDS <- function(fragment_obj, 
   regions,
+  regnm,
   xlimits = c(-1000, 1000),
   fraglen = list(c(0, 150), c(151, 200), c(201, 1000))) {
   
@@ -89,7 +91,7 @@ callMIDS <- function(fragment_obj,
 
     # windowscoring is done to reduce the -1000 to 1000 bp signals to 197 points
 
-    # this windowscoring widths have been choosen based on performance and can be changed accordingly for future projects
+    # this windowscoring widths have been choosen based on performance in this project and can be changed accordingly for future projects
         
     windowscored=zoo::rollapply(t(final),width=10, FUN=function(x) {mean(x)},by=10)
     windowscored=zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
@@ -112,16 +114,22 @@ callMIDS <- function(fragment_obj,
     ))
     windowscored$fraglen = as.character(paste0("from", lapply(fraglen, `[[`, 1),
       "to", lapply(fraglen, `[[`, 2)))
-
-    # spread the data with the 
+    windowscored$name = rep(regnm,length(fraglen))
+    
+    # spread the data with the name and fraglen in column name so the data can be combined across samples
+    # this is done for easy combining of data from all samples for different regions of interest
+    
     windowscored_spread = tidyr::gather(windowscored, key = "name", 
       value = "value", -fraglen) %>%
       tidyr::unite(col = "name.fraglen", name, fraglen, sep = ".") %>%
       tidyr::spread(key = name.fraglen, value = value)
-    windowscored_spread = (windowscored_spread / (as.numeric(length(regions)) *
-        as.numeric(length(fragment_obj)))) * 1000000
+
+    # normalization of the reads per million and regions per million
+    
+    RPM = as.numeric(length(fragment_obj)))/1000000
+    RegPM = as.numeric(length(regions))/1000000
+    windowscored_spread = windowscored_spread / (RPM * RegPM)
+
     return(windowscored_spread)
   }
-  
-  
 }
