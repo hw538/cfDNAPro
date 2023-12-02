@@ -11,13 +11,13 @@ getscore <- function(vmat, x) {
 
   # collecting rows of vplot mat falling with in a given fragment length range
   
-  cols = which(as.numeric(colnames(vmat)) %in% c(x[1]:x[2]))
+  cols <- which(as.numeric(colnames(vmat)) %in% c(x[1]:x[2]))
 
   # if given fragment length range has a signal then it is cumulated together
   if (length(cols) > 1) {
-    res = rowSums(vmat[, cols])
+    res <- rowSums(vmat[, cols])
   } else {
-    res = vmat[, cols]
+    res <- vmat[, cols]
   }
   rm(vmat)
   gc()
@@ -53,7 +53,7 @@ callMIDS <- function(fragment_obj,
     return()
   } else {
     
-    overlap = findOverlaps(fragment_obj, regions)
+    overlap <- findOverlaps(fragment_obj, regions)
     
     # check if there is overlap between fragment_obj and regions.
     
@@ -61,17 +61,17 @@ callMIDS <- function(fragment_obj,
 
       # collect cummulative vplot information for given fragment_obj in given regions.
       
-      vplotfrag = VplotR::plotVmat(fragment_obj, regions, xlim = xlimits, return_Vmat = TRUE)
+      vplotfrag <- VplotR::plotVmat(fragment_obj, regions, xlim = xlimits, return_Vmat = TRUE)
 
       # collect cummulative vplot information for given fragment_obj aroound given regions for background correction.
       
-      vplotfragbf = VplotR::plotVmat(
+      vplotfragbf <- VplotR::plotVmat(
         fragment_obj,
         flank(regions, 2000, start = TRUE),
         xlim = xlimits,
         return_Vmat = TRUE
       )
-      vplotfragaf = VplotR::plotVmat(
+      vplotfragaf <- VplotR::plotVmat(
         fragment_obj,
         flank(regions, 2000, start = FALSE),
         xlim = xlimits,
@@ -80,30 +80,30 @@ callMIDS <- function(fragment_obj,
 
       # local background correction.
       
-      bgcorr = vplotfrag - ((vplotfragbf + vplotfragaf) / 2)
+      bgcorr <- vplotfrag - ((vplotfragbf + vplotfragaf) / 2)
 
       # cumulation of vplot scores for fragment length ranges
       
-      final = do.call(rbind.data.frame, lapply(fraglen, getscore, vmat = bgcorr))
-      colnames(final) = rownames(bgcorr)
+      final <- do.call(rbind.data.frame, lapply(fraglen, getscore, vmat = bgcorr))
+      colnames(final) <- rownames(bgcorr)
       
     } else {
       
       # matrix with zeros if no overlap found
       
-      final = data.frame(matrix(0, length(fraglen), 1999))
+      final <- data.frame(matrix(0, length(fraglen), 1999))
     }
 
     # windowscoring is done to reduce the -1000 to 1000 bp signals to 197 points
 
     # this windowscoring widths have been choosen based on performance in this project and can be changed accordingly for future projects
         
-    windowscored=zoo::rollapply(t(final),width=10, FUN=function(x) {mean(x)},by=10)
-    windowscored=zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
-    windowscored=data.frame(t(windowscored))
-    xlims = xlimits[[1]]:xlimits[[2]]
-    xlimval = xlims[c(-1, -length(xlims))]
-    colnames(windowscored)[1:197] = round(zoo::rollapply(
+    windowscored <- zoo::rollapply(t(final),width=10, FUN=function(x) {mean(x)},by=10)
+    windowscored <- zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
+    windowscored <- data.frame(t(windowscored))
+    xlims <- xlimits[[1]]:xlimits[[2]]
+    xlimval <- xlims[c(-1, -length(xlims))]
+    colnames(windowscored)[1:197] <- round(zoo::rollapply(
       zoo::rollapply(
         xlimval,
         width = 10,
@@ -117,23 +117,23 @@ callMIDS <- function(fragment_obj,
         mean(x)
       }
     ))
-    windowscored$fraglen = as.character(paste0("from", lapply(fraglen, `[[`, 1),
+    windowscored$fraglen <- as.character(paste0("from", lapply(fraglen, `[[`, 1),
       "to", lapply(fraglen, `[[`, 2)))
-    windowscored$name = rep(regnm,length(fraglen))
+    windowscored$name <- rep(regnm,length(fraglen))
     
     # spread the data with the name and fraglen in column name so the data can be combined across samples
     # this is done for easy combining of data from all samples for different regions of interest
     
-    windowscored_spread = tidyr::gather(windowscored, key = "name", 
+    windowscored_spread <- tidyr::gather(windowscored, key = "name", 
       value = "value", -fraglen) %>%
       tidyr::unite(col = "name.fraglen", name, fraglen, sep = ".") %>%
       tidyr::spread(key = name.fraglen, value = value)
 
     # normalization of the reads per million and regions per million
     
-    RPM = as.numeric(length(fragment_obj)))/1000000
-    RegPM = as.numeric(length(regions))/1000000
-    windowscored_spread = windowscored_spread / (RPM * RegPM)
+    RPM <- as.numeric(length(fragment_obj)))/1000000
+    RegPM <- as.numeric(length(regions))/1000000
+    windowscored_spread <- windowscored_spread / (RPM * RegPM)
 
     return(windowscored_spread)
   }
