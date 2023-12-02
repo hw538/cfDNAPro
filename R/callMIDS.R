@@ -19,8 +19,6 @@ getscore <- function(vmat, x) {
   } else {
     res <- vmat[, cols]
   }
-  rm(vmat)
-  gc()
   return(res)
 }
 
