@@ -22,19 +22,19 @@ getscore <- function(vmat, x) {
 
 #' callMIDS - helps extract MIDS signals for a given cfDNA sequence Grange object in an given region of interest
 #'
-#' @param fragment_obj 
-#' @param regions 
-#' @param xlimits 
-#' @param fraglen 
+#' @param fragment_obj GRange object of the cfDNA sequence data
+#' @param regions GRange object of the regions of interest
+#' @param xlimits gives the number of bp to look for signals from the midpoint of region of interest; deafults to -1000 to 1000 bp
+#' @param fraglen gives the list of fragment length ranges to cumulate the signals; defaults to short 0 to 150 bp, medium 151 to 200 bp and long 201 to 1000 bp
 #'
-#' @return
+#' @return tibble with MIDS signals from region of interest, window scored and normalized
 #' @export
 #'
 #' @examples
 callMIDS <- function(fragment_obj, 
   regions,
   xlimits = c(-1000, 1000),
-  fraglen = list(c(0, 150), c(151, 200), c(200, 1000))) {
+  fraglen = list(c(0, 150), c(151, 200), c(201, 1000))) {
   
   message("Started to extract midpoint distribution ...")
   
@@ -87,8 +87,10 @@ callMIDS <- function(fragment_obj,
       final = data.frame(matrix(0, length(fraglen), 1999))
     }
 
-    #  
-    
+    # windowscoring is done to reduce the -1000 to 1000 bp signals to 197 points
+
+    # this windowscoring widths have been choosen based on performance and can be changed accordingly for future projects
+        
     windowscored=zoo::rollapply(t(final),width=10, FUN=function(x) {mean(x)},by=10)
     windowscored=zoo::rollapply(windowscored,width=3, FUN=function(x) {mean(x)})
     windowscored=data.frame(t(windowscored))
@@ -110,6 +112,8 @@ callMIDS <- function(fragment_obj,
     ))
     windowscored$fraglen = as.character(paste0("from", lapply(fraglen, `[[`, 1),
       "to", lapply(fraglen, `[[`, 2)))
+
+    # spread the data with the 
     windowscored_spread = tidyr::gather(windowscored, key = "name", 
       value = "value", -fraglen) %>%
       tidyr::unite(col = "name.fraglen", name, fraglen, sep = ".") %>%
