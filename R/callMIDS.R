@@ -93,7 +93,7 @@ callMIDS <- function(fragment_obj,
       
       # matrix with zeros if no overlap found
       
-      final <- data.frame(matrix(0, length(fraglen), 1999))
+      final <- data.frame(matrix(0, length(fraglen), length(xlimits[1]:xlimits[2])-2))
     }
 
     # windowscoring is done to reduce the -1000 to 1000 bp signals to 197 points
@@ -105,7 +105,7 @@ callMIDS <- function(fragment_obj,
     windowscored <- data.frame(t(windowscored))
     xlims <- xlimits[[1]]:xlimits[[2]]
     xlimval <- xlims[c(-1, -length(xlims))]
-    colnames(windowscored)[1:197] <- round(zoo::rollapply(
+    colnames(windowscored) <- round(zoo::rollapply(
       zoo::rollapply(
         xlimval,
         width = 10,
