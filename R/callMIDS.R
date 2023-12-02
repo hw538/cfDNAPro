@@ -25,6 +25,10 @@ getscore <- function(vmat, x) {
 }
 
 
+#' @import VplotR
+#' @import tidyr
+#' @import zoo
+#'
 #' callMIDS - helps extract MIDS signals for a given cfDNA sequence Grange object in an given region of interest
 #'
 #' @param fragment_obj GRange object of the cfDNA sequence data
