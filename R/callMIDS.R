@@ -1,14 +1,19 @@
 #' getscore - helps to collect vplot score for a given fragment length range
 #'
-#' @param vmat 
-#' @param x 
+#' @param vmat - a vplot mat data frame from vplotR package with fragment length in rows and coverage signals in the columns
+#' @param x - a vector with a fragment length range
 #'
-#' @return
+#' @return data frame with coverage signals cumulated for the given fragment length ranges
 #' @export
 #'
 #' @examples
 getscore <- function(vmat, x) {
+
+  # collecting rows of vplot mat falling with in a given fragment length range
+  
   cols = which(as.numeric(colnames(vmat)) %in% c(x[1]:x[2]))
+
+  # if given fragment length range has a signal then it is cumulated together
   if (length(cols) > 1) {
     res = rowSums(vmat[, cols])
   } else {
