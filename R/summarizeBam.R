@@ -10,6 +10,11 @@
 #' @param duplicate_count 
 #' @param coverage_by_mapped 
 #' @param genome_length_bp 
+#' @param per_read_gc
+#' @param per_bam_gc
+#' @param mean_read_gc
+#' @param median_read_gc
+#' @param sd_read_gc
 #' @param customized_count 
 #' @param customized_count_mapqFilter 
 #' @param customized_count_isPaired 
@@ -44,6 +49,11 @@ summarizeBam <- function(bamfile = NULL,
                          duplicate_count = TRUE,
                          coverage_by_mapped = TRUE,
                          genome_length_bp = 3200000000,
+                         per_read_gc = FALSE,
+                         per_bam_gc = FALSE,
+                         mean_read_gc = FALSE,
+                         median_read_gc = FALSE,
+                         sd_read_gc = FALSE,
                          customized_count = FALSE,
                          customized_count_mapqFilter=NA_integer_,
                          customized_count_isPaired = NA, 
