@@ -1,6 +1,9 @@
 
 #' Summarise descriptive Bam stats
 #'
+#' @import Biostrings
+#' @import Rsamtools
+#' @import dplyr
 #' @param bamfile  Bam file
 #' @param total_count Boolean. default = TRUE, which means calculating the total 
 #' number of reads. 
@@ -256,7 +259,7 @@ gc_count <- function(bamfile){
   }
   
   atgcFunction <- function(x){
-    alf <- alphabetFrequency(x, as.prob=FALSE)
+    alf <- Biostrings::alphabetFrequency(x, as.prob=FALSE)
     rowSums(alf[, c("A", "T", "G", "C")])
   }
   param <- ScanBamParam(what="seq")
