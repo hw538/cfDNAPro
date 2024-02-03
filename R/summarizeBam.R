@@ -10,11 +10,7 @@
 #' @param duplicate_count 
 #' @param coverage_by_mapped 
 #' @param genome_length_bp 
-#' @param per_read_gc
-#' @param per_bam_gc
-#' @param mean_read_gc
-#' @param median_read_gc
-#' @param sd_read_gc
+#' @param gc_metrics
 #' @param customized_count 
 #' @param customized_count_mapqFilter 
 #' @param customized_count_isPaired 
@@ -49,11 +45,7 @@ summarizeBam <- function(bamfile = NULL,
                          duplicate_count = TRUE,
                          coverage_by_mapped = TRUE,
                          genome_length_bp = 3200000000,
-                         per_read_gc = FALSE,
-                         per_bam_gc = FALSE,
-                         mean_read_gc = FALSE,
-                         median_read_gc = FALSE,
-                         sd_read_gc = FALSE,
+                         gc_metrics = FALSE,
                          customized_count = FALSE,
                          customized_count_mapqFilter=NA_integer_,
                          customized_count_isPaired = NA, 
@@ -157,6 +149,18 @@ summarizeBam <- function(bamfile = NULL,
                                      coverage_by_mapped_reads = n_nucleotide_mapped / !!genome_length_bp )
   }
   
+  if(gc_metrics) {
+    
+    message("Calculate GC metrics...")
+    
+    gc_metrics <- gc_count(bamfile = bamfile)
+    
+    summary_metrics <- dplyr::full_join(summary_metrics, gc_metrics, 
+                                        by = "file")
+  }
+  
+  
+  
   
   if(customized_count) {
     
@@ -242,5 +246,41 @@ bam_count <- function(bamfile, param , ...){
   result$n_nucleotide = as.numeric(result$n_nucleotide)
   return(result)
 }
+
+
+gc_count <- function(bamfile){
+  
+  gcFunction <- function(x){
+    alf <- alphabetFrequency(x, as.prob=FALSE)
+    rowSums(alf[, c("C", "G")])
+  }
+  
+  atgcFunction <- function(x){
+    alf <- alphabetFrequency(x, as.prob=FALSE)
+    rowSums(alf[, c("A", "T", "G", "C")])
+  }
+  param <- ScanBamParam(what="seq")
+  seqs <- scanBam(bamfile, param=param)
+  
+  readGC <- gcFunction(seqs[[1]][["seq"]])
+  readATGC <- atgcFunction(seqs[[1]][["seq"]])
+  
+  per_read_gc <- readGC / readATGC
+  per_bam_gc <- sum(readGC) / sum(readATGC)
+  mean_read_gc <- mean(per_read_gc, na.rm = TRUE)
+  sd_read_gc <- sd(per_read_gc, na.rm = TRUE)
+  median_read_gc <- median(per_read_gc, na.rm = TRUE)
+  
+  result <- tibble::tibble(
+    file = bamfile,
+    per_bam_gc = per_bam_gc,
+    mean_read_gc = mean_read_gc,
+    sd_read_gc = sd_read_gc,
+    median_read_gc = median_read_gc
+  )
+  
+  return(result)
+}
+
 
 
