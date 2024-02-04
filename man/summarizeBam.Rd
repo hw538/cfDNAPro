@@ -13,6 +13,7 @@ summarizeBam(
   coverage_by_mapped = TRUE,
   genome_length_bp = 3.2e+09,
   gc_metrics = FALSE,
+  loci_coverage_metrics = FALSE,
   customized_count = FALSE,
   customized_count_mapqFilter = NA_integer_,
   customized_count_isPaired = NA,
