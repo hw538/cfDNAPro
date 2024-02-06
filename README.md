@@ -7,6 +7,7 @@
 ## Declaration  
 cfDNAPro is designed for research only.
 
+## Abstract
 **An R/Bioconductor package to extract and visualise cell-free DNA biological features in an open, standardized, robust and reproducible way.**
 
 Cell-free DNA (cfDNA) enters human blood circulation by various biological processes, and includes tumour-derived circulating tumour DNA (ctDNA). There is increasing evidence that differences in biological features between cfDNA and ctDNA could be exploited to improve cancer detection, treatment selection and minimal residual disease detection. However, there are currently no R packages that support analysis of cfDNA biological features such as fragment length, nucleotide frequency, nucleosome occupancy etc.  
