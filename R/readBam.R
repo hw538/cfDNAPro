@@ -5,7 +5,7 @@
 #' @import GenomicAlignments
 #' @import S4Vectors
 #' @importFrom Rsamtools scanBamFlag ScanBamParam
-#' @importFrom GenomicRanges GRanges seqnames
+#' @importFrom GenomicRanges GRanges seqnames granges
 #' @importFrom IRanges IRanges
 #'
 #' @param genome_label The Genome you used in the alignment. 
@@ -126,11 +126,23 @@ readBam <- function(
   # Curate starts and ends 
   ############################################################################
   
+  if (curate_start_and_end){
+    
+    
   fragmentwise <- curate_start_and_end(galp = galp) 
   
   names(fragmentwise) <- names(galp)
   seqlengths(fragmentwise) <- seqlengths(genome)[1:22]
   genome(fragmentwise) <- genome_name
+    
+    
+  } else {
+    
+    message("Skipped curating start and end coordinates.")
+    fragmentwise <- granges(galp)
+    
+  }
+  
   
   #############################################################################
   # remove out-of-bound reads
