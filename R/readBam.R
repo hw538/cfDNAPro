@@ -20,6 +20,8 @@
 #'    full genome sequences for Homo sapiens (Human) as provided by 
 #'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
 #' @param bamfile The bam file name.
+#' @param curate_start_and_end Whether curate the alignment start and end coordinates.
+#'    Default to TRUE.
 #' @param outdir The path for saving rds file. Default is NA, i.e. not saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
@@ -50,6 +52,7 @@
 
 readBam <- function(
                      bamfile,
+                     curate_start_and_end = TRUE,
                      use_names = TRUE,
                      chromosome_to_keep = paste("chr", 1:22, sep = ""),
                      strand_mode = 1,

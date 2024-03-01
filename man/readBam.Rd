@@ -6,6 +6,7 @@
 \usage{
 readBam(
   bamfile,
+  curate_start_and_end = TRUE,
   use_names = TRUE,
   chromosome_to_keep = paste("chr", 1:22, sep = ""),
   strand_mode = 1,
@@ -22,6 +23,9 @@ readBam(
 }
 \arguments{
 \item{bamfile}{The bam file name.}
+
+\item{curate_start_and_end}{Whether curate the alignment start and end coordinates.
+Default to TRUE.}
 
 \item{use_names}{}
 
