@@ -4,6 +4,10 @@
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/bioconductor-cfdnapro/badges/license.svg)](https://anaconda.org/bioconda/bioconductor-cfdnapro)
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhw538%2FcfDNAPro&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=GitHub+view&edge_flat=true)](https://hits.seeyoufarm.com)
 
+## Note
+
+Please keep updated on the Trim-Align-cfDNAPro paper manuscript.
+
 ## Declaration  
 cfDNAPro is designed for research only.
 
@@ -121,7 +125,7 @@ BiocManager::install("cfDNAPro")
 ```
 
 ## Vignettes
-
+Note: this is an old vignette, please keep updated for the newer version and the cfDNAPro paper manuscript.
 If build vignettes during installation, you can see it via `utils::vignette("cfDNAPro")`
 
 Otherwise, you can always refer to the online version, see Bioconductor:  
