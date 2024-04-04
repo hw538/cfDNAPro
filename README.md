@@ -6,7 +6,7 @@
 
 ## Note
 
-Please keep updated on the Trim-Align-cfDNAPro paper manuscript.
+Please keep updated on the coming Trim-Align-cfDNAPro paper manuscript.
 
 ## Declaration  
 cfDNAPro is designed for research only.
@@ -21,7 +21,8 @@ Here we present a Bioconductor R package, cfDNAPro, which provides an easy-to-us
 As the first R package for the analysis of cfDNA fragmentation profiles, we anticipate that cfDNAPro will improve the efficiency and reproducibility of cfDNA fragmentation analyses. We plan to regularly add support for other analyses and visualisations such as copy number variation, nucleosome position calling, GC content, fragment end motif analysis of fragments and others. cfDNAPro provides a foundation for follow-up analyses of fragmentation patterns by more advanced machine learning and data science methods. The package has been accepted by Bioconductor: https://bioconductor.org/packages/release/bioc/html/cfDNAPro.html 
 
 ## Challenges in the cfDNA fragment length calculation
-Ambiguous definition of a fragment length by different alignment software, see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf  
+Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
+Cell-free DNA data fragmentomic analysis requires single-molecule level resolution, which further emphasizes the importance of accurate/un-biased feature extraction.
 
 _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis._
 
@@ -29,6 +30,8 @@ _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentom
 
 cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
 More feature extraction utilities will be added. For issues/feature requests/comments, please raise an issue or email me: haichao.wang@cruk.cam.ac.uk
+or wanghaichao2014@gmail.com
+
 
 ## Quick Start 1
 Read in bam file, return the fragment length counts.
