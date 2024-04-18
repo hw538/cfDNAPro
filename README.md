@@ -28,8 +28,11 @@ _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentom
 
 ## Highlights
 
-cfDNAPro is under active development, its internal quality control steps ensures accurate calculation of fragment lengths. 
-More feature extraction utilities will be added. For issues/feature requests/comments, please raise an issue or email me: haichao.wang@cruk.cam.ac.uk
+cfDNAPro is specifically written for cell-free DNA whole-genome sequencing data. 
+cfDNAPro is under active development
+Its ensures accurate (i.e. up-to-standard) calculation of fragment lengths and motifs. 
+More feature extraction-visualisation methods will be added. 
+For issues/feature requests/comments, please raise an issue or email me: haichao.wang@cruk.cam.ac.uk
 or wanghaichao2014@gmail.com
 
 
