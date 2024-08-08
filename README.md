@@ -6,7 +6,7 @@
 
 ## Note
 
-Please keep updated on the coming Trim-Align-cfDNAPro paper manuscript.
+For detailed documentation please visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
 ## Declaration  
 cfDNAPro is designed for research only.
