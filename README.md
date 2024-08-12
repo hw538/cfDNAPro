@@ -15,14 +15,14 @@ cfDNAPro is designed for research only.
 Unlike genomic DNA, cfDNA has specific fragmentation patterns. Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
 Cell-free DNA data fragmentomic analysis requires single-molecule level resolution, which further emphasizes the importance of accurate/un-biased feature extraction.
 
-_cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
+`cfDNAPro` is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
 
 ## Input
-cfDNAPro is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
+`cfDNAPro` is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
 Its ensures accurate (i.e. up-to-standard) calculation of fragmentomic features (e.g., fragment lengths and motif)
 
 ## Output
-cfDNApro supports extration and visualisation of features/markers:
+`cfDNApro` can extract(i.e., quantify) these features/markers:
 - fragment length
 - fragment start/end/upstream/downstream motifs
 - copy number variation
