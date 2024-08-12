@@ -28,11 +28,16 @@ _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentom
 
 ## Highlights
 
-cfDNAPro is specifically written for cell-free DNA whole-genome sequencing data. 
-cfDNAPro is under active development
+cfDNAPro is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
 Its ensures accurate (i.e. up-to-standard) calculation of fragment lengths and motifs. 
-More feature extraction-visualisation methods will be added. 
-For issues/feature requests/comments, please raise an issue or email me: haichao.wang@cruk.cam.ac.uk
+
+Supported extration AND visualisation of features/markers:
+- fragment length
+- fragment start/end/upstream/downstream motifs
+- copy number variation
+- single nucleotide mutation
+- more...
+For issues/feature requests/comments, please raise an issue or email: haichao.wang@cruk.cam.ac.uk
 or wanghaichao2014@gmail.com
 
 
@@ -77,6 +82,8 @@ A screenshot of the output:
 
 
 ## News
+### cfDNAAPro 1.7.1 (Aug 2024)
+* multiple updates
 
 ### cfDNAPro 1.7.1 (May 2023)
 * Resolved issues when building vignette
