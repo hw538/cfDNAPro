@@ -40,10 +40,12 @@ cfDNApro supports extration and visualisation of features/markers:
 
 All plots depend on ggplot2 R packge.
 
-For issues/feature requests/comments, please raise an issue or email: 
-haichao.wang@cruk.cam.ac.uk  
+For issues/feature requests/comments, please raise an issue or email:   
+__Author__: Haichao Wang  
 wanghaichao2014@gmail.com  
-paulius.mennea@cruk.cam.ac.uk  
+__Author__:Paulius D. Mennea  
+paulius.mennea@cruk.cam.ac.uk 
+__Rosenfeld Lab admin mailbox__:  
 Rosenfeld.LabAdmin@cruk.cam.ac.uk  
 
 ## Quick Start 1
