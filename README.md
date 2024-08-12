@@ -29,9 +29,9 @@ cfDNApro supports extration and visualisation of features/markers:
 - single nucleotide mutation
 - more...
 
-Feature extration depends on essential data objects/R packages in the _Bioconductor_ ecosystem, such as `Rsamtools`, `plyranges`, `GenomicAlignments`, `GenomeInfoDb` and `Biostrings`.
-Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr`, and `stringr`.
-All plots depend on `ggplot2` R packge.
+Feature extration depends on essential data objects/R packages in the _Bioconductor_ ecosystem, such as `Rsamtools`, `plyranges`, `GenomicAlignments`, `GenomeInfoDb` and `Biostrings`.  
+Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr`, and `stringr`.  
+All plots depend on `ggplot2` R packge.  
 
 For issues/feature request etc., please contact:   
 __Author__: Haichao Wang  
