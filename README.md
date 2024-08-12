@@ -22,7 +22,7 @@ Cell-free DNA data fragmentomic analysis requires single-molecule level resoluti
 Its ensures accurate (i.e. up-to-standard) calculation of fragmentomic features (e.g., fragment lengths and motif)
 
 ## Output
-`cfDNApro` can extract(i.e., quantify) these features/markers:
+`cfDNApro` can extract (i.e., "quantify in a standandised and robust way") these features/bio-markers:
 - fragment length
 - fragment start/end/upstream/downstream motifs
 - copy number variation
