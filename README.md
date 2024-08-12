@@ -12,7 +12,7 @@ For detailed documentation please visit: https://cfdnapro.readthedocs.io/en/late
 cfDNAPro is designed for research only.
 
 ## Challenges in the cfDNA fragment length calculation
-Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
+Unlike genomic DNA, cfDNA has specific fragmentation patterns. Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
 Cell-free DNA data fragmentomic analysis requires single-molecule level resolution, which further emphasizes the importance of accurate/un-biased feature extraction.
 
 _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
