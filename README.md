@@ -44,8 +44,8 @@ For issues/feature requests/comments, please raise an issue or email:
 __Author__: Haichao Wang  
 wanghaichao2014@gmail.com  
 __Author__:Paulius D. Mennea  
-paulius.mennea@cruk.cam.ac.uk 
-__Rosenfeld Lab admin mailbox__:  
+paulius.mennea@cruk.cam.ac.uk   
+__Nitzan Rosenfeld Lab admin mailbox__:  
 Rosenfeld.LabAdmin@cruk.cam.ac.uk  
 
 ## Quick Start 1
