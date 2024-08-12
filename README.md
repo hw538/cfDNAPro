@@ -20,20 +20,18 @@ Here we present a Bioconductor R package, cfDNAPro, which provides an easy-to-us
 
 As the first R package for the analysis of cfDNA fragmentation profiles, we anticipate that cfDNAPro will improve the efficiency and reproducibility of cfDNA fragmentation analyses. We plan to regularly add support for other analyses and visualisations such as copy number variation, nucleosome position calling, GC content, fragment end motif analysis of fragments and others. cfDNAPro provides a foundation for follow-up analyses of fragmentation patterns by more advanced machine learning and data science methods. The package has been accepted by Bioconductor: https://bioconductor.org/packages/release/bioc/html/cfDNAPro.html 
 
-## Challenges in the cfDNA fragment length calculation
+_Challenges in the cfDNA fragment length calculation_
 Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
 Cell-free DNA data fragmentomic analysis requires single-molecule level resolution, which further emphasizes the importance of accurate/un-biased feature extraction.
 
 _cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis._
 
-## Highlights
-
-### Input
+## Input
 cfDNAPro is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
-Its ensures accurate (i.e. up-to-standard) calculation of fragment lengths and motifs. 
+Its ensures accurate (i.e. up-to-standard) calculation of fragmentomic features (e.g., fragment lengths and motif)
 
-### Output
-Supported extration AND visualisation of features/markers:
+## Output
+cfDNApro supports extration and visualisation of features/markers:
 - fragment length
 - fragment start/end/upstream/downstream motifs
 - copy number variation
@@ -142,12 +140,9 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("cfDNAPro")
 ```
 
-## Vignettes
-Note: this is an old vignette, please keep updated for the newer version and the cfDNAPro paper manuscript.
-If build vignettes during installation, you can see it via `utils::vignette("cfDNAPro")`
+## Vignettes/tutorials
+visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
-Otherwise, you can always refer to the online version, see Bioconductor:  
-https://bioconductor.org/packages/release/bioc/vignettes/cfDNAPro/inst/doc/cfDNAPro.html
 
 ## Citation
 
