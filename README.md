@@ -145,4 +145,4 @@ visit: https://cfdnapro.readthedocs.io/en/latest/
 
 Please cite package ‘cfDNAPro’ in publications:
 
-Haichao Wang, Paulius Mennea, Elkie Chan, Hui Zhao, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2020). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.7 <https://github.com/hw538/cfDNAPro>
+Haichao Wang, Paulius Mennea, Elkie Chan, Hui Zhao, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2024). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.7.1 <https://github.com/hw538/cfDNAPro>
