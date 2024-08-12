@@ -15,7 +15,7 @@ cfDNAPro is designed for research only.
 Ambiguous definition of "fragment length" by various alignment software is raising concerns: see page 9 footnote in SAM file format spec:  https://samtools.github.io/hts-specs/SAMv1.pdf   
 Cell-free DNA data fragmentomic analysis requires single-molecule level resolution, which further emphasizes the importance of accurate/un-biased feature extraction.
 
-_cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis._
+_cfDNAPro is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
 
 ## Input
 cfDNAPro is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
@@ -29,7 +29,9 @@ cfDNApro supports extration and visualisation of features/markers:
 - single nucleotide mutation
 - more...
 
-All plots depend on ggplot2 R packge.
+Feature extration depends on essential data objects/R packages in the _Bioconductor_ ecosystem, such as `Rsamtools`, `plyranges`, `GenomicAlignments`, `GenomeInfoDb` and `Biostrings`.
+Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr`, and `stringr`.
+All plots depend on `ggplot2` R packge.
 
 For issues/feature request etc., please contact:   
 __Author__: Haichao Wang  
