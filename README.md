@@ -40,9 +40,11 @@ cfDNApro supports extration and visualisation of features/markers:
 
 All plots depend on ggplot2 R packge.
 
-For issues/feature requests/comments, please raise an issue or email: haichao.wang@cruk.cam.ac.uk
-or wanghaichao2014@gmail.com
-
+For issues/feature requests/comments, please raise an issue or email: 
+haichao.wang@cruk.cam.ac.uk  
+wanghaichao2014@gmail.com  
+paulius.mennea@cruk.cam.ac.uk  
+Rosenfeld.LabAdmin@cruk.cam.ac.uk  
 
 ## Quick Start 1
 Read in bam file, return the fragment length counts.
