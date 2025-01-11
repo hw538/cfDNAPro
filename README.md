@@ -6,7 +6,8 @@
 
 ## Official tutorials
 
-For detailed documentation please visit: https://cfdnapro.readthedocs.io/en/latest/ 
+For detailed documentation, please visit: https://cfdnapro.readthedocs.io/en/latest/ 
+About R version: As of 11 Jan 2025, some R package dependencies don't support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
 
 ## Declaration  
 cfDNAPro is designed for research only.
