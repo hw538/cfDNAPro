@@ -100,7 +100,7 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 
 ## News
-### cfDNAAPro 1.7.1 (Aug 2024)
+### cfDNAPro 1.7.1 (Aug 2024)
 * multiple updates
 
 ### cfDNAPro 1.7.1 (May 2023)
