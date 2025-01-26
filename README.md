@@ -113,8 +113,8 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 
 ## News
-### cfDNAPro 1.7.1 (Aug 2024)
-* Improved the rmarkdown quick start descriptions
+### cfDNAPro 1.7.1 (Jan 2025)
+* Improved the information and layout of this markdown quick start landing page
 ### cfDNAPro 1.7.1 (Aug 2024)
 * multiple updates
 ### cfDNAPro 1.7.1 (May 2023)
