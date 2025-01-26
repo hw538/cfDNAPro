@@ -20,9 +20,16 @@ Cell-free DNA data fragmentomic analysis requires single-molecule level resoluti
 `cfDNAPro` is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
 
 ## Input
-A bam file.
-`cfDNAPro` is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
-Its ensures accurate (i.e. up-to-standard) calculation of fragmentomic features (e.g., fragment lengths and motif)
+A paired-end sequencing bam file, with duplicates marked. (e.g., using the MarkDuplicates function from Picard).
+`cfDNAPro` filters the reads by following default criteria:
+(1) Reads mapping qualities less than 30 were discarded;
+(2) Reads must be paired. Of note, by default, cfDNAPro doesn’t impose filtration by “proper pair”; 
+(3) No duplicate; 
+(4) No secondary alignment; 
+(5) No supplementary alignment; 
+(6) No unmapped reads. 
+
+You can toggle those criteria using parameters built in readBam() function, see its R help manual or source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
 
 ## Output
 `cfDNAPro` can extract (i.e., "quantify in a standandised and robust way") these features/bio-markers:
