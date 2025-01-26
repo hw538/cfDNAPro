@@ -46,34 +46,15 @@ Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr
 All plots depend on `ggplot2` R packge.  
 
 For issues/feature request etc., please contact:   
+__Nitzan Rosenfeld Lab admin mailbox__:  
+Rosenfeld.LabAdmin@cruk.cam.ac.uk  
 __Author__: Haichao Wang  
 wanghaichao2014@gmail.com  
 __Author__: Paulius D. Mennea  
 paulius.mennea@cruk.cam.ac.uk   
-__Nitzan Rosenfeld Lab admin mailbox__:  
-Rosenfeld.LabAdmin@cruk.cam.ac.uk  
+
 
 ## Quick Start 1
-Read in bam file, return the fragment length counts.
-A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
-
-```R
-
-# install cfDNAPro newest version 
-
-if (!require(devtools)) install.packages("devtools")
-devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE)
-
-# calculate insert size of a bam file
-
-library(cfDNAPro)
- frag_lengths <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
-```
-The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length). A screenshot of the output:  
-<img width="298" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/cba6709d-c49c-4c0d-8ae3-4ee7e82884f0">
-
-
-## Quick Start 2
 Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
 If needed, you can convert the GRanges into a dataframe and the fragment length is stored in the "width" column.
 
@@ -94,6 +75,26 @@ frag_motif <- callMotif(frags)
 A screenshot of the output:  
 
 <img width="545" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/49f9cc93-d6af-4503-9b65-bbfea7b5ba87">
+
+## Quick Start 2
+Read in bam file, return the fragment length counts.
+A straightforward and frequent user case: calculate the fragment size of a bam file, use the following code:
+
+```R
+
+# install cfDNAPro newest version 
+
+if (!require(devtools)) install.packages("devtools")
+devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE)
+
+# calculate insert size of a bam file
+
+library(cfDNAPro)
+ frag_lengths <- read_bam_insert_metrics(bamfile = "/path/to/bamfile.bam")
+```
+The returned dataframe contains two columns, i.e., "insert_size" (fragment length) and "All_Reads.fr_count" (the count of the fragment length). A screenshot of the output:  
+<img width="298" alt="image" src="https://github.com/hw538/cfDNAPro/assets/15274940/cba6709d-c49c-4c0d-8ae3-4ee7e82884f0">
+
 
 
 
