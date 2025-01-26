@@ -77,6 +77,10 @@ library(cfDNAPro)
 # convert GRanges object to a dataframe in R
  frag_df <- as.data.frame(frags)
 
+# You can calculate fragment length and motifs from the frags object (i.e., the output of readBam() function)
+
+frag_length <- callLength(frags)
+frag_motif <- callMotif(frags)
 ```
 A screenshot of the output:  
 
