@@ -55,6 +55,18 @@ wanghaichao2014@gmail.com
 __Author__: Paulius D. Mennea  
 paulius.mennea@cruk.cam.ac.uk   
 
+## Installation
+
+Please install our latest version(recommended):
+
+```R
+if (!require(devtools)) install.packages("devtools")
+library(devtools)
+devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
+# run below instead if you don't want to build vignettes inside R
+# devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
+
+```
 
 ## Quick Start 1
 Read bam file, return the fragment name (i.e. read name in bam file) and alignment coordinates in GRanges object in R.
@@ -129,35 +141,6 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 * Submitted to Bioconductor.
 
 
-
-
-
-
-## Installation
-
-Please install our latest version(highly recommended):
-
-```R
-if (!require(devtools)) install.packages("devtools")
-library(devtools)
-devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
-# run below instead if you don't want to build vignettes inside R
-# devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
-
-```
-
-
-Or install the released/steady version (i.e., not newest version, some functions might be missing in comparison to functions shown in this webpage) 
-via Bioconductor:
-```R
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("cfDNAPro")
-```
-
-## Vignettes/tutorials
-visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
 
 ## Citation
