@@ -8,7 +8,7 @@
 This markdown aims to provide a quick start.
 For in-depth documentation, please visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
-## R version
+## Which R version to use?
 As of 11 Jan 2025, some R package dependencies have not been able to support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
 
 ## Declaration  
