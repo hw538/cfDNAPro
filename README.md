@@ -21,7 +21,7 @@ Cell-free DNA data fragmentomic analysis requires single-molecule level resoluti
 
 ## Input
 A paired-end sequencing bam file, with duplicates marked. (e.g., using the MarkDuplicates function from Picard).
-`cfDNAPro` filters the reads by following default criteria:
+`cfDNAPro` filters the reads by following default criteria (You can toggle those criteria using parameters built in `readBam()` function):
 (1) Reads mapping qualities less than 30 were discarded;
 (2) Reads must be paired. Of note, by default, cfDNAPro doesn’t impose filtration by “proper pair”; 
 (3) No duplicate; 
@@ -29,7 +29,9 @@ A paired-end sequencing bam file, with duplicates marked. (e.g., using the MarkD
 (5) No supplementary alignment; 
 (6) No unmapped reads. 
 
-You can toggle those criteria using parameters built in readBam() function, see its R help manual or source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
+Note: remember to set the correct 'genome_label' based on the ref genome you used for alignment.
+At the moment, it supports three different ref genomes, hg19, hg38 and hg38-NCBI, details see  readBam() R documentation by typing `?readBam` in the R console or 
+see source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
 
 ## Output
 `cfDNAPro` can extract (i.e., "quantify in a standandised and robust way") these features/bio-markers:
