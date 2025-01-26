@@ -20,6 +20,7 @@ Cell-free DNA data fragmentomic analysis requires single-molecule level resoluti
 `cfDNAPro` is designed to resolve this issue and standardize the cfDNA fragmentomic analysis using the bioconductor R ecosystem.
 
 ## Input
+A bam file.
 `cfDNAPro` is specifically written for cell-free DNA paire-ed whole-genome sequencing data. 
 Its ensures accurate (i.e. up-to-standard) calculation of fragmentomic features (e.g., fragment lengths and motif)
 
