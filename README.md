@@ -29,8 +29,8 @@ A paired-end sequencing bam file, with duplicates marked. (e.g., using the MarkD
 (5) No supplementary alignment; 
 (6) No unmapped reads. 
 
-Note: remember to choose the correct `genome_label` of the `readBam()` function based on the ref genome you used for alignment.
-At the moment, it supports three different ref genomes, hg19, hg38 and hg38-NCBI, details see  readBam() R documentation by typing `?readBam` in the R console or 
+Note: remember to choose the correct `genome_label`, a parameter in `readBam()` function, based on the ref genome you used for alignment.
+At the moment, it supports three different ref genomes, hg19, hg38 and hg38-NCBI, For details see  readBam() R documentation by typing `?readBam` in the R console or 
 see source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
 
 ## Output
