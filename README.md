@@ -46,7 +46,7 @@ Feature extraction depends on essential data objects/R packages in the _Biocondu
 Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr`, and `stringr`.  
 All plots depend on `ggplot2` R packge.  
 
-For issues/feature request etc., please contact:   
+For issues/inquiries, please contact:   
 __Nitzan Rosenfeld Lab admin mailbox__:  
 Rosenfeld.LabAdmin@cruk.cam.ac.uk  
 __Author__: Haichao Wang  
