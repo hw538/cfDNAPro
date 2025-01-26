@@ -5,10 +5,11 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhw538%2FcfDNAPro&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=GitHub+view&edge_flat=true)](https://hits.seeyoufarm.com)
 
 ## Official tutorials
+This markdown aims to provide a quick start.
+For in-depth documentation, please visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
-For detailed documentation, please visit: https://cfdnapro.readthedocs.io/en/latest/ 
-
-About R version: As of 11 Jan 2025, some R package dependencies have not been able to support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
+## R version
+As of 11 Jan 2025, some R package dependencies have not been able to support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
 
 ## Declaration  
 cfDNAPro is designed for research only.
