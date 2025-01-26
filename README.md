@@ -21,6 +21,7 @@ Cell-free DNA data fragmentomic analysis requires single-molecule level resoluti
 
 ## Input
 A paired-end sequencing bam file, with duplicates marked. (e.g., using the MarkDuplicates function from Picard).
+Please do not impose any filtering on the bam files; For example, do not filter by the proper-pairs flag.
 `cfDNAPro` filters the reads by following default criteria (You can toggle those criteria using parameters built in `readBam()` function):
 (1) Reads mapping qualities less than 30 were discarded;
 (2) Reads must be paired. Of note, by default, cfDNAPro doesn’t impose filtration by “proper pair”; 
