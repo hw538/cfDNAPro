@@ -575,7 +575,38 @@ bam_to_galp <- function(bamfile,
 
 
 
+remove_outward_facing_readpairs <- function(galp) {
+    message("Removing outward facing fragments ...")
+    # Get FR read pairs(i.e. first read aligned to positive strand)
+    
+    FR_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "+")
+    FR_galp <- galp[FR_id]
+    
+    # Get RF read pairs(i.e. second read aligned to positive strand)
+    RF_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "-")
+    RF_galp <- galp[RF_id]
+    
+    # Get FR inward facing pairs
+    FR_galp_inward <-
+        FR_galp[GenomicAlignments::start(GenomicAlignments::first(FR_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::second(FR_galp))]
+    
+    # Get RF inward facing pairs
+    RF_galp_inward <-
+        RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
+    
+    # Combine inward read pairs and sort by original order
+    inward_ids <- c(names(FR_galp_inward), names(RF_galp_inward))
+    galp_corrected <- c(FR_galp_inward, RF_galp_inward)
+    
+    # Reorder based on the original order of `galp`
+    galp_corrected <- galp_corrected[match(names(galp), inward_ids, nomatch = 0)]
 
+    return(galp_corrected)
+}
 
 
 #' @importFrom BiocGenerics start end strand
@@ -710,38 +741,5 @@ rleid_cfdnapro <- function(x) {
   1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
 }
 
-
-function(galp) {
-    message("Removing outward facing fragments ...")
-    # Get FR read pairs(i.e. first read aligned to positive strand)
-    
-    FR_id <-
-        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "+")
-    FR_galp <- galp[FR_id]
-    
-    # Get RF read pairs(i.e. second read aligned to positive strand)
-    RF_id <-
-        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "-")
-    RF_galp <- galp[RF_id]
-    
-    # Get FR inward facing pairs
-    FR_galp_inward <-
-        FR_galp[GenomicAlignments::start(GenomicAlignments::first(FR_galp)) <
-                    GenomicAlignments::end(GenomicAlignments::second(FR_galp))]
-    
-    # Get RF inward facing pairs
-    RF_galp_inward <-
-        RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
-                    GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
-    
-    # Combine inward read pairs and sort by original order
-    inward_ids <- c(names(FR_galp_inward), names(RF_galp_inward))
-    galp_corrected <- c(FR_galp_inward, RF_galp_inward)
-    
-    # Reorder based on the original order of `galp`
-    galp_corrected <- galp_corrected[match(names(galp), inward_ids, nomatch = 0)]
-
-    return(galp_corrected)
-}
 
 
