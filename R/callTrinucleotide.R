@@ -19,7 +19,6 @@
 #' the trinucleotide substitution types (SBS96).
 #'
 #' @import GenomicRanges
-#' @import BSgenome
 #' @import IRanges
 #' @import stringr
 #' @importFrom dplyr select

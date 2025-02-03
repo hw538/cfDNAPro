@@ -1,6 +1,8 @@
 
 #' Summarise descriptive Bam stats
-#'
+#' @import Biostrings
+#' @import Rsamtools
+#' @import dplyr
 #' @param bamfile  Bam file
 #' @param total_count Boolean. default = TRUE, which means calculating the total 
 #' number of reads. 

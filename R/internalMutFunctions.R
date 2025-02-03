@@ -1514,9 +1514,6 @@ create_empty_galp <- function() {
 
 
 #' Function to determine the correct BSgenome based on the seqinfo result
-#' @import BSgenome.Hsapiens.UCSC.hg19
-#' @import BSgenome.Hsapiens.UCSC.hg38
-#' @import BSgenome.Hsapiens.NCBI.GRCh38
 #' @importFrom GenomeInfoDb seqinfo
 get_genome_reference <- function(frag_obj_mut) {
   # Extract genome sequence from GRanges object's seqinfo
