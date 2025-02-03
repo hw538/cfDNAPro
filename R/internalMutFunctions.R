@@ -1,10 +1,12 @@
 
 #' Internal Functions for mutational processing
 #' @importFrom magrittr '%>%'
+#' @noRd
 
 # Helper function to process a set of columns with a given suffix
 #' @importFrom gsubfn strapply
 #' @importFrom dplyr mutate filter select
+#' @noRd
 process_columns <- function(df, suffix) {
   # Setup extra columns with null values
   df[[paste0("softclip", suffix)]] <- rep(0, nrow(df))
@@ -67,6 +69,7 @@ process_columns <- function(df, suffix) {
 #' Function to remove soft clipped bases to match the MD tags
 #' #' @param reads_df A dataframe containing read pairs with 'cigar.first' and
 #' 'cigar.last' columns that may include soft clipping indicators.
+#' @noRd
 clip_read_pair <- function(reads_df = NULL) {
 
   # Check and process columns with soft clipping in 'cigar.first'
@@ -85,6 +88,7 @@ clip_read_pair <- function(reads_df = NULL) {
 
 #' Function to check Mutation file columns
 #' @param df A dataframe representing the mutation file.
+#' @noRd
 check_mutfile_columns <- function(df) {
   # Define expected columns
   expected_cols <- c("chr", "pos", "ref", "alt")
@@ -123,6 +127,7 @@ check_mutfile_columns <- function(df) {
 #' @examples
 #' # Assuming df has columns 'chr' and 'pos'
 #' cleaned_data <- remove_clustered_mutations(df)
+#' @noRd
 remove_clustered_mutations <- function(mutation_data) {
   # Sort by chromosome and position
   sorted_data <- mutation_data %>%
@@ -158,6 +163,7 @@ remove_clustered_mutations <- function(mutation_data) {
 #' @importFrom utils read.table
 #' @importFrom dplyr select
 #' @importFrom magrittr %>%
+#' @noRd
 read_mutation_file <- function(mutation_file) {
   # Check if the file exists
   if (!file.exists(mutation_file)) {
@@ -188,7 +194,9 @@ read_mutation_file <- function(mutation_file) {
 
 
 
+
 #' Function to parse CIGAR strings and extract insertions
+#' @noRd
 insertion_pos <- function(
     unique_read_pair_id,
     chr,
@@ -266,6 +274,7 @@ insertion_pos <- function(
 }
 
 #' Function to extract insertion information from paired reads
+#' @noRd
 apply_to_paired_reads_ins <- function(data_frame) {
     # Initialize a list to hold results
     results <- list()
@@ -316,6 +325,7 @@ apply_to_paired_reads_ins <- function(data_frame) {
 
 #' Function to remove insertion bases from the seq columns
 #' @importFrom stringr str_split str_detect
+#' @noRd
 remove_insertion_bases <- function(cigar, clip_seq) {
   elements <- strsplit(cigar, "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)",
                        perl=TRUE)[[1]]
@@ -360,6 +370,7 @@ remove_insertion_bases <- function(cigar, clip_seq) {
 }
 
 #' Function to remove insertion quality scores from the base quality columns
+#' @noRd
 remove_insertion_qual_bases <- function(cigar, clip_qual) {
   elements <- strsplit(cigar, "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)",
                        perl=TRUE)[[1]]
@@ -404,6 +415,7 @@ remove_insertion_qual_bases <- function(cigar, clip_qual) {
 #' Function to process insertion information
 #' @importFrom dplyr mutate filter
 #' @importFrom magrittr %>%
+#' @noRd
 process_insertions <- function(reads_df) {
   if (any(grepl("I", reads_df$cigar_string_first)) ||
       any(grepl("I", reads_df$cigar_string_last))) {
@@ -499,6 +511,7 @@ process_insertions <- function(reads_df) {
 
 
 #' Function to add 'D' for bases that were deleted in the seq columns
+#' @noRd
 adjust_sequence_for_deletions <- function(md_tag, clip_seq) {
     elements <- strsplit(md_tag, "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)",
                          perl=TRUE)[[1]]
@@ -530,6 +543,7 @@ adjust_sequence_for_deletions <- function(md_tag, clip_seq) {
 }
 
 #' Function to add '!' for bases that were deleted in the qual columns
+#' @noRd
 adjust_quality_for_deletions <- function(md_tag, clip_qual) {
     elements <- strsplit(md_tag, "(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)",
                          perl=TRUE)[[1]]
@@ -564,6 +578,7 @@ adjust_quality_for_deletions <- function(md_tag, clip_qual) {
 
 
 #' Function to add mismatch and deletion info as separate columns for readpairs
+#' @noRd
 mm_del_pos <- function(
     unique_read_pair_id,
     chr,
@@ -656,6 +671,7 @@ mm_del_pos <- function(
 }
 
 #' Wrapper function applying mm_del_pos to each row with _first/_last suffix
+#' @noRd
 apply_to_paired_reads <- function(data_frame) {
     results <- lapply(seq_len(nrow(data_frame)), function(i) {
         row <- data_frame[i, ]
@@ -693,6 +709,7 @@ apply_to_paired_reads <- function(data_frame) {
 }
 
 #' Function to obtain updated mismatch and deletion information
+#' @noRd
 update_mdi_columns <- function(reads_df) {
   results <- apply_to_paired_reads(reads_df)
 
@@ -767,6 +784,7 @@ update_mdi_columns <- function(reads_df) {
 #' Function to add the base information to mutation_status
 #' @importFrom dplyr mutate case_when select
 #' @importFrom stringr str_extract str_detect
+#' @noRd
 add_base_info <- function(reads_df) {
   reads_df <- reads_df %>%
     mutate(
@@ -828,6 +846,7 @@ add_base_info <- function(reads_df) {
 #' Function to add mutation overlap status to a dataframe
 #' @importFrom dplyr mutate case_when select
 #' @importFrom stringr str_extract
+#' @noRd
 add_mutation_overlap_status <- function(df) {
   # Update the dataframe with new mutation overlap status
   df_updated <- df %>%
@@ -866,6 +885,7 @@ add_mutation_overlap_status <- function(df) {
 #' Function to derive information about the mutation locus from each read-pair
 #' @importFrom dplyr mutate case_when
 #' @importFrom stringr str_extract str_detect
+#' @noRd
 process_mutation_status <- function(reads_df) {
   reads_df <- reads_df %>%
     mutate(
@@ -937,6 +957,7 @@ process_mutation_status <- function(reads_df) {
 #' Funcion to process base qualities
 #' @importFrom dplyr mutate select
 #' @importFrom stringr str_extract
+#' @noRd
 process_base_qualities <- function(df) {
   df %>%
     mutate(
@@ -1000,6 +1021,7 @@ process_base_qualities <- function(df) {
 
 # Function to calculate read length from CIGAR string, considering only 'M'
 #' @importFrom stringr str_extract_all
+#' @noRd
 calculate_read_length <- function(cigar) {
   # Return 0 immediately if cigar is NA
   if (is.na(cigar)) {
@@ -1034,6 +1056,7 @@ calculate_read_length <- function(cigar) {
 #' @importFrom GenomicAlignments GAlignmentPairs
 #' @importFrom dplyr mutate
 #' @importFrom stringr str_detect
+#' @noRd
 process_duplicate_read_pairs <- function(genomic_data, mut_fragments_only) {
   # Initialize the reads_df variable
   reads_df <- NULL
@@ -1098,6 +1121,7 @@ process_duplicate_read_pairs <- function(genomic_data, mut_fragments_only) {
 #' @import GenomicAlignments
 #' @import S4Vectors
 #' @import Rsamtools
+#' @noRd
 bam_to_galp_mut <- function(bamfile,
                             use_names = TRUE,
                             param = galp_param,
@@ -1146,6 +1170,7 @@ bam_to_galp_mut <- function(bamfile,
 
 #' Function to generate GRanges for specific positions
 #' @importFrom IRanges IRanges
+#' @noRd
 make_granges <- function(loci) {
   loci_gr <- GenomicRanges::GRanges(seqnames = loci[, 1],
                      ranges = IRanges::IRanges(start = loci[, 2],
@@ -1166,6 +1191,7 @@ make_granges <- function(loci) {
 #' @importFrom tidyr replace_na
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomeInfoDb seqinfo
+#' @noRd
 process_mutation_fragments <- function(
             bamfile = bamfile,
             genome = genome,
@@ -1387,6 +1413,7 @@ process_mutation_fragments <- function(
 #' @importFrom GenomicAlignments last cigar
 #' @importFrom dplyr filter
 #' @importFrom GenomicRanges GRanges
+#' @noRd
 process_bam_file <- function(bamfile, 
                              mutation_file = NULL,
                              mut_fragments_only = FALSE,
@@ -1494,6 +1521,7 @@ process_bam_file <- function(bamfile,
 #' @import GenomicAlignments
 #' @import GenomicRanges
 #' @importFrom S4Vectors Rle
+#' @noRd
 create_empty_galp <- function() {
   # Create empty GAlignments for pair members
   empty_first <- GenomicAlignments::GAlignments(
@@ -1516,6 +1544,7 @@ create_empty_galp <- function() {
 
 #' Function to determine the correct BSgenome based on the seqinfo result
 #' @importFrom GenomeInfoDb seqinfo
+#' @noRd
 get_genome_reference <- function(frag_obj_mut) {
   # Extract genome sequence from GRanges object's seqinfo
   genome_seq <- unique(
@@ -1541,6 +1570,7 @@ get_genome_reference <- function(frag_obj_mut) {
 }
 
 #' Prepare and filter GRanges data
+#' @noRd
 prepare_data <- function(frag_obj_mut) {
   frag_obj_mut <- frag_obj_mut[!grepl("outer_fragment",
                                frag_obj_mut$target_mutation), ]
@@ -1550,6 +1580,7 @@ prepare_data <- function(frag_obj_mut) {
 #' Process mutation status and split into components
 #' @importFrom dplyr mutate
 #' @importFrom stringr str_extract
+#' @noRd
 stratify_mutation_status <- function(gr_df) {
   gr_df %>%
     mutate(
@@ -1561,6 +1592,7 @@ stratify_mutation_status <- function(gr_df) {
 }
 
 #' Function to check for mutational metadata in the GRanges object
+#' @noRd
 check_mutation_in_metadata <- function(frag_obj) {
   # Check if the input is a GRanges object
   if (!inherits(frag_obj, "GRanges")) {
@@ -1588,6 +1620,7 @@ check_mutation_in_metadata <- function(frag_obj) {
 }
 
 #' Function to check for mutant base fragments in a dataframe
+#' @noRd
 check_mutation_status <- function(reads_df) {
   # Check if 'locus_status' contains the string "MUT"
   if (!any(grepl("MUT", reads_df$mutation_status, ignore.case = TRUE))) {
@@ -1602,6 +1635,7 @@ check_mutation_status <- function(reads_df) {
 #' Helper function to update locus status
 #' @importFrom dplyr mutate case_when select
 #' @importFrom stringr str_sub str_extract str_replace
+#' @noRd
 update_locus_status <- function(gr_df) {
   gr_df %>%
     mutate(
@@ -1635,6 +1669,7 @@ update_locus_status <- function(gr_df) {
 }
 
 #' Helper function to summarize mutational data
+#' @noRd
 summarize_mutational_data <- function(gr_df) {
   gr_df %>%
     group_by(target_mutation) %>%
@@ -1660,6 +1695,7 @@ summarize_mutational_data <- function(gr_df) {
 #' Helper function to summarize fragment lengths
 #' @importFrom dplyr group_by summarize
 #' @importFrom stats median
+#' @noRd
 summarize_fragment_lengths <- function(gr_df) {
   gr_df %>%
     group_by(target_mutation) %>%
@@ -1691,6 +1727,7 @@ summarize_fragment_lengths <- function(gr_df) {
 
 #' Function to update consensus_mismatch based on the highest priority match
 #' @importFrom dplyr filter
+#' @noRd
 update_consensus_mismatch <- function(merged_table_df, gr_df, mapping) {
   set.seed(123)  # For reproducibility in random selection
   
@@ -1736,6 +1773,7 @@ update_consensus_mismatch <- function(merged_table_df, gr_df, mapping) {
 }
 
 #' Helper function which selects consensus mutation type based on counts
+#' @noRd
 get_highest_column <- function(row) {
   values <- row[c("CO_MUT", "SO_MUT", "DO", "SO_OTHER", "CO_OTHER")]
   max_value <- max(values)
@@ -1765,6 +1803,7 @@ get_highest_column <- function(row) {
 #' @importFrom IRanges IRanges
 #' @importFrom dplyr filter select
 #' @importFrom stats setNames
+#' @noRd
 get_trinucleotide <- function(merged_table_df, genome) {
   # Split consensus_mismatch into three fields: chr, start, ALT Base
   split_values <- strsplit(merged_table_df$consensus_mismatch, ":")
@@ -1832,6 +1871,7 @@ get_trinucleotide <- function(merged_table_df, genome) {
 #' @importFrom stats setNames
 #' @importFrom stringr str_extract
 #' @importFrom rlang .data
+#' @noRd
 processTrinucleotideData <- function(trinuc_df,
                                      exclude_if_type_present = NULL,
                                      retain_if_type_present = NULL,
@@ -1971,6 +2011,7 @@ processTrinucleotideData <- function(trinuc_df,
 #' @importFrom dplyr mutate select filter
 #' @importFrom stringr str_extract str_replace
 #' @importFrom scales percent
+#' @noRd
 plotTrinucData <- function(
     count_df,
     ylim = ylim,
@@ -2212,6 +2253,7 @@ plotTrinucData <- function(
 #' @importFrom dplyr filter mutate group_by summarize ungroup as_tibble n
 #' @importFrom plyr round_any
 #' @importFrom stats setNames
+#' @noRd
 process_length_mut <- function(frag_obj, ref_type, downsample_ref) {
     # Ensure mutation data is checked
     check_mutation_in_metadata(frag_obj = frag_obj)
@@ -2272,6 +2314,7 @@ process_length_mut <- function(frag_obj, ref_type, downsample_ref) {
 
 #' Helper function to select and optionally normalize REF fragment counts
 #' @importFrom dplyr filter sample_n
+#' @noRd
 select_and_normalize <- function(frag_obj,
                                  pattern,
                                  downsample_ref = FALSE,
@@ -2293,6 +2336,7 @@ select_and_normalize <- function(frag_obj,
 #' @import ggplot2
 #' @importFrom dplyr pull
 #' @importFrom grid unit
+#' @noRd
 plot_length_mut <- function(x, ylim, output_file, ggsave_params) {
     # Plot Fragment lengths with integrated mutational information
     max_fraction <- max(dplyr::pull(x, PROPORTION))
@@ -2340,6 +2384,7 @@ plot_length_mut <- function(x, ylim, output_file, ggsave_params) {
 #' Helper function to process motif and mutation data
 #' @importFrom dplyr mutate select full_join rename
 #' @importFrom Biostrings DNAStringSet
+#' @noRd
 integrate_motif_mut <- function(frag_obj, downsample_ref, ref_type,
                                 bsgenome_obj, motif_type, motif_length) {
   # Check if GRanges object has mutational data
@@ -2407,6 +2452,7 @@ integrate_motif_mut <- function(frag_obj, downsample_ref, ref_type,
 
 #' Helper function for downsampling reference base fragments in motifs
 #' @importFrom S4Vectors mcols
+#' @noRd
 adjust_ref_fragments <- function(gr, ref_type, downsample_ref = FALSE) {
   # Return the original object if no downsampling is needed
   if (!downsample_ref) {
@@ -2460,6 +2506,7 @@ adjust_ref_fragments <- function(gr, ref_type, downsample_ref = FALSE) {
 #' @importFrom stringr str_to_lower str_to_title str_extract
 #' @importFrom tidyr pivot_longer
 #' @importFrom grDevices adjustcolor
+#' @noRd
 plot_motif_mut <- function(
   x, ylim, x_title, plot_type, bar_color, motif_levels,
   output_file, ggsave_params) {
@@ -2536,6 +2583,7 @@ plot_motif_mut <- function(
 #' Helper function to process mutational information for CNV analysis
 #' @importFrom plyranges join_overlap_left
 #' @importFrom dplyr group_by_at summarize ungroup
+#' @noRd
 process_cnv_mut <- function(olap, frag_obj_mut) {
   # Join gene ranges with overlapping MUT/REF fragments
   olap_mut <- plyranges::join_overlap_left(olap, frag_obj_mut)
@@ -2562,6 +2610,7 @@ process_cnv_mut <- function(olap, frag_obj_mut) {
 #' Helper function for plotting CNV and mutational data
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom ggplot2 aes
+#' @noRd
 annotate_cnv_mut <- function(p, olap_df, segment_line_size,
                              output_file, ggsave_params, ...) {
   cat("CN plot with integrated mutational information:\n",
