@@ -43,6 +43,6 @@ It supports integration with mutation data and allows for downsampling of
 reference based (i.e., non-mutant) motifs to balance the dataset.
 }
 \examples{
-callMotif(frag_obj = myData, genome_label = "hg38", motif_type = "s",
+callMotif(frag_obj = myData, motif_type = "s",
           motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
 }

@@ -1090,7 +1090,7 @@ process_duplicate_read_pairs <- function(genomic_data, mut_fragments_only) {
 #' Function to subset alignments to mutational positions
 #' @importFrom GenomicAlignments readGAlignmentPairs
 #' @importFrom GenomicAlignments readGAlignmentPairs strandMode seqnames strand
-#' @importFrom GenomeInfoDb Seqinfo merge seqinfo keepSeqlevels
+#' @importFrom GenomeInfoDb merge seqinfo keepSeqlevels
 #' @importFrom S4Vectors isSingleStringOrNA
 #' @importFrom Rsamtools ScanBamParam
 #' @import magrittr
@@ -1124,7 +1124,7 @@ bam_to_galp_mut <- function(bamfile,
   if (isSingleStringOrNA(genome)) {
     genome <- Seqinfo(genome = genome)
   }
-  seqinfo(galp) <- merge(seqinfo(galp), genome)
+  seqinfo(galp) <- merge(GenomeInfoDb::seqinfo(galp), genome)
 
   # strandMode should be one for downstream operations
   stopifnot(GenomicAlignments::strandMode(galp) == 1)
@@ -1165,6 +1165,7 @@ make_granges <- function(loci) {
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr replace_na
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
+#' @importFrom GenomeInfoDb seqinfo
 process_mutation_fragments <- function(
             bamfile = bamfile,
             genome = genome,
@@ -1332,7 +1333,7 @@ process_mutation_fragments <- function(
            mutation_status, mutation_locus_bq)
 
   # Extract Seqinfo from the existing frag GRanges object to add it back later
-  seqinfo_frag <- seqinfo(frag)
+  seqinfo_frag <- GenomeInfoDb::seqinfo(frag)
 
   # Generate the dataframe containing fragment length data
   frag <- process_duplicate_read_pairs(
@@ -1517,7 +1518,8 @@ create_empty_galp <- function() {
 #' @importFrom GenomeInfoDb seqinfo
 get_genome_reference <- function(frag_obj_mut) {
   # Extract genome sequence from GRanges object's seqinfo
-  genome_seq <- unique(as.character(seqinfo(frag_obj_mut)@genome))
+  genome_seq <- unique(
+    as.character(GenomeInfoDb::seqinfo(frag_obj_mut)@genome))
   
   # Define genome versions and corresponding BSgenome data packages
   genome_versions <- c("GRCh38", "hg38-NCBI", "hg38", "hg19")

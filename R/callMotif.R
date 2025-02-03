@@ -8,6 +8,7 @@
 #' @import tibble
 #' @import purrr
 #' @import tidyr
+#' @import GenomeInfoDb
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr all_of
 #' @importFrom tidyr expand_grid unite
@@ -28,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' callMotif(frag_obj = myData, genome_label = "hg38", motif_type = "s",
+#' callMotif(frag_obj = myData, motif_type = "s",
 #'           motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
 callMotif <- function(frag_obj,
                       motif_type = "s",
@@ -45,7 +46,7 @@ callMotif <- function(frag_obj,
   # Select the appropriate genome reference
   bsgenome_obj <- get_genome_reference(frag_obj_mut)
 
-  genome_label <- genome@metadata$genome
+  genome_label <- bsgenome_obj@metadata$genome
 
   message("You reference genome was set to ", genome_label, "!")
 
