@@ -5,16 +5,18 @@
 #' Rsamtools pileup methods. User-defined parameters customize the operation.
 #' Outputs a .tsv file with columns: chr, start, end, ref, alt. This file can
 #' serve as input to the readBAM() function's mutation_file parameter.
-#' @importFrom parallel mclapply detectCores
+#' @importFrom parallel mclapply detectCores makeCluster clusterEvalQ
+#' @importFrom parallel clusterExport parLapply stopCluster
 #' @importFrom Rsamtools pileup BamFile ScanBamParam PileupParam
 #' @importFrom GenomicRanges GRanges
 #' @importFrom IRanges IRanges
 #' @importFrom dplyr select
 #' @importFrom BSgenome getSeq
 #' @importFrom utils write.table
+#' @importFrom GenomeInfoDb seqlengths genome seqinfo
 #'
 #' @param bamfile The path to the BAM file or a BamFile object.
-#' @param genome The genome or BSgenome object corresponding to the BAM file.
+#' @param genome The BSgenome object corresponding to the BAM file.
 #' @param chromosome_to_keep A vector of chromosome identifiers to process.
 #' @param galp_flag A ScanBamFlag object detailing
 #' the flag settings for BAM file scanning.
@@ -135,7 +137,7 @@ pileupMismatches <- function(
     }
     
     # Extract chromosome length from the BSgenome object
-    chr_length <- seqlengths(genome)[chr]
+    chr_length <- GenomeInfoDb::seqlengths(genome)[chr]
     
     # Check if chromosome exists in the BSgenome object
     if (is.na(chr_length)) {

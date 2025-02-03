@@ -2,8 +2,6 @@
 #' @import ggplot2
 #' @import tibble
 #' @importFrom dplyr n
-#' @import TxDb.Hsapiens.UCSC.hg38.knownGene
-#' @import TxDb.Hsapiens.UCSC.hg19.knownGene
 #' @import Homo.sapiens
 #' @importFrom rlang has_name
 #' @importFrom magrittr '%>%'

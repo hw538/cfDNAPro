@@ -17,7 +17,7 @@ pileupMismatches(
 \arguments{
 \item{bamfile}{The path to the BAM file or a BamFile object.}
 
-\item{genome}{The genome or BSgenome object corresponding to the BAM file.}
+\item{genome}{The BSgenome object corresponding to the BAM file.}
 
 \item{chromosome_to_keep}{A vector of chromosome identifiers to process.}
 
