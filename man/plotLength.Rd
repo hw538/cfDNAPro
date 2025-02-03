@@ -2,13 +2,13 @@
 % Please edit documentation in R/plotLength.R
 \name{plotLength}
 \alias{plotLength}
-\title{plot fragment length profile}
+\title{Plot fragment length profile}
 \usage{
 plotLength(
   x,
   plot_type = c("Fraction"),
   xlim = c(30, 500),
-  ylim,
+  ylim = NULL,
   x_breaks,
   x_labels,
   vline,
@@ -20,45 +20,59 @@ plotLength(
   vline_type = "dashed",
   vline_size = 0.7,
   area_highlight = NULL,
+  output_file = NULL,
+  ggsave_params = list(width = 10, height = 11, dpi = 500, bg = "white", unit = "cm"),
   ...
 )
 }
 \arguments{
-\item{x}{}
+\item{x}{Data to be plotted.}
 
-\item{plot_type}{}
+\item{plot_type}{Type of plot to generate (e.g., 'count' or 'fraction').}
 
-\item{xlim}{}
+\item{xlim}{Limits for the x-axis.}
 
-\item{ylim}{}
+\item{ylim}{Limits for the y-axis.}
 
-\item{x_breaks}{}
+\item{x_breaks}{Breaks for the x-axis.}
 
-\item{x_labels}{}
+\item{x_labels}{Labels for the x-axis.}
 
-\item{vline}{}
+\item{vline}{Position of vertical lines.}
 
-\item{add_vline}{}
+\item{add_vline}{Logical, whether to add vertical lines.}
 
-\item{line_color}{}
+\item{line_color}{Color of the plot lines.}
 
-\item{line_size}{}
+\item{line_size}{Size of the plot lines.}
 
-\item{line_alpha}{}
+\item{line_alpha}{Transparency of the plot lines.}
 
-\item{vline_color}{}
+\item{vline_color}{Color of the vertical lines.}
 
-\item{vline_type}{}
+\item{vline_type}{Type of the vertical lines (e.g., 'dashed').}
 
-\item{vline_size}{}
+\item{vline_size}{Size of the vertical lines.}
 
-\item{area_highlight}{}
+\item{area_highlight}{List specifying areas to highlight; each list element
+is a sublist specifying 'range', 'fill', and 'alpha'.}
 
-\item{...}{}
+\item{output_file}{File path and name for saving the output plot. Ensure the
+directory exists and is writable.}
+
+\item{ggsave_params}{A list of parameters for ggplot2::ggsave(). May include
+'width', 'height', 'dpi', etc. Use named elements in the list to specify.}
+
+\item{...}{Additional parameters for the plotting function.}
 }
 \value{
-ggplot2 object
+A ggplot2 object that can be further modified or saved.
 }
 \description{
-plot fragment length profile
+Plot fragment length profile
+}
+\examples{
+# Assuming 'data' is a dataframe with 'insert_size' and 'value' columns:
+plotLength(data, plot_type = "fraction", xlim = c(100, 500), ylim = c(0, 1),
+           x_breaks = seq(100, 500, by = 50), add_vline = TRUE, vline = 150)
 }

@@ -1,30 +1,31 @@
-
-#' Randomly downsample bam file to a target depth
-#' 
+#' Randomly Downsample BAM File to a Target Depth
+#'
+#' Downsampling a BAM file to achieve a specified sequencing depth. Exports the
+#' data as a BAM file and/or an RDS file containing a `GAlignmentPairs` object.
+#'
 #' @importFrom rtracklayer export
 #' @importFrom Rsamtools BamFile 
 #'
-#' @param bamfile String. A bam file. 
-#' @param genome Single String or NA. Supported values: "hg19", "hg38", or "GRCh38".
-#' Used for setting the seqinfo in the resulting GALP object.
-#' @param input_depth Numerical. If not supplied, infer the depth based on the 
-#' total mapped paired reads in the input bam file.
-#' @param input_mapped_reads_count Numerical. If not supplied, infer the depth based on the 
-#' total mapped reads in the input bam file.
-#' @param output_depth Numerical. Default is 0.1, which mean 0.1x target depth 
-#' after downsampling. 
-#' @param output_type Vector. Default is c("bam", "rds"), which means saving 
-#' the downsampled bam as bam file AND rds file (i.e. GAlignmentPairs object).
-#' @param output_dir String. If not supplied, it will be set as the same folder 
-#' with input bamfile. 
-#' @param return_result Boolean. TRUE(default) means the result will be returned
-#' as an R object to console or the designated object.
-#' @param ... further parameters for bam_to_galp2 function.
+#' @param bamfile Path to a BAM file.
+#' @param genome Supported values: "hg19", "hg38", "GRCh38", or NA. Sets seqinfo.
+#' @param input_depth Target depth, inferred if not supplied.
+#' @param input_mapped_reads_count Mapped reads count to infer depth if not supplied.
+#' @param output_depth Target output depth after downsampling, default is 0.1.
+#' @param output_type Output file formats, default is c("bam", "rds").
+#' @param output_dir Directory for output files, defaults to input file directory.
+#' @param return_result If TRUE (default), returns result as an R object.
+#' @param ... Additional parameters for `bam_to_galp2` function.
 #'
-#' @return GAlignmentPairs object containg the downsampled reads.
+#' @return `GAlignmentPairs` object with the downsampled reads if return_result.
 #' @export 
 #'
 #' @examples
+#' \dontrun{
+#'   # Downsample a BAM file to 10% of its original depth
+#'   result <- downsampleBam("/path/to/your.bam", genome = "hg38",
+#'                           output_depth = 0.1, output_type = c("bam", "rds"),
+#'                           return_result = TRUE)
+#' }
 
 downsampleBam <- function(bamfile, 
                           genome = NA_character_,

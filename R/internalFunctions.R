@@ -598,17 +598,20 @@ remove_outward_facing_readpairs <- function(galp) {
         RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
                     GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
     
-    # Combine RF and FR inward read pairs
+    # Combine inward read pairs and sort by original order
+    inward_ids <- c(names(FR_galp_inward), names(RF_galp_inward))
     galp_corrected <- c(FR_galp_inward, RF_galp_inward)
     
+    # Reorder based on the original order of `galp`
+    galp_corrected <- galp_corrected[match(names(galp), inward_ids, nomatch = 0)]
+
     return(galp_corrected)
-    
 }
 
 
 #' @importFrom BiocGenerics start end strand
 curate_start_and_end <- function(galp)  {
-    message("Correcting start and end coordinates of fragments ...")
+    message("Correcting start and end coordinates of fragments...")
     get_start <- function(galp_object) {
         ifelse(
             strand(GenomicAlignments::first(galp_object)) == "+",
@@ -625,12 +628,13 @@ curate_start_and_end <- function(galp)  {
         )
     }
     
-    # Add the strand information back to fragmentwise object
+    # Add the strand and mutation locus information back to fragmentwise object
     fragmentwise <-  GRanges(
         seqnames = seqnames(GenomicAlignments::first(galp)),
         ranges = IRanges(start = get_start(galp),
                          end = get_end(galp)),
-        strand = strand(galp)
+        strand = strand(galp),
+        which_label.first = mcols(GenomicAlignments::first(galp))$which_label
     )
     
     return(fragmentwise)
@@ -654,7 +658,7 @@ get_out_of_bound_index <- function (x) {
 }
 
 remove_out_of_bound_reads <- function(granges_object){
-    message("Removing out-of-bound reads ...")
+    message("Removing out-of-bound reads...")
     idx <-get_out_of_bound_index(granges_object)
     if(length(idx) != 0L)  granges_object <- granges_object[-idx]
     return(granges_object)
@@ -736,5 +740,6 @@ get_motif <- function(obj,
 rleid_cfdnapro <- function(x) {
   1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
 }
+
 
 

@@ -1,118 +1,128 @@
-
 #' Call Motif
-#' @import dplyr tibble purrr tidyr
-#' @param fragment_obj 
-#' @param genome_label 
-#' @param motif_type 
-#' @param motif_length 
-#' @param ... 
 #'
-#' @return tibble object
+#' This function analyzes motifs within DNA sequences
+#' based on specified criteria.
+#' It supports integration with mutation data and allows for downsampling of
+#' reference based (i.e., non-mutant) motifs to balance the dataset.
+#'
+#' @import tibble
+#' @import purrr
+#' @import tidyr
+#' @import GenomeInfoDb
+#' @importFrom magrittr '%>%'
+#' @importFrom dplyr all_of
+#' @importFrom tidyr expand_grid unite
+#'
+#' @param frag_obj GRanges object containing DNA fragment information.
+#' @param motif_type Character string describing the type of motifs to analyze.
+#' @param motif_length An integer specifying the length of the motifs.
+#' @param integrate_mut Logical, indicates whether to integrate mutational data.
+#' @param ref_type Specifies the type of reference fragments for comparison
+#' with MUT fragments: 'locus_fragment' refers to fragments/read-pairs
+#' overlapping specific mutation loci, 'outer_fragment' refers to
+#' fragments/read-pairs that do not overlap indicated mutation loci.
+#' @param downsample_ref Logical, if TRUE, downsamples reference motifs to match
+#'        the count of mutant motifs.
+#' @param ... Additional parameters passed to underlying functions.
+#'
+#' @return Returns a tibble containing the results of the motif analysis.
 #' @export
 #'
 #' @examples
-callMotif <- function(fragment_obj, 
-                      genome_label  = "hg19", 
+#' callMotif(frag_obj = myData, motif_type = "s",
+#'           motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
+callMotif <- function(frag_obj,
                       motif_type = "s",
-                      motif_length = 3L, 
+                      motif_length = 3L,
+                      integrate_mut = FALSE,
+                      ref_type = "locus_fragment",
+                      downsample_ref = FALSE,
                       ...) {
-  
+
   motif_length <- as.numeric(motif_length)
-  
-  message("Started to extract ", paste0(motif_type, motif_length)," motif..." )
+
+  message("Started to extract ", paste0(motif_type, motif_length), " motif...")
+
+  # Select the appropriate genome reference
+  bsgenome_obj <- get_genome_reference(frag_obj_mut)
+
+  genome_label <- bsgenome_obj@metadata$genome
+
   message("You reference genome was set to ", genome_label, "!")
-  
-  # select the correct reference genome.
-  
-  if (genome_label == "hg19") {
-    
-    bsgenome_obj <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-    
-  }else if (genome_label == "hg38") {
-    
-    bsgenome_obj <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
-    
-  }else if (genome_labe == "hg38-NCBI") {
-    
-    bsgenome_obj <-BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
-    
+
+  if (integrate_mut == TRUE) {
+
+    # Integrating mutational data
+    integrate_motif_mut(
+      frag_obj, downsample_ref, ref_type,
+      bsgenome_obj, motif_type, motif_length)
+
+  } else {
+
+    # Default processing without mutational data
+    processMotif(
+      frag_obj, bsgenome_obj,
+      motif_type, motif_length)
+
   }
-  
-  # extract the motif to a vector
-  
-  motif <- get_motif(obj = fragment_obj, 
-                      genome = bsgenome_obj, 
-                      motif_type = motif_type,
-                      motif_length = motif_length
-                      )
-  
-  # summarize the vector and convert to tibble format 
-  
-  result <- table(motif) %>% 
-    tibble::as_tibble() 
-  
-  # validate results
-  
+}
+
+#' Helper function to process the motif data
+processMotif <- function(frag_obj, bsgenome_obj, motif_type, motif_length) {
+
+  # Extract the motif to a vector
+  motif <- get_motif(obj = frag_obj,
+                     genome = bsgenome_obj,
+                     motif_type = motif_type,
+                     motif_length = motif_length)
+
+  # Summarize the vector and convert to tibble format
+  result <- table(motif) %>%
+    tibble::as_tibble()
+
   # Create a vector of elements
   pos <- c("C", "G", "A", "T")
   base_index <- seq.int(1, motif_length, by = 1)
-  
+
   letter_list <- lapply(base_index, function(x, y) return(y), y = pos) %>%
     setNames(paste0("base", base_index))
-  
-  motif_ref <- purrr::cross_df(letter_list)  %>%
-    tidyr::unite(col = "motif", all_of(base_index), sep = "")
-  
-  # report abnormal motifs. 
-  # i.e. ambiguous base in motif and/or missing motif
-  
-  #handle ambiguous motif(s)
-  
+
+  motif_ref <- expand_grid(!!!letter_list) %>%
+    unite(col = "motif", all_of(base_index), sep = "")
+
+  # Report abnormal motifs.
+  # Handle ambiguous motif(s)
   ambiguous_motif <- dplyr::anti_join(result, motif_ref, by = "motif")
   missing_motif <- dplyr::anti_join(motif_ref, result, by = "motif")
-  
-  if(nrow(ambiguous_motif) != 0) {
-    message("ambiguous motif (i.e. 'N' base exists) detected: ")
+
+  if (nrow(ambiguous_motif) != 0) {
+    message("ambiguous motif (i.e., 'N' base exists) detected: ")
     print(ambiguous_motif)
-    
-    
-    result <- dplyr::filter(result, 
-                            !stringr::str_detect(motif, "N"))
-    
+
+    result <- dplyr::filter(result, !stringr::str_detect(motif, "N"))
     message("Ambiguous motif(s) removed from result!")
   }
-  
-  # handle missing motif(s)
-  
-  if(nrow(missing_motif) != 0) {
+
+  # Handle missing motif(s)
+  if (nrow(missing_motif) != 0) {
     message("Missing motif detected: ")
     print(missing_motif)
-    
+
     result <- dplyr::right_join(result, motif_ref, by = "motif") %>%
-      tidyr::replace_na(replace = list(n = 0)) 
-    
+      tidyr::replace_na(list(n = 0))
+
     message("Missing motif added back to the final result with count of 0!")
-    
   }
 
-  # calculate the fraction
+  # Calculate the fraction
   result_frac <- result %>%
-    dplyr::mutate(fraction = n / sum(n))
-  
-  # set the factor level of motifs
-  result_frac$motif <- factor(result_frac$motif,  levels = sort(motif_ref$motif))
-  
+    dplyr::mutate(fraction = .data$n / sum(.data$n))
+
+  # Set the factor level of motifs
+  result_frac$motif <- factor(result_frac$motif, levels = sort(motif_ref$motif))
+
   message("Job completed successfully. ")
+
   return(result_frac)
-  
 }
-
-
-
-
-
-
-
-
-
 

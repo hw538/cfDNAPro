@@ -2,37 +2,56 @@
 % Please edit documentation in R/plotMotif.R
 \name{plotMotif}
 \alias{plotMotif}
-\title{plot motif count or fraction as bar plot}
+\title{Plot Motif Count or Fraction as Bar Plot}
 \usage{
 plotMotif(
   x,
-  ylim,
+  ylim = NULL,
   x_title = "Motif",
   plot_type = c("Fraction"),
   bar_color = c(A = "cornflowerblue", C = "darksalmon", G = "palevioletred2", T =
     "forestgreen"),
   motif_levels = c("C", "G", "A", "T"),
+  output_file = NULL,
+  ggsave_params = list(width = 16, height = 4, unit = "cm", bg = "white", dpi = 500),
   ...
 )
 }
 \arguments{
-\item{x}{}
+\item{x}{Object containing the data to plot.}
 
-\item{ylim}{}
+\item{ylim}{Numeric vector of length 2 providing y axis limits.}
 
-\item{x_title}{}
+\item{x_title}{Character string, title for the x axis.}
 
-\item{plot_type}{}
+\item{plot_type}{Character string specifying the type of plot: 'count' or 
+'fraction'.}
 
-\item{bar_color}{}
+\item{bar_color}{Color to be used for bars in the plot.}
 
-\item{motif_levels}{}
+\item{motif_levels}{Character vector specifying the order and inclusion of
+motif levels.}
 
-\item{...}{}
+\item{output_file}{Optional string specifying the path and filename 
+where the plot should be saved. Include the file extension, such as '.png' or 
+'.pdf'.}
+
+\item{ggsave_params}{List of parameters to be passed to `ggplot2::ggsave()`.
+This list can include any of the arguments that `ggsave()` accepts.
+Example: `list(width = 10, height = 8, dpi = 300)`}
+
+\item{...}{Additional arguments passed on to `geom_bar()`.}
 }
 \value{
-ggplot2 object
+Returns a `ggplot2` object.
 }
 \description{
-plot motif count or fraction as bar plot
+Creates a bar plot to visualize motif counts or fractions from genomic data.
+Uses `ggplot2` for plotting and `tidyr` and `dplyr` for data manipulation.
+}
+\examples{
+\dontrun{
+  plot <- plotMotif(data, ylim = c(0, 20), x_title = "Motif",
+                    plot_type = "count", bar_color = "blue")
+}
 }

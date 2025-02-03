@@ -2,20 +2,26 @@
 % Please edit documentation in R/callCNV.R
 \name{callCNV}
 \alias{callCNV}
-\title{call copy number variation using QDNAseq utilities}
+\title{Call Copy Number Variation Using QDNAseq Utilities}
 \usage{
-callCNV(bamfile, bin_size = 1000, genome_label = "hg19")
+callCNV(bamfile, bin_size = 1000, genome_label = "hg38")
 }
 \arguments{
-\item{bamfile}{string. path to a single bam file.}
+\item{bamfile}{A string specifying the path to a single BAM file.}
 
-\item{bin_size}{numerical. available options are}
+\item{bin_size}{A numerical value indicating the size of the bins (default is 1000).}
 
-\item{genome_label}{}
+\item{genome_label}{A string specifying the genome label (default is "hg19").}
 }
 \value{
-QDNAseqCopyNumbers object
+A `QDNAseqCopyNumbers` object containing the copy number variation results.
 }
 \description{
-call copy number variation using QDNAseq utilities
+This function leverages QDNAseq to process BAM files for copy number variation analysis. 
+It applies a sequence of operations including binning, filtering, correcting, normalizing, 
+smoothing, segmenting, and calling to generate a QDNAseqCopyNumbers object.
+}
+\examples{
+callCNV(bamfile = "path/to/your/file.bam", bin_size = 1000, genome_label = "hg19")
+
 }
