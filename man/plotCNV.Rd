@@ -6,8 +6,9 @@
 \usage{
 plotCNV(
   x,
-  gene_to_highlight = list(ENTREZID = NULL, ENSEMBL = NULL, SYMBOL = c("EGFR", "ERBB2")),
-  genome = "hg19",
+  frag_obj_mut = NULL,
+  gene_to_highlight = list(ENTREZID = NULL, ENSEMBL = NULL, SYMBOL = c("BRAF")),
+  genome = "hg38",
   ylim = c(-2, 2),
   chromosome = c(seq(1, 22, 1), "X"),
   point_color = c(Loss = "royalblue", Deletion = "darkblue", Neutral = "darkgrey",
@@ -27,21 +28,30 @@ plotCNV(
   legend_position = "none",
   x_axis_expand = c(0.1, 0.1),
   y_axis_expand = c(0, 0),
+  text_size = 1.6,
+  output_file,
+  ggsave_params = list(width = 16, height = 4, unit = "cm", dpi = 900),
   ...
 )
 }
 \arguments{
-\item{x}{QDNAseqCopyNumbers object}
+\item{x}{QDNAseqCopyNumbers object.}
+
+\item{frag_obj_mut}{GRanges, optional. A GRanges object containing
+annotated mutation locus information. If provided, it annotates selected
+genes with counts of reference and mutant base fragments for specific
+SNVs within those regions. For detailed analysis instructions and
+generating a GRanges object, see the `readBam()` function.}
 
 \item{gene_to_highlight}{A named list.}
 
-\item{genome}{string. hg19 or hg38}
+\item{genome}{string. hg19 or hg38.}
 
 \item{ylim}{vector. default is c(-2, 2).}
 
-\item{chromosome}{vector, default is c(seq(1, 22, 1), "X").}
+\item{chromosome}{vector. default is c(seq(1, 22, 1), "X").}
 
-\item{point_color}{named vector}
+\item{point_color}{named vector.}
 
 \item{x_title}{string.}
 
@@ -73,6 +83,15 @@ plotCNV(
 
 \item{y_axis_expand}{numerical vector. default is c(0, 0).}
 
+\item{output_file}{string, optional Full path and filename for the output
+plot, including the file extension like ".png" or ".pdf". Ensure the
+directory exists and is writable.}
+
+\item{ggsave_params}{A list of parameters to be passed to ggplot2::ggsave().
+This list can include any of the arguments that 'ggsave()' accepts.
+Default settings of 'ggsave()' will be used unless specified.
+Example: 'list(width = 10, height = 8, dpi = 300)'}
+
 \item{...}{Other params to geom_txt_repel()}
 }
 \value{
@@ -89,5 +108,5 @@ p <- plotCNV(bamfile = "/path/to/bamfile.bam")
 
 }
 \author{
-Haichao Wang
+Haichao Wang, Paulius D. Mennea
 }

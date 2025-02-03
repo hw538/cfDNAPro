@@ -5,27 +5,44 @@
 \title{Call Motif}
 \usage{
 callMotif(
-  fragment_obj,
-  genome_label = "hg19",
+  frag_obj,
   motif_type = "s",
   motif_length = 3L,
+  integrate_mut = FALSE,
+  ref_type = "locus_fragment",
+  downsample_ref = FALSE,
   ...
 )
 }
 \arguments{
-\item{fragment_obj}{}
+\item{frag_obj}{GRanges object containing DNA fragment information.}
 
-\item{genome_label}{}
+\item{motif_type}{Character string describing the type of motifs to analyze.}
 
-\item{motif_type}{}
+\item{motif_length}{An integer specifying the length of the motifs.}
 
-\item{motif_length}{}
+\item{integrate_mut}{Logical, indicates whether to integrate mutational data.}
 
-\item{...}{}
+\item{ref_type}{Specifies the type of reference fragments for comparison
+with MUT fragments: 'locus_fragment' refers to fragments/read-pairs
+overlapping specific mutation loci, 'outer_fragment' refers to
+fragments/read-pairs that do not overlap indicated mutation loci.}
+
+\item{downsample_ref}{Logical, if TRUE, downsamples reference motifs to match
+the count of mutant motifs.}
+
+\item{...}{Additional parameters passed to underlying functions.}
 }
 \value{
-tibble object
+Returns a tibble containing the results of the motif analysis.
 }
 \description{
-Call Motif
+This function analyzes motifs within DNA sequences
+based on specified criteria.
+It supports integration with mutation data and allows for downsampling of
+reference based (i.e., non-mutant) motifs to balance the dataset.
+}
+\examples{
+callMotif(frag_obj = myData, genome_label = "hg38", motif_type = "s",
+          motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
 }

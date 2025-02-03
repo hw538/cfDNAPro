@@ -5,6 +5,7 @@ Version: 1.7.1
 biocViews: Visualization, Sequencing, WholeGenome
 Authors@R: c(
     person("Haichao","Wang", email="hw538@cam.ac.uk", role =c("aut","cre")),
+    person("Paulius D.","Mennea", email="paulius.mennea@cruk.cam.ac.uk", role =c("ctb")),
     person("Hui","Zhao", email="hui.zhao@cruk.cam.ac.uk", role =c("ctb")),
     person("Elkie","Chan", email="elkie.chan@cruk.cam.ac.uk", role =c("ctb")),
     person("Christopher", "Smith", email="christopher.smith@cruk.cam.ac.uk", role = c("ctb")),
@@ -32,7 +33,6 @@ Imports:
     quantmod (>= 0.4),
     ggplot2 (>= 3.2.1),
     Rsamtools (>= 2.4.0),
-    Biostrings,
     rlang (>= 0.4.0),
     BSgenome.Hsapiens.UCSC.hg38,
     BSgenome.Hsapiens.UCSC.hg19,
@@ -53,7 +53,7 @@ Suggests:
     testthat
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 VignetteBuilder: knitr
 URL: https://github.com/hw538/cfDNAPro
 BugRePORTS: https://github.com/hw538/cfDNAPro/issues

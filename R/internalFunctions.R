@@ -575,40 +575,12 @@ bam_to_galp <- function(bamfile,
 
 
 
-remove_outward_facing_readpairs <- function(galp) {
-    message("Removing outward facing fragments ...")
-    # Get FR read pairs(i.e. first read aligned to positive strand)
-    
-    FR_id <-
-        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "+")
-    FR_galp <- galp[FR_id]
-    
-    # Get RF read pairs(i.e. second read aligned to positive strand)
-    RF_id <-
-        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "-")
-    RF_galp <- galp[RF_id]
-    
-    # Get FR inward facing pairs
-    FR_galp_inward <-
-        FR_galp[GenomicAlignments::start(GenomicAlignments::first(FR_galp)) <
-                    GenomicAlignments::end(GenomicAlignments::second(FR_galp))]
-    
-    # Get RF inward facing pairs
-    RF_galp_inward <-
-        RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
-                    GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
-    
-    # Combine RF and FR inward read pairs
-    galp_corrected <- c(FR_galp_inward, RF_galp_inward)
-    
-    return(galp_corrected)
-    
-}
+
 
 
 #' @importFrom BiocGenerics start end strand
 curate_start_and_end <- function(galp)  {
-    message("Correcting start and end coordinates of fragments ...")
+    message("Correcting start and end coordinates of fragments...")
     get_start <- function(galp_object) {
         ifelse(
             strand(GenomicAlignments::first(galp_object)) == "+",
@@ -625,12 +597,13 @@ curate_start_and_end <- function(galp)  {
         )
     }
     
-    # Add the strand information back to fragmentwise object
+    # Add the strand and mutation locus information back to fragmentwise object
     fragmentwise <-  GRanges(
         seqnames = seqnames(GenomicAlignments::first(galp)),
         ranges = IRanges(start = get_start(galp),
                          end = get_end(galp)),
-        strand = strand(galp)
+        strand = strand(galp),
+        which_label.first = mcols(GenomicAlignments::first(galp))$which_label
     )
     
     return(fragmentwise)
@@ -654,7 +627,7 @@ get_out_of_bound_index <- function (x) {
 }
 
 remove_out_of_bound_reads <- function(granges_object){
-    message("Removing out-of-bound reads ...")
+    message("Removing out-of-bound reads...")
     idx <-get_out_of_bound_index(granges_object)
     if(length(idx) != 0L)  granges_object <- granges_object[-idx]
     return(granges_object)
@@ -737,4 +710,37 @@ rleid_cfdnapro <- function(x) {
   1L + cumsum(dplyr::coalesce(x != dplyr::lag(x), FALSE))
 }
 
+
+
+
+
+remove_outward_facing_readpairs <- function(galp) {
+    message("Removing outward facing fragments...")
+    # Get FR read pairs(i.e. first read aligned to positive strand)
+    
+    FR_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "+")
+    FR_galp <- galp[FR_id]
+    
+    # Get RF read pairs(i.e. second read aligned to positive strand)
+    RF_id <-
+        BiocGenerics::which(strand(GenomicAlignments::first(galp)) == "-")
+    RF_galp <- galp[RF_id]
+    
+    # Get FR inward facing pairs
+    FR_galp_inward <-
+        FR_galp[GenomicAlignments::start(GenomicAlignments::first(FR_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::second(FR_galp))]
+    
+    # Get RF inward facing pairs
+    RF_galp_inward <-
+        RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
+                    GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
+    
+    # Combine RF and FR inward read pairs
+    galp_corrected <- c(FR_galp_inward, RF_galp_inward)
+    
+    return(galp_corrected)
+    
+}
 

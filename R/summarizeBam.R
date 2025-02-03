@@ -1,9 +1,6 @@
 
 #' Summarise descriptive Bam stats
 #'
-#' @import Biostrings
-#' @import Rsamtools
-#' @import dplyr
 #' @param bamfile  Bam file
 #' @param total_count Boolean. default = TRUE, which means calculating the total 
 #' number of reads. 
@@ -13,8 +10,6 @@
 #' @param duplicate_count 
 #' @param coverage_by_mapped 
 #' @param genome_length_bp 
-#' @param gc_metrics
-#' @param loci_coverage_metrics
 #' @param customized_count 
 #' @param customized_count_mapqFilter 
 #' @param customized_count_isPaired 
@@ -49,8 +44,6 @@ summarizeBam <- function(bamfile = NULL,
                          duplicate_count = TRUE,
                          coverage_by_mapped = TRUE,
                          genome_length_bp = 3200000000,
-                         gc_metrics = FALSE,
-                         loci_coverage_metrics = FALSE,
                          customized_count = FALSE,
                          customized_count_mapqFilter=NA_integer_,
                          customized_count_isPaired = NA, 
@@ -154,29 +147,6 @@ summarizeBam <- function(bamfile = NULL,
                                      coverage_by_mapped_reads = n_nucleotide_mapped / !!genome_length_bp )
   }
   
-  if(gc_metrics) {
-    
-    message("Calculate GC metrics...")
-    
-    gc_metrics <- gc_count(bamfile = bamfile)
-    
-    summary_metrics <- dplyr::full_join(summary_metrics, gc_metrics, 
-                                        by = "file")
-  }
-  
-  
-  if(loci_coverage_metrics) {
-    
-    message("Calculate loci coverage metrics...")
-    
-    ans <- get_loci_cov(bamfile = bamfile)
-    
-    summary_metrics <- dplyr::full_join(summary_metrics, ans, 
-                                        by = "file")
-  }
-  
-  
-  
   
   if(customized_count) {
     
@@ -262,96 +232,5 @@ bam_count <- function(bamfile, param , ...){
   result$n_nucleotide = as.numeric(result$n_nucleotide)
   return(result)
 }
-
-
-gc_count <- function(bamfile){
-  
-  gcFunction <- function(x){
-    alf <- alphabetFrequency(x, as.prob=FALSE)
-    rowSums(alf[, c("C", "G")])
-  }
-  
-  atgcFunction <- function(x){
-    alf <- Biostrings::alphabetFrequency(x, as.prob=FALSE)
-    rowSums(alf[, c("A", "T", "G", "C")])
-  }
-  param <- ScanBamParam(what="seq")
-  seqs <- scanBam(bamfile, param=param)
-  
-  readGC <- gcFunction(seqs[[1]][["seq"]])
-  readATGC <- atgcFunction(seqs[[1]][["seq"]])
-  
-  per_read_gc <- readGC / readATGC
-  per_bam_gc <- sum(readGC) / sum(readATGC)
-  mean_read_gc <- mean(per_read_gc, na.rm = TRUE)
-  sd_read_gc <- sd(per_read_gc, na.rm = TRUE)
-  median_read_gc <- median(per_read_gc, na.rm = TRUE)
-  
-  result <- tibble::tibble(
-    file = bamfile,
-    per_bam_gc = per_bam_gc,
-    mean_read_gc = mean_read_gc,
-    sd_read_gc = sd_read_gc,
-    median_read_gc = median_read_gc
-  )
-  
-  return(result)
-}
-
-
-# whole genome level metrics
-get_loci_cov <- function(
-    bamfile,
-    chr = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", 
-            "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", 
-            "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", 
-            "chr20", "chr21", "chr22", "chrX", "chrY", "chrM"),
-    quantile_positions = c(0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99)){
-  
-  res_cov <- GenomicAlignments::coverage(bamfile)
-  res_cov_filtered <- res_cov[names(res_cov) %in% chr]
-  combined_rle <- Reduce(c, res_cov_filtered) %>% as.numeric()
-  whole_genome_mean_cov <- mean(combined_rle, na.rm = TRUE)
-  whole_genome_median_cov <- median(combined_rle, na.rm = TRUE)
-  #whole_genome_sd_cov <- sd(combined_rle, na.rm = TRUE)
-  cov_metrics <- quantile(combined_rle, probs = quantile_positions) %>%
-    as.data.frame() %>%
-    t() %>% 
-    tibble::as_tibble()
-  cov_metrics <- cov_metrics %>%
-    add_column(all_loci_mean_cov = whole_genome_mean_cov, 
-               all_loci_median_cov = whole_genome_median_cov
-    ) %>%
-    add_column(file = bamfile)
-  return(cov_metrics)
-}
-
-
-# loci level metrics
-get_loci_cov_for_each_chr <- function(
-    bamfile,
-    chr = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", 
-            "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", 
-            "chr14", "chr15", "chr16", "chr17", "chr18", "chr19", 
-            "chr20", "chr21", "chr22", "chrX", "chrY", "chrM"),
-    quantile_positions = c(0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99)){
-  
-  res_cov <- GenomicAlignments::coverage(bamfile)
-  res_cov_filtered <- res_cov[names(res_cov) %in% chr]
-  #combined_rle <- Reduce(c, res_cov_filtered) %>% as.numeric()
-  mean_cov <- mean(res_cov_filtered, na.rm = TRUE)
-  median_cov <- median(res_cov_filtered, na.rm = TRUE)
-  sd_cov <- sd(res_cov_filtered, na.rm = TRUE)
-  cov_metrics <- quantile(res_cov_filtered, probs = quantile_positions) %>%
-    tibble::as_tibble(rownames = "chr")
-  cov_metrics <- cov_metrics %>%
-    add_column(all_loci_mean_cov = mean_cov, 
-               all_loci_median_cov = median_cov,
-               all_loci_sd_cov = sd_cov
-    ) %>%
-    add_column(file = bamfile)
-  return(cov_metrics)
-}
-
 
 
