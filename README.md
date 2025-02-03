@@ -113,6 +113,8 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 
 ## News
+### cfDNAPro 1.7.2 (Jan 2025)
+* Improved  various function for mutation annotation analysis etc
 ### cfDNAPro 1.7.1 (Jan 2025)
 * Improved the information and layout of this markdown quick start landing page
 ### cfDNAPro 1.7.1 (Aug 2024)
@@ -148,4 +150,4 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 
 Please cite package ‘cfDNAPro’ in publications:
 
-Haichao Wang, Paulius Mennea, Elkie Chan, Hui Zhao, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2024). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.7.1 <https://github.com/hw538/cfDNAPro>
+Haichao Wang, Paulius Mennea, Elkie Chan, Hui Zhao, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2024). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.7.2 <https://github.com/nrlab-CRUK/cfDNAPro>
