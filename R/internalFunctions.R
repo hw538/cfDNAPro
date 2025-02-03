@@ -711,11 +711,8 @@ rleid_cfdnapro <- function(x) {
 }
 
 
-
-
-
-remove_outward_facing_readpairs <- function(galp) {
-    message("Removing outward facing fragments...")
+function(galp) {
+    message("Removing outward facing fragments ...")
     # Get FR read pairs(i.e. first read aligned to positive strand)
     
     FR_id <-
@@ -737,10 +734,14 @@ remove_outward_facing_readpairs <- function(galp) {
         RF_galp[GenomicAlignments::start(GenomicAlignments::second(RF_galp)) <
                     GenomicAlignments::end(GenomicAlignments::first(RF_galp))]
     
-    # Combine RF and FR inward read pairs
+    # Combine inward read pairs and sort by original order
+    inward_ids <- c(names(FR_galp_inward), names(RF_galp_inward))
     galp_corrected <- c(FR_galp_inward, RF_galp_inward)
     
+    # Reorder based on the original order of `galp`
+    galp_corrected <- galp_corrected[match(names(galp), inward_ids, nomatch = 0)]
+
     return(galp_corrected)
-    
 }
+
 
