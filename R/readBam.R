@@ -144,8 +144,8 @@ readBam <- function(bamfile,
 
   # Verify if the GALP object contains no data
   if (length(galp) == 0) {
-      message("The GALP object is empty. Please revise the 'galp' parameter",
-              "or other input arguments and re-execute the function.")
+      stop("The GALP object is empty. Please revise the 'galp' parameter",
+              " or other input arguments and re-execute the function.")
   } else {
 
   ###########################################################################
@@ -254,10 +254,14 @@ bam_to_galp2 <- function(bamfile,
                                                  param = param,
                                                  with.which_label = FALSE)
 
+  # Message indicating successful read and possibly some details about 'galp'
+  message("BAM file has been read into galp.")
+
   # add genome information
   if (isSingleStringOrNA(genome)) {
-    genome <- Seqinfo(genome = genome)
+    genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
+
   seqinfo(galp) <- merge(seqinfo(galp), genome)
 
   # strandMode should be one for downstream operations

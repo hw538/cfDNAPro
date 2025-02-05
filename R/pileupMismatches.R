@@ -16,10 +16,12 @@
 #' @importFrom GenomeInfoDb seqlengths genome seqinfo
 #'
 #' @param bamfile The path to the BAM file or a BamFile object.
-#' @param genome The BSgenome object corresponding to the BAM file.
-#' @param chromosome_to_keep A vector of chromosome identifiers to process.
-#' @param galp_flag A ScanBamFlag object detailing
-#' the flag settings for BAM file scanning.
+#' @param genome The BSgenome object corresponding to the BAM file's genome.
+#' @param chromosome_to_keep Should be a character vector containing the
+#'    seqnames to be kept in the GRanges object or boolean FALSE.
+#'    FALSE means not filtering.
+#'    Default is paste0("chr", 1:22).
+#' @param galp_flag ScanBamFlag object for BAM file scanning flags.
 #' @param pileup_params A list containing parameters for the pileup operation,
 #'        including 'max_depth', 'min_base_quality', 'min_mapq',
 #'        'min_nucleotide_depth', 'min_minor_allele_depth',
@@ -47,6 +49,7 @@
 #'     chromosome_to_keep=chromosomes,
 #'     galp_flag=flags,
 #'     pileup_params=pileup_params,
+#'     num_cores=3
 #'     outfile=outfile
 #' )
 #' @export

@@ -192,6 +192,72 @@ read_mutation_file <- function(mutation_file) {
 }
 
 
+#' Function that generates a Mutation Table with summarised cfDNA fragment data
+#'
+#' This function processes a GRanges object, summarizing cfDNA fragment
+#' information for each target mutation locus.
+#' It annotates each locus with the number and type of supporting fragments.
+#' Each mismatch type is annotated with the median fragment length.
+#' Consensus mismatch is determined by selecting the most frequent mismatch,
+#' giving priority to the target mutation's ALT base over other bases.
+#' Consensus mismatch is used to derive the trinucleotide substitution (SBS96).
+#' The resulting table is written to a .tsv file.
+#'
+#' @import GenomicRanges
+#' @import dplyr
+#' @import BSgenome
+#' @import IRanges
+#' @import stringr
+#'
+#' @param frag_obj GRanges object containing genomic ranges and associated data.
+#' @param output_file Character string specifying the path/name of the output file.
+#'
+#' @return The path to the output file as a character string.
+#'
+#' @export
+#' 
+#' @examples
+#' output_path <- writeMutTable(gr, "output_directory", "output_filename")
+#' print(paste("File written to:", output_path))
+writeMutTable <- function(frag_obj, output_file) {
+
+  # Extract the directory path from the output file path
+  output_dir <- dirname(output_file)
+
+  # Check if the directory exists
+  if (dir.exists(output_dir)) {
+    message("The directory exists.")
+  } else {
+    stop("The directory does not exist. Please provide a valid directory path.")
+  }
+
+  trinuc_df <- callTrinucleotide(frag_obj = frag_obj)
+
+  # Adding informative columns for counts and fractions
+  trinuc_df <- trinuc_df %>%
+    mutate(
+      # Adding MUT_frag_count column
+      MUT_frag_count = CO_MUT + SO_MUT,
+
+      # Adding ALL_frag_count column
+      ALL_frag_count = CO_MUT + SO_MUT + CO_REF + SO_REF,
+
+      # Adding MUT_frag_fraction column
+      MUT_frag_fraction = round(MUT_frag_count / ALL_frag_count, 3)
+    )
+
+  # Write the dataframe to a .tsv file
+  write.table(trinuc_df,
+              file = output_file,
+              sep = "\t",
+              row.names = FALSE,
+              quote = FALSE)
+
+  # Print message indicating where the output is being written
+  message("The output of the function has been written to ", output_file)
+  return(output_file)
+}
+
 
 
 
@@ -1146,8 +1212,9 @@ bam_to_galp_mut <- function(bamfile,
 
   # add genome information
   if (isSingleStringOrNA(genome)) {
-    genome <- Seqinfo(genome = genome)
+    genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
+
   seqinfo(galp) <- merge(GenomeInfoDb::seqinfo(galp), genome)
 
   # strandMode should be one for downstream operations
