@@ -28,6 +28,7 @@
 #' @param frag_obj_mut GRanges object containing fragment and mutation data.
 #'
 #' @return dataframe with summarised mutational and trinucleotide data.
+#' @export
 #'
 #' @examples
 #' trinuc_df <-  callTrinucleotide(frag_obj_mut)

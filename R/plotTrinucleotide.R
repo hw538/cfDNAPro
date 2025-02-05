@@ -45,6 +45,7 @@
 #'   Example: 'list(width = 10, height = 8, dpi = 300)'
 #'
 #' @return A trinucleotide SBS plot object and an optional pdf file.
+#' @export
 #' @examples
 #' \dontrun{
 #'  plotTrinucleotide(trinuc_df)
