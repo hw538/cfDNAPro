@@ -113,6 +113,8 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 
 ## News
+### cfDNAPro 1.7.3 (Jan 2025)
+* Updated various functions for mutational analysis
 ### cfDNAPro 1.7.2 (Jan 2025)
 * Improved  various function for mutation annotation analysis etc
 ### cfDNAPro 1.7.1 (Jan 2025)

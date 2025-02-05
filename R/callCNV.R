@@ -1,9 +1,10 @@
 
 #' Call Copy Number Variation Using QDNAseq Utilities
 #'
-#' This function leverages QDNAseq to process BAM files for copy number variation analysis. 
-#' It applies a sequence of operations including binning, filtering, correcting, normalizing, 
-#' smoothing, segmenting, and calling to generate a QDNAseqCopyNumbers object.
+#' This function leverages QDNAseq to process BAM files for CNV analysis.
+#' It applies a sequence of operations including binning, filtering,
+#' correcting, normalizing, smoothing, segmenting, and calling to
+#' generate a QDNAseqCopyNumbers object.
 #'
 #' @import QDNAseq
 #' @importFrom dplyr filter
@@ -24,7 +25,7 @@
 callCNV <- function(
   bamfile,
   bin_size = 1000,
-  genome_label = "hg38"
+  genome_label = "hg19"
 ) {
 
   bins <- QDNAseq::getBinAnnotations(binSize = bin_size, genome = genome_label)

@@ -8,19 +8,19 @@ readBam(
   bamfile,
   curate_start_and_end = TRUE,
   use_names = TRUE,
-  chromosome_to_keep,
+  chromosome_to_keep = paste0("chr", 1:22),
   strand_mode = 1,
-  genome_label = "hg38",
-  outdir = FALSE,
+  genome_label = "hg19",
+  outdir = NA,
   galp_flag = Rsamtools::scanBamFlag(isPaired = TRUE, isDuplicate = FALSE,
     isSecondaryAlignment = FALSE, isUnmappedQuery = FALSE, isSupplementaryAlignment =
     FALSE),
-  galp_what = c("cigar", "mapq", "isize", "seq", "qual"),
+  galp_what = c("cigar", "mapq", "isize"),
   galp_tag = c("NM", "MD"),
   galp_mapqFilter = 40,
   galp_bqFilter = 20,
   mutation_file = NULL,
-  mut_fragments_only = TRUE,
+  mut_fragments_only = FALSE,
   ...
 )
 }

@@ -4,7 +4,7 @@
 \alias{callCNV}
 \title{Call Copy Number Variation Using QDNAseq Utilities}
 \usage{
-callCNV(bamfile, bin_size = 1000, genome_label = "hg38")
+callCNV(bamfile, bin_size = 1000, genome_label = "hg19")
 }
 \arguments{
 \item{bamfile}{A string specifying the path to a single BAM file.}
@@ -17,9 +17,10 @@ callCNV(bamfile, bin_size = 1000, genome_label = "hg38")
 A `QDNAseqCopyNumbers` object containing the copy number variation results.
 }
 \description{
-This function leverages QDNAseq to process BAM files for copy number variation analysis. 
-It applies a sequence of operations including binning, filtering, correcting, normalizing, 
-smoothing, segmenting, and calling to generate a QDNAseqCopyNumbers object.
+This function leverages QDNAseq to process BAM files for CNV analysis.
+It applies a sequence of operations including binning, filtering,
+correcting, normalizing, smoothing, segmenting, and calling to
+generate a QDNAseqCopyNumbers object.
 }
 \examples{
 callCNV(bamfile = "path/to/your/file.bam", bin_size = 1000, genome_label = "hg19")

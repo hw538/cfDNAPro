@@ -8,7 +8,7 @@ plotCNV(
   x,
   frag_obj_mut = NULL,
   gene_to_highlight = list(ENTREZID = NULL, ENSEMBL = NULL, SYMBOL = c("BRAF")),
-  genome = "hg38",
+  genome = "hg19",
   ylim = c(-2, 2),
   chromosome = c(seq(1, 22, 1), "X"),
   point_color = c(Loss = "royalblue", Deletion = "darkblue", Neutral = "darkgrey",
