@@ -185,7 +185,7 @@ read_mutation_file <- function(mutation_file) {
     # Remove mutations that are less than 1000 bp apart
     bed <- remove_clustered_mutations(bed)
 
-    return(head(bed))
+    return(bed)
   } else {
     stop(result)
   }
