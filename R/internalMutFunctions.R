@@ -1416,14 +1416,16 @@ process_mutation_fragments <- function(
   # Add the mutation locus basequalities
   reads_df <- process_base_qualities(reads_df)
 
-  # Filter the dataframe
-  reads_df <- reads_df %>%
-    filter(mutation_locus_bq >= galp_bqFilter)
-
   # Select only the specified columns
   reads_df <- reads_df %>%
     select(unique_read_pair_id, which_mutation,
            mutation_status, mutation_locus_bq)
+  
+  # Update mutation_status based on mutation_locus_bq compared to galp_bqFilter
+  reads_df <- reads_df %>%
+    mutate(mutation_status = if_else(mutation_locus_bq < galp_bqFilter, 
+                                     "failed_galp_bqFilter", 
+                                     mutation_status))
 
   # Extract Seqinfo from the existing frag GRanges object to add it back later
   seqinfo_frag <- GenomeInfoDb::seqinfo(frag)
@@ -1457,13 +1459,19 @@ process_mutation_fragments <- function(
                                    keep.extra.columns = TRUE,
                                    seqinfo = seqinfo_frag)
 
-  gr_meta <- suppressWarnings(mcols(frag))
+  # Check if mut_fragments_only is FALSE
+  if (!mut_fragments_only) {
 
-  gr_meta$target_mutation[is.na(gr_meta$target_mutation)] <- "outer_fragment"
-  gr_meta$mutation_status[is.na(gr_meta$mutation_status)] <- "outer_fragment"
-  gr_meta$mutation_locus_bq[is.na(
-    gr_meta$mutation_locus_bq)] <- "outer_fragment"
-  mcols(frag) <- gr_meta
+    gr_meta <- suppressWarnings(mcols(frag))
+    # Find indices where target_mutation is NA
+    na_indices <- which(is.na(gr_meta$target_mutation))
+
+    # Assign "outer_fragment" to specific columns at these indices
+    gr_meta$target_mutation[na_indices] <- "outer_fragment"
+    gr_meta$mutation_status[na_indices] <- "outer_fragment"
+    gr_meta$mutation_locus_bq[na_indices] <- "outer_fragment"
+    mcols(frag) <- gr_meta
+  }
 
   frag@metadata <- list("GRanges object with fragment and mutational data")
 
