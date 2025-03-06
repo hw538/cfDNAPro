@@ -44,7 +44,7 @@ callMotif <- function(frag_obj,
   message("Started to extract ", paste0(motif_type, motif_length), " motif...")
 
   # Select the appropriate genome reference
-  bsgenome_obj <- get_genome_reference(frag_obj_mut)
+  bsgenome_obj <- get_genome_reference(frag_obj)
 
   genome_label <- bsgenome_obj@metadata$genome
 
