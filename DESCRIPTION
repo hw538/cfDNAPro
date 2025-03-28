@@ -41,7 +41,11 @@ Imports:
     QDNAseq,
     QDNAseq.hg19,
     Homo.sapiens,
-    ggrepel
+    ggrepel,
+    ggpattern,
+    patchwork,
+    gsubfn,
+    plyr
 Suggests:
     scales,
     ggpubr,
