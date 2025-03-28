@@ -10,6 +10,8 @@ For in-depth documentation, please visit: https://cfdnapro.readthedocs.io/en/lat
 
 ## Which R version to use?
 As of 11 Jan 2025, some R package dependencies have not been able to support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
+When installing cfDNAPro, big dependencies will be downloaded, e.g., BSgenome.Hsapiens.NCBI.GRCh38, BSgenome.Hsapiens.UCSC.hg19, BSgenome.Hsapiens.UCSC.hg38,
+please set the timeout parameter by executing the following command in R console: `options(timeout = 300)  # Set timeout to 5 minutes (default is 60s)`
 
 ## Declaration  
 cfDNAPro is designed for research only.
