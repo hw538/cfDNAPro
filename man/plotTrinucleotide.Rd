@@ -13,7 +13,7 @@ plotTrinucleotide(
   show_overlap_type = TRUE,
   ylim = c(0, 0.5),
   plot_title = "Trinucleotide Profile",
-  y_axis_title = "Percentage of Single Base Substitutions",
+  y_axis_title = "Fraction of Single Base Substitutions",
   draw_x_axis_labels = TRUE,
   draw_y_axis_labels = TRUE,
   draw_y_axis_title = TRUE,

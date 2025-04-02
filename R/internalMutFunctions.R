@@ -865,13 +865,19 @@ add_base_info <- function(reads_df) {
 
       # For discordant cases, concatenate details from MDI first/last columns
       mutation_status = case_when(
-        # When discordant
-        str_detect(mutation_status, "discordant") ~ paste0(
-          mutation_status,
-          ":",
-          gsub(".*\\:", "", MDI_first_details),
-          "/",
-          gsub(".*\\:", "", MDI_last_details)),
+        # When discordant, process and replace "NA" within the string
+        str_detect(mutation_status, "discordant") ~ {
+          # Create the mutation detail string
+          mutation_detail = paste0(
+            mutation_status,
+            ":",
+            gsub(".*\\:", "", MDI_first_details),
+            "/",
+            gsub(".*\\:", "", MDI_last_details)
+          )
+          # Replace "NA" with ref_base within mutation_detail if it appears
+          str_replace_all(mutation_detail, "NA", ref_base)
+        },
 
         # When concordant readpair and mutations are detected as described
         str_detect(mutation_status,
@@ -886,6 +892,16 @@ add_base_info <- function(reads_df) {
                     paste0(mutation_status, ":",
                            gsub("^.*\\:", "", MDI_last_details)),
         (str_detect(mutation_status, "MUT:single_read") &
+                    mutation_location_present_first) ~
+                    paste0(mutation_status, ":",
+                           gsub("^.*\\:", "", MDI_first_details)),
+
+        # When there's a single read positive or negative with other mutation
+        (str_detect(mutation_status, "OTHER:single_read") &
+                    mutation_location_present_last) ~
+                    paste0(mutation_status, ":",
+                           gsub("^.*\\:", "", MDI_last_details)),
+        (str_detect(mutation_status, "OTHER:single_read") &
                     mutation_location_present_first) ~
                     paste0(mutation_status, ":",
                            gsub("^.*\\:", "", MDI_first_details)),
@@ -1269,7 +1285,7 @@ process_mutation_fragments <- function(
             chromosome_to_keep = chromosome_to_keep,
             mut_fragments_only = mut_fragments_only) {
 
-  # check if works
+  # Process only 'mut' fragments when other fragments exist
   if (!is.null(mutation_file) && !mut_fragments_only) {
       # Extract the count from the metadata
       metadata_string <- galp@metadata[[1]]
