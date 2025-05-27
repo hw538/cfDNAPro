@@ -5,13 +5,13 @@
 [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhw538%2FcfDNAPro&count_bg=%2379C83D&title_bg=%23555555&icon=github.svg&icon_color=%23E7E7E7&title=GitHub+view&edge_flat=true)](https://hits.seeyoufarm.com)
 
 ## Official tutorials
-This markdown aims to provide a quick start.
+This landing page aims to provide a quick start.
 For in-depth documentation, please visit: https://cfdnapro.readthedocs.io/en/latest/ 
 
 ## Which R version to use?
 As of 11 Jan 2025, some R package dependencies have not been able to support R version 4.4 yet. Please try R version 4.2 or 4.3 instead.
 When installing cfDNAPro, big dependencies will be downloaded, e.g., BSgenome.Hsapiens.NCBI.GRCh38, BSgenome.Hsapiens.UCSC.hg19, BSgenome.Hsapiens.UCSC.hg38,
-please set the timeout parameter by executing the following command in R console: `options(timeout = 300)  # Set timeout to 5 minutes (default is 60s)`
+To ensure its successful installation, you usually need to set the timeout parameter by running the following command in R before installing cfDNAPro: `options(timeout = 300)  # Set timeout to 5 minutes (default is 60s)`.
 
 ## Declaration  
 cfDNAPro is designed for research only.
@@ -152,6 +152,6 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 
 ## Citation
 
-Please cite package ‘cfDNAPro’ in publications:
+Please cite this paper:
 
-Haichao Wang, Paulius Mennea, Elkie Chan, Hui Zhao, Christopher G. Smith, Tomer Kaplan, Florian Markowetz, Nitzan Rosenfeld(2024). cfDNAPro:An R/Bioconductor package to extract and visualise cell-free DNA biological features. R package version 1.7.2 <https://github.com/nrlab-CRUK/cfDNAPro>
+Wang, H., Mennea, P.D., Chan, Y.K.E. et al. A standardized framework for robust fragmentomic feature extraction from cell-free DNA sequencing data. Genome Biol 26, 141 (2025). https://doi.org/10.1186/s13059-025-03607-5
