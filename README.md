@@ -115,7 +115,7 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 
 ## News
-### cfDNAPro paper is online!
+### cfDNAPro paper is online (May 2025)!
 * [Link to our Genome Biology paper](https://doi.org/10.1186/s13059-025-03607-5)
 ### cfDNAPro 1.7.3 (Jan 2025)
 * Updated various functions for mutational analysis
