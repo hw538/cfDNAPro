@@ -50,12 +50,9 @@ Data engineering depends on packges in the _tidyverse_ ecosystem, such as `dplyr
 All plots depend on `ggplot2` R packge.  
 
 For issues/inquiries, please contact:   
-__Nitzan Rosenfeld Lab admin mailbox__:  
-Rosenfeld.LabAdmin@cruk.cam.ac.uk  
-__Author__: Haichao Wang  
-wanghaichao2014@gmail.com  
-__Author__: Paulius D. Mennea  
-paulius.mennea@cruk.cam.ac.uk   
+__Nitzan Rosenfeld Lab admin mailbox__: Rosenfeld.LabAdmin@cruk.cam.ac.uk  
+Haichao Wang: wanghaichao2014@gmail.com  
+Paulius D. Mennea: paulius.mennea@cruk.cam.ac.uk   
 
 ## Installation
 
