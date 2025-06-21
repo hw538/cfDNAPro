@@ -56,14 +56,55 @@ SNV/SNP related questions: Paulius D. Mennea: paulius.mennea@cruk.cam.ac.uk
 
 ## Installation
 
-Please install our latest version(recommended):
+Use Docker or Singularity (recommended):
+Thanks zetian-jia for building the docker image,please refer to [github.com/zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker/)
+```bash
+#Step 1: Pull the Docker Image
+docker pull zetianjia/cfdnapro:1.7.3
+#Step 2: Launch R inside the Container
+docker run -it zetianjia/cfdnapro:1.7.3 R --no-save
 
-```R
-if (!require(devtools)) install.packages("devtools")
-library(devtools)
-devtools::install_github("hw538/cfDNAPro", build_vignettes = TRUE, dependencies = TRUE)
-# run below instead if you don't want to build vignettes inside R
-# devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, dependencies = FALSE)
+```
+Use anaconda to build an env using the following codes:
+```bash
+
+conda create -y cfdnapro_r4.3.3 r-base=4.3.3
+
+conda activate  cfdnapro_r4.3.3
+
+conda install -y -c conda-forge r-xml2 r-curl
+conda install -y -c conda-forge libgdal 
+conda install -y r::r-libgeos
+conda install -y -c conda-forge udunits2
+
+# Install devtools if it's not already installed
+Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools", repos = "https://cloud.r-project.org")'
+
+# IMPORTANT: Install Matrix version 1.6-5 (compatible with R 4.3)
+Rscript -e 'devtools::install_version("Matrix", version = "1.6-5", repos = "https://cloud.r-project.org")'
+
+# IMPORTANT: Install MASS version 7.3-58.35 (compatible with R 4.3)
+Rscript -e 'devtools::install_version("MASS", version = "7.3-58.3", repos = "https://cloud.r-project.org")'
+
+# IMPORTANT: Install units package version 0.8-2 (compatible with R 4.3)
+#Rscript -e 'devtools::install_version("units", version = "0.8-2", repos = "https://cloud.r-project.org")'
+
+# IMPORTANT: Install rtracklayer package version 0.8-2 (compatible with R 4.3)
+Rscript -e 'devtools::install_version("rtracklayer", version = "1.62.0", repos = "https://cloud.r-project.org")'
+
+
+Rscript -e 'if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman", repos = "https://cloud.r-project.org"); pacman::p_load(xml2, curl, httpuv, shiny, gh, gert, usethis, pkgdown, rcmdcheck, roxygen2, rversions, urlchecker, BiocManager)'
+
+# IMPORTANT: you have to set the timeout time as these packages are quite big, if timeout is too short, the installation might fail due to a slow downloading process
+Rscript -e 'options(timeout=3600); if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager"); BiocManager::install("OrganismDbi")'
+Rscript -e 'options(timeout=3600); pkgs <- c("GenomicAlignments", "rtracklayer", "GenomicFeatures", "BSgenome", "BSgenome.Hsapiens.UCSC.hg38", "BSgenome.Hsapiens.UCSC.hg19", "BSgenome.Hsapiens.NCBI.GRCh38", "Homo.sapiens", "plyranges", "TxDb.Hsapiens.UCSC.hg19.knownGene"); new <- pkgs[!pkgs %in% installed.packages()[,"Package"]]; if(length(new)) BiocManager::install(new)'
+
+Rscript -e 'pacman::p_load(car, mgcv, pbkrtest, quantreg, lme4, ggplot2, ggrepel, ggsci, cowplot, ggsignif, rstatix, ggpubr, patchwork,ggpattern)'
+Rscript -e 'devtools::install_github("asntech/QDNAseq.hg38@main")'
+
+# install cfDNAPro
+Rscript -e 'devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, force = TRUE)'
+
 
 ```
 
