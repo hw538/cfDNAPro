@@ -80,10 +80,7 @@ conda create -y cfdnapro_r4.3.3 r-base=4.3.3
 
 conda activate  cfdnapro_r4.3.3
 
-conda install -y -c conda-forge r-xml2 r-curl
-conda install -y -c conda-forge libgdal 
-conda install -y r::r-libgeos
-conda install -y -c conda-forge udunits2
+conda install -y -c conda-forge -c bioconda -c r r-base=4.3.3 r-devtools bioconductor-rtracklayer=1.62.0 r-s2 make gcc gxx gfortran pkg-config libcurl libxml2 openssl unzip zlib libpng libjpeg-turbo libtiff readline xorg-libx11 xorg-libxt tzdata libblas liblapack udunits2 cmake libxml2-devel-conda-x86_64  xz binutils libgdal libprotobuf r-libgeos geos proj protobuf libarchive
 
 # Install devtools if it's not already installed
 Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools", repos = "https://cloud.r-project.org")'
