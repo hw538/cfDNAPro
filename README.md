@@ -63,19 +63,19 @@ please refer to [github.com/zetian-jia/cfDNAPro_docker](https://github.com/zetia
 #### Docker
 ```bash
 #Step 1: Pull the Docker Image
-singularity pull docker://zetianjia/cfdnapro:1.7.3
+docker pull zetianjia/cfdnapro:1.7.3
 
 #Step 2: Launch R inside the Container
-singularity exec -e cfdnapro_1.7.3.sif R --no-save
+docker run -it zetianjia/cfdnapro:1.7.3 R --no-save
 ```
 
 #### Singularity
 ```bash
 #Step 1: Pull the Docker Image
-docker pull zetianjia/cfdnapro:1.7.3
+singularity pull docker://zetianjia/cfdnapro:1.7.3
 
 #Step 2: Launch R inside the Container
-docker run -it zetianjia/cfdnapro:1.7.3 R --no-save
+singularity exec -e cfdnapro_1.7.3.sif R --no-save
 ```
 
 ### Option 2: Use anaconda to build an env using the following codes:
