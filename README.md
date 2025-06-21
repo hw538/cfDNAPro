@@ -56,16 +56,29 @@ SNV/SNP related questions: Paulius D. Mennea: paulius.mennea@cruk.cam.ac.uk
 
 ## Installation
 
-Use Docker or Singularity (recommended):
-Thanks zetian-jia for building the docker image,please refer to [github.com/zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker/)
+### Option 1 (recommended): Use Docker or Singularity:
+Thanks zetian-jia for building the docker image,  
+please refer to [github.com/zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker/)
+
+#### Docker
+```bash
+#Step 1: Pull the Docker Image
+singularity pull docker://zetianjia/cfdnapro:1.7.3
+
+#Step 2: Launch R inside the Container
+singularity exec -e cfdnapro_1.7.3.sif R --no-save
+```
+
+#### Singularity
 ```bash
 #Step 1: Pull the Docker Image
 docker pull zetianjia/cfdnapro:1.7.3
+
 #Step 2: Launch R inside the Container
 docker run -it zetianjia/cfdnapro:1.7.3 R --no-save
-
 ```
-Use anaconda to build an env using the following codes:
+
+### Option 2: Use anaconda to build an env using the following codes:
 ```bash
 
 conda create -y cfdnapro_r4.3.3 r-base=4.3.3
