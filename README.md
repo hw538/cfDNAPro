@@ -203,4 +203,4 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 
 Please cite this paper:
 
-Wang, H., Mennea, P.D., Chan, Y.K.E. et al. A standardized framework for robust fragmentomic feature extraction from cell-free DNA sequencing data. Genome Biol 26, 141 (2025). https://doi.org/10.1186/s13059-025-03607-5
+Wang, H., Mennea, P.D., Chan, Y.K.E., Cheng, Z. et al. A standardized framework for robust fragmentomic feature extraction from cell-free DNA sequencing data. Genome Biol 26, 141 (2025). https://doi.org/10.1186/s13059-025-03607-5
