@@ -112,6 +112,20 @@ Rscript -e 'devtools::install_github("asntech/QDNAseq.hg38@main")'
 # install cfDNAPro
 Rscript -e 'devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, force = TRUE)'
 ```
+### Option 3: Your can try to install in your local R console:
+
+In R console (tested using R 4.5.2 locally), you can try to install with following methods: 
+```R
+options(timeout = 3600)
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  install.packages("devtools", repos = "https://cloud.r-project.org")
+}
+
+
+# Install cfDNAPro from GitHub
+devtools::install_github("hw538/cfDNAPro", build_vignettes = FALSE, force = TRUE)
+
+```
 
 ## Quick Start 1
 
