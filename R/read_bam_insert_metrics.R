@@ -1,17 +1,13 @@
 #' Calculate insert sizes from a curated GRanges object
 #' 
 #' @param bamfile The bam file name.
-#' @param genome_label The Genome you used in the alignment. 
-#'    Should be "hg19" or "hg38" or "hg38-NCBI. Default is "hg19". 
-#'    Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is 
-#'    Full genome sequences for Homo sapiens (Human) as provided by 
-#'    UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects; 
-#'    "hg38" will load BSgenome.Hsapiens.UCSC.hg38 package, which is 
-#'    Full genome sequences for Homo sapiens (Human) as provided by 
-#'    UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
-#'    "hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is 
-#'    full genome sequences for Homo sapiens (Human) as provided by 
-#'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
+#' @param genome_label The Genome you used in the alignment.
+#'    One of `"hg19"`, `"hg38"`, `"hg38-NCBI"`, or `"user_define"` (default `"hg19"`).
+#'    For built-in labels, the corresponding BSgenome data package is loaded;
+#'    for `"user_define"`, supply `genome`.
+#' @param genome When `genome_label = "user_define"`, a `BSgenome` object
+#'    matching the BAM reference. Otherwise optional; a `BSgenome` here is
+#'    ignored with a warning.
 #' @param outdir The path for saving rds file. Default is FALSE, i.e. not saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
@@ -47,6 +43,7 @@ read_bam_insert_metrics <- function(bamfile = NULL,
                                     chromosome_to_keep =paste0("chr", 1:22),
                                     strand_mode = 1,
                                     genome_label = "hg19",
+                                    genome = NULL,
                                     outdir = FALSE,
                                     isize_min = 1L,
                                     isize_max = 1000L,
@@ -63,10 +60,11 @@ read_bam_insert_metrics <- function(bamfile = NULL,
   )
   
   if(!is.null(bamfile)) {
-    frag <- readBam(bamfile = bamfile, 
+    frag <- readBam(bamfile = bamfile,
                   chromosome_to_keep = chromosome_to_keep,
                   strand_mode = strand_mode,
                   genome_label = genome_label,
+                  genome = genome,
                   outdir = outdir)
   } else if(!is.null(fragment_obj)) {
     

@@ -23,6 +23,9 @@
 #' fragments/read-pairs that do not overlap indicated mutation loci.
 #' @param downsample_ref Logical, if TRUE, downsamples reference motifs to match
 #'        the count of mutant motifs.
+#' @param genome Optional `BSgenome` passed to `get_genome_reference()`; use when
+#'   fragments were built with `genome_label = "user_define"` and the object
+#'   cannot be restored from package metadata, or to override inference.
 #' @param ... Additional parameters passed to underlying functions.
 #'
 #' @return Returns a tibble containing the results of the motif analysis.
@@ -37,6 +40,7 @@ callMotif <- function(frag_obj,
                       integrate_mut = FALSE,
                       ref_type = "locus_fragment",
                       downsample_ref = FALSE,
+                      genome = NULL,
                       ...) {
 
   motif_length <- as.numeric(motif_length)
@@ -44,7 +48,7 @@ callMotif <- function(frag_obj,
   message("Started to extract ", paste0(motif_type, motif_length), " motif...")
 
   # Select the appropriate genome reference
-  bsgenome_obj <- get_genome_reference(frag_obj)
+  bsgenome_obj <- get_genome_reference(frag_obj, genome = genome)
 
   genome_label <- bsgenome_obj@metadata$genome
 

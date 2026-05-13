@@ -5,10 +5,14 @@
 \title{Call trinucleotides and summarise the cfDNA information
 for each target mutation locus.}
 \usage{
-callTrinucleotide(frag_obj_mut)
+callTrinucleotide(frag_obj_mut, genome = NULL)
 }
 \arguments{
 \item{frag_obj_mut}{GRanges object containing fragment and mutation data.}
+
+\item{genome}{Optional \code{BSgenome} passed to \code{get_genome_reference()};
+use when fragments were built with \code{genome_label = "user_define"} and the
+object cannot be restored from package metadata, or to override inference.}
 }
 \value{
 dataframe with summarised mutational and trinucleotide data.

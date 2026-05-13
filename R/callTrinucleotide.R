@@ -26,19 +26,22 @@
 #' @importFrom magrittr '%>%'
 #'
 #' @param frag_obj_mut GRanges object containing fragment and mutation data.
+#' @param genome Optional `BSgenome` passed to `get_genome_reference()`; use when
+#'   fragments were built with `genome_label = "user_define"` and the object
+#'   cannot be restored from package metadata, or to override inference.
 #'
 #' @return dataframe with summarised mutational and trinucleotide data.
 #' @export
 #'
 #' @examples
 #' trinuc_df <-  callTrinucleotide(frag_obj_mut)
-callTrinucleotide <- function(frag_obj_mut) {
+callTrinucleotide <- function(frag_obj_mut, genome = NULL) {
 
   # Check if GRanges has mutational information
   check_mutation_in_metadata(frag_obj = frag_obj_mut)
 
   # Get the appropriate genome reference
-  genome <- get_genome_reference(frag_obj_mut)
+  bsgenome_obj <- get_genome_reference(frag_obj_mut, genome = genome)
 
   # Convert relevant data to dataframe
   gr_df <- prepare_data(frag_obj_mut)
@@ -68,7 +71,7 @@ callTrinucleotide <- function(frag_obj_mut) {
   merged_table_df <- update_consensus_mismatch(merged_table_df, gr_df, mapping)
 
   # Add the SBS 96 annotation for consensus locus-based mutations
-  merged_table_df <- get_trinucleotide(merged_table_df, genome)
+  merged_table_df <- get_trinucleotide(merged_table_df, bsgenome_obj)
 
   return(merged_table_df)
 }
