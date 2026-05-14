@@ -211,6 +211,8 @@ read_mutation_file <- function(mutation_file) {
 #'
 #' @param frag_obj GRanges object containing genomic ranges and associated data.
 #' @param output_file Character string specifying the path/name of the output file.
+#' @param genome Optional `BSgenome` passed to [callTrinucleotide()]. Use when
+#'   `frag_obj` was built with `genome_label = "user_define"`
 #'
 #' @return The path to the output file as a character string.
 #'
@@ -219,7 +221,7 @@ read_mutation_file <- function(mutation_file) {
 #' @examples
 #' output_path <- writeMutTable(gr, "output_directory", "output_filename")
 #' print(paste("File written to:", output_path))
-writeMutTable <- function(frag_obj, output_file) {
+writeMutTable <- function(frag_obj, output_file, genome = NULL) {
 
   # Extract the directory path from the output file path
   output_dir <- dirname(output_file)
@@ -231,7 +233,7 @@ writeMutTable <- function(frag_obj, output_file) {
     stop("The directory does not exist. Please provide a valid directory path.")
   }
 
-  trinuc_df <- callTrinucleotide(frag_obj = frag_obj)
+  trinuc_df <- callTrinucleotide(frag_obj = frag_obj, genome = genome)
 
   # Adding informative columns for counts and fractions
   trinuc_df <- trinuc_df %>%
@@ -1227,7 +1229,11 @@ bam_to_galp_mut <- function(bamfile,
   message("BAM file has been read into galp.")
 
   # add genome information
-  if (isSingleStringOrNA(genome)) {
+  if (methods::is(genome, "Seqinfo")) {
+    if (!isFALSE(chromosome_to_keep)) {
+      genome <- genome[chromosome_to_keep]
+    }
+  } else if (isSingleStringOrNA(genome)) {
     genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
 
@@ -1512,6 +1518,7 @@ process_bam_file <- function(bamfile,
                              chromosome_to_keep = NULL,
                              strand_mode = 1,
                              genome_name,
+                             galp_merge_seqinfo = NULL,
                              galp_flag,
                              galp_what,
                              galp_tag,
@@ -1524,6 +1531,12 @@ process_bam_file <- function(bamfile,
     tag = galp_tag,
     mapqFilter = galp_mapqFilter
   )
+
+  genome_for_galp <- if (!is.null(galp_merge_seqinfo)) {
+    galp_merge_seqinfo
+  } else {
+    genome_name
+  }
 
   # Check the presence of a mutation file and the mode of operation
   if (!is.null(mutation_file)) {
@@ -1552,7 +1565,7 @@ process_bam_file <- function(bamfile,
                               use_names = use_names,
                               chromosome_to_keep = chromosome_to_keep,
                               strand_mode = strand_mode,
-                              genome = genome_name,
+                              genome = genome_for_galp,
                               param = galp_param_mut)
       # Update metadata with content specifics
       galp@metadata <- list(
@@ -1568,7 +1581,7 @@ process_bam_file <- function(bamfile,
                            use_names = use_names,
                            chromosome_to_keep = chromosome_to_keep,
                            strand_mode = strand_mode,
-                           genome = genome_name,
+                           genome = genome_for_galp,
                            param = galp_param)
 
       galp_mm <- suppressMessages(bam_to_galp_mut(
@@ -1576,7 +1589,7 @@ process_bam_file <- function(bamfile,
                                   use_names = use_names,
                                   chromosome_to_keep = chromosome_to_keep,
                                   strand_mode = strand_mode,
-                                  genome = genome_name,
+                                  genome = genome_for_galp,
                                   param = galp_param_mut))
 
       if (length(galp_mm) == 0) {
@@ -1596,7 +1609,7 @@ process_bam_file <- function(bamfile,
                          use_names = use_names,
                          chromosome_to_keep = chromosome_to_keep,
                          strand_mode = strand_mode,
-                         genome = genome_name,
+                         genome = genome_for_galp,
                          param = galp_param)
   }
 
@@ -1633,25 +1646,119 @@ create_empty_galp <- function() {
 
 
 
+#' Resolve package and export name for a BSgenome instance (for RDS recovery)
+#' @importFrom utils packageName getNamespace getNamespaceExports
+#' @importFrom methods is
+#' @noRd
+.cfDNAPro_bsgenome_pkg_symbol <- function(genome_obj) {
+  if (!methods::is(genome_obj, "BSgenome")) {
+    return(list(pkg = NA_character_, symbol = NA_character_))
+  }
+  pkg <- tryCatch(
+    utils::packageName(environment(genome_obj)),
+    error = function(...) NA_character_
+  )
+  if (is.na(pkg) || identical(pkg, ".GlobalEnv")) {
+    return(list(pkg = NA_character_, symbol = NA_character_))
+  }
+  ns <- tryCatch(asNamespace(pkg), error = function(...) NULL)
+  if (is.null(ns)) {
+    return(list(pkg = NA_character_, symbol = NA_character_))
+  }
+  for (nm in utils::getNamespaceExports(pkg)) {
+    obj <- tryCatch(get(nm, envir = ns), error = function(...) NULL)
+    if (!is.null(obj) && methods::is(obj, "BSgenome") && identical(obj, genome_obj)) {
+      return(list(pkg = pkg, symbol = nm))
+    }
+  }
+  list(pkg = NA_character_, symbol = NA_character_)
+}
+
+#' Restore user BSgenome from readBam metadata (package + export name)
+#' @importFrom methods is
+#' @noRd
+.cfDNAPro_restore_user_bsgenome <- function(md) {
+  pkg <- md$cfDNAPro_bsgenome_pkg
+  sym <- md$cfDNAPro_bsgenome_symbol
+  if (is.null(pkg) || is.null(sym) || length(pkg) != 1L || length(sym) != 1L) {
+    return(NULL)
+  }
+  if (is.na(pkg) || is.na(sym) || !nzchar(pkg) || !nzchar(sym)) {
+    return(NULL)
+  }
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop(
+      "BSgenome package \"", pkg, "\" is not installed; install it or pass ",
+      "`genome` explicitly to callMotif() / callTrinucleotide().",
+      call. = FALSE
+    )
+  }
+  obj <- tryCatch(get(sym, envir = asNamespace(pkg)), error = function(...) NULL)
+  if (is.null(obj) || !methods::is(obj, "BSgenome")) {
+    return(NULL)
+  }
+  obj
+}
+
+#' Attach cfDNAPro genome lineage metadata to a GRanges from readBam
+#' @importFrom S4Vectors metadata metadata<-
+#' @noRd
+.cfDNAPro_attach_read_bam_genome_metadata <- function(frag, genome_label, genome_obj) {
+  md <- S4Vectors::metadata(frag)
+  md$cfDNAPro_genome_label <- genome_label
+  if (identical(genome_label, "user_define")) {
+    ps <- .cfDNAPro_bsgenome_pkg_symbol(genome_obj)
+    md$cfDNAPro_bsgenome_pkg <- ps$pkg
+    md$cfDNAPro_bsgenome_symbol <- ps$symbol
+  } else {
+    md$cfDNAPro_bsgenome_pkg <- NULL
+    md$cfDNAPro_bsgenome_symbol <- NULL
+  }
+  S4Vectors::metadata(frag) <- md
+  frag
+}
+
 #' Function to determine the correct BSgenome based on the seqinfo result
 #' @importFrom GenomeInfoDb seqinfo
+#' @importFrom methods is
 #' @noRd
-get_genome_reference <- function(frag_obj_mut) {
+get_genome_reference <- function(frag_obj_mut, genome = NULL) {
+  if (!is.null(genome)) {
+    if (!methods::is(genome, "BSgenome")) {
+      stop("`genome` must be a BSgenome object when provided.", call. = FALSE)
+    }
+    return(genome)
+  }
+
+  md <- S4Vectors::metadata(frag_obj_mut)
+  if (identical(md$cfDNAPro_genome_label, "user_define")) {
+    restored <- .cfDNAPro_restore_user_bsgenome(md)
+    if (!is.null(restored)) {
+      return(restored)
+    }
+    stop(
+      "This object was built with genome_label=\"user_define\" but the BSgenome ",
+      "cannot be restored (e.g. ad-hoc object not from an installed package). ",
+      "Pass `genome` explicitly to callMotif() or callTrinucleotide().",
+      call. = FALSE
+    )
+  }
+
   # Extract genome sequence from GRanges object's seqinfo
   genome_seq <- unique(
     as.character(GenomeInfoDb::seqinfo(frag_obj_mut)@genome))
-  
+
   # Define genome versions and corresponding BSgenome data packages
   genome_versions <- c("GRCh38", "hg38-NCBI", "hg38", "hg19")
   genome_packages <- c(
-    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38", 
-    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38", 
-    "BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38", 
+    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38",
+    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38",
+    "BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38",
     "BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19")
-  
+
   # Find the index of the genome sequence in the genome_versions vector
   index <- match(genome_seq, genome_versions)
-  
+
   # Return the corresponding genome package; default to hg19 if not found
   if (!is.na(index)) {
     return(eval(parse(text = genome_packages[index])))

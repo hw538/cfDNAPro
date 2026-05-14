@@ -11,6 +11,7 @@ callMotif(
   integrate_mut = FALSE,
   ref_type = "locus_fragment",
   downsample_ref = FALSE,
+  genome = NULL,
   ...
 )
 }
@@ -30,6 +31,10 @@ fragments/read-pairs that do not overlap indicated mutation loci.}
 
 \item{downsample_ref}{Logical, if TRUE, downsamples reference motifs to match
 the count of mutant motifs.}
+
+\item{genome}{Optional \code{BSgenome} passed to \code{get_genome_reference()};
+use when the fragment object was built with \code{genome_label = "user_define"}
+and the BSgenome cannot be restored from metadata, or to override inference.}
 
 \item{...}{Additional parameters passed to underlying functions.}
 }

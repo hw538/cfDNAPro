@@ -10,6 +10,7 @@ readGALP(
   chromosome_to_keep = paste("chr", 1:22, sep = ""),
   strand_mode = 1,
   genome_label = "hg19",
+  genome = NULL,
   outdir = FALSE,
   galp_flag = Rsamtools::scanBamFlag(isPaired = TRUE, isDuplicate = FALSE,
     isSecondaryAlignment = FALSE, isUnmappedQuery = FALSE, isSupplementaryAlignment =
@@ -32,19 +33,15 @@ Default is paste0("chr", 1:22).}
 \item{strand_mode}{Usually the strand_mode  = 1 means the First read is 
 aligned to positive strand. Details please see GenomicAlignments docs.}
 
-\item{genome_label}{The Genome you used in the alignment. 
-Should be "hg19" or "hg38" or "hg38-NCBI". Default is "hg19". 
-Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is 
-Full genome sequences for Homo sapiens (Human) as provided by 
-UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects; 
-"hg38" will load BSgenome.Hsapiens.UCSC.hg38 package, which is 
-Full genome sequences for Homo sapiens (Human) as provided by 
-UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
-"hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is 
-full genome sequences for Homo sapiens (Human) as provided by 
-NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.}
+\item{genome_label}{The genome you used for alignment: \code{"hg19"},
+\code{"hg38"}, \code{"hg38-NCBI"}, or \code{"user_define"} (default \code{"hg19"}).
+For \code{"user_define"}, pass a matching \code{BSgenome} via \code{genome}.}
 
-\item{outdir}{The path for saving rds file. Default is NA, i.e. not saving.}
+\item{genome}{Used only when \code{genome_label = "user_define"}: a \code{BSgenome}
+object. Ignored with a warning for built-in \code{genome_label} values if
+a \code{BSgenome} is supplied.}
+
+\item{outdir}{The path for saving rds file. Default is FALSE, i.e. not saving.}
 
 \item{galp_flag}{}
 

@@ -4,24 +4,22 @@
 #' @import GenomicAlignments
 #' @import S4Vectors
 #' @importFrom IRanges IRanges
-#' @importFrom GenomeInfoDb seqlengths genome Seqinfo keepSeqlevels
+#' @importFrom GenomeInfoDb seqlengths genome Seqinfo keepSeqlevels seqinfo
 #' @importFrom GenomicAlignments readGAlignmentPairs
 #' @importFrom Rsamtools scanBamFlag ScanBamParam testPairedEndBam
 #' @importFrom GenomicRanges GRanges seqnames sort granges
 #' @importFrom stringr str_remove
 #' @importFrom methods is
 #'
-#' @param genome_label The Genome you used in the alignment.
-#'    Should be "hg19" or "hg38" or "hg38-NCBI". Default is "hg19".
-#'    Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is
-#'    Full genome sequences for Homo sapiens (Human) as provided by
-#'    UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects;
-#'    "hg38" will load BSgenome.Hsapiens.UCSC.hg38 package, which is
-#'    Full genome sequences for Homo sapiens (Human) as provided by
-#'    UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
-#'    "hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is
-#'    full genome sequences for Homo sapiens (Human) as provided by
-#'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
+#' @param genome_label The genome you used for alignment: `"hg19"`,
+#'   `"hg38"`, `"hg38-NCBI"`, or `"user_define"`. Default is `"hg19"`.
+#'   For the first three values, the matching BSgenome data package is
+#'   loaded automatically. For `"user_define"`, you must pass a ready-made
+#'   `BSgenome` object via `genome` (same reference as the BAM).
+#' @param genome Used only when `genome_label = "user_define"`: a
+#'   `BSgenome` object built or loaded beforehand (must match the BAM
+#'   reference). For built-in labels, if you pass a `BSgenome` here it is
+#'   ignored with a warning.
 #' @param bamfile The bam file name.
 #' @param curate_start_and_end A logical (TRUE or FALSE) parameter
 #'   for curating alignment start and end coordinates.
@@ -83,6 +81,7 @@ readBam <- function(bamfile,
                     chromosome_to_keep = paste0("chr", 1:22),
                     strand_mode = 1,
                     genome_label = "hg19",
+                    genome = NULL,
                     outdir = NA,
                     galp_flag = Rsamtools::scanBamFlag(
                       isPaired = TRUE,
@@ -107,25 +106,69 @@ readBam <- function(bamfile,
     stop("Input is not paired-end Bam file.")
   }
 
-  if (!genome_label %in% c("hg19", "hg38", "hg38-NCBI") || is.na(genome_label)) {
-      stop("Only 'hg19', 'hg38', or 'hg38-NCBI' are accepted as genome labels.")
+  .valid_genome_labels <- c("hg19", "hg38", "hg38-NCBI", "user_define")
+  if (!genome_label %in% .valid_genome_labels || length(genome_label) != 1L ||
+        is.na(genome_label)) {
+    stop(
+      "genome_label must be one of: ",
+      paste0("'", .valid_genome_labels, "'", collapse = ", "),
+      "."
+    )
   }
 
-  if (genome_label == "hg19") {
+  user_genome_arg <- genome
 
-    genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-
-  } else if (genome_label == "hg38") {
-
-    genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
-
-  } else if (genome_label == "hg38-NCBI") {
-
-    genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
-
+  if (identical(genome_label, "user_define")) {
+    if (is.null(user_genome_arg)) {
+      stop("When genome_label is 'user_define', argument `genome` must be a BSgenome object.")
+    }
+    if (!methods::is(user_genome_arg, "BSgenome")) {
+      stop("When genome_label is 'user_define', `genome` must inherit from BSgenome.")
+    }
+    genome <- user_genome_arg
+  } else {
+    if (!is.null(user_genome_arg) && methods::is(user_genome_arg, "BSgenome")) {
+      warning(
+        "Argument `genome` is ignored unless genome_label is \"user_define\".",
+        call. = FALSE
+      )
+    }
+    if (genome_label == "hg19") {
+      genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+    } else if (genome_label == "hg38") {
+      genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+    } else if (genome_label == "hg38-NCBI") {
+      genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
+    }
   }
 
-  genome_name <- seqinfo(genome)@genome %>% unique()
+  if (!isFALSE(chromosome_to_keep)) {
+    sl_names <- names(GenomeInfoDb::seqlengths(genome))
+    unknown_chr <- setdiff(chromosome_to_keep, sl_names)
+    if (length(unknown_chr) > 0L) {
+      stop(
+        "chromosome_to_keep contains seqnames not found in the BSgenome: ",
+        paste(unknown_chr, collapse = ", ")
+      )
+    }
+  }
+
+  genome_name <- unique(GenomeInfoDb::seqinfo(genome)@genome)
+  if (length(genome_name) != 1L || is.na(genome_name)) {
+    stop(
+      "BSgenome seqinfo must have a single non-NA genome assembly name ",
+      "(GenomeInfoDb::seqinfo(genome)@genome)."
+    )
+  }
+
+  # Seqinfo from the BSgenome avoids GenomeInfoDb::Seqinfo(genome = <RefSeq ID>),
+  # which queries NCBI FTP (e.g. GCF_000001405.26 for GATK GRCh38) and can fail
+  # offline or when FTP layout changes.
+  galp_merge_seqinfo <- if (!isFALSE(chromosome_to_keep)) {
+    GenomeInfoDb::seqinfo(genome)[chromosome_to_keep]
+  } else {
+    GenomeInfoDb::seqinfo(genome)
+  }
 
   ###########################################################################
   # Read BAM into galp based on user-defined parameters
@@ -137,6 +180,7 @@ readBam <- function(bamfile,
                            chromosome_to_keep = chromosome_to_keep,
                            strand_mode = strand_mode,
                            genome_name = genome_name,
+                           galp_merge_seqinfo = galp_merge_seqinfo,
                            galp_flag = galp_flag,
                            galp_what = galp_what,
                            galp_tag = galp_tag,
@@ -205,6 +249,8 @@ readBam <- function(bamfile,
       )
   }
 
+  frag <- .cfDNAPro_attach_read_bam_genome_metadata(frag, genome_label, genome)
+
   ###########################################################################
   # Saving RDS file
   ###########################################################################
@@ -258,7 +304,11 @@ bam_to_galp2 <- function(bamfile,
   message("BAM file has been read into galp.")
 
   # add genome information
-  if (isSingleStringOrNA(genome)) {
+  if (methods::is(genome, "Seqinfo")) {
+    if (!isFALSE(chromosome_to_keep)) {
+      genome <- genome[chromosome_to_keep]
+    }
+  } else if (isSingleStringOrNA(genome)) {
     genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
 

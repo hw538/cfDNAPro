@@ -29,7 +29,7 @@ Please do not impose any filtering on the bam files; For example, do not filter 
 (5) No supplementary alignment;\
 (6) No unmapped reads.
 
-Note: remember to choose the correct `genome_label`, a parameter in `readBam()` function, based on the ref genome you used for alignment. At the moment, it supports three different ref genomes, hg19, hg38 and hg38-NCBI, For details see readBam() R documentation by typing `?readBam` in the R console or see source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
+Note: set `genome_label` in `readBam()` to match the reference you used for alignment. Built-in values are `hg19`, `hg38`, and `hg38-NCBI`. For any other reference packaged as a Bioconductor `BSgenome`, use `genome_label = "user_define"` and pass that object via the `genome` argument. See `?readBam`.
 
 ## Output
 
