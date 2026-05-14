@@ -211,6 +211,8 @@ read_mutation_file <- function(mutation_file) {
 #'
 #' @param frag_obj GRanges object containing genomic ranges and associated data.
 #' @param output_file Character string specifying the path/name of the output file.
+#' @param genome Optional `BSgenome` passed to [callTrinucleotide()]. Use when
+#'   `frag_obj` was built with `genome_label = "user_define"`
 #'
 #' @return The path to the output file as a character string.
 #'
@@ -219,7 +221,7 @@ read_mutation_file <- function(mutation_file) {
 #' @examples
 #' output_path <- writeMutTable(gr, "output_directory", "output_filename")
 #' print(paste("File written to:", output_path))
-writeMutTable <- function(frag_obj, output_file) {
+writeMutTable <- function(frag_obj, output_file, genome = NULL) {
 
   # Extract the directory path from the output file path
   output_dir <- dirname(output_file)
@@ -231,7 +233,7 @@ writeMutTable <- function(frag_obj, output_file) {
     stop("The directory does not exist. Please provide a valid directory path.")
   }
 
-  trinuc_df <- callTrinucleotide(frag_obj = frag_obj)
+  trinuc_df <- callTrinucleotide(frag_obj = frag_obj, genome = genome)
 
   # Adding informative columns for counts and fractions
   trinuc_df <- trinuc_df %>%

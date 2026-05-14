@@ -4,12 +4,16 @@
 \alias{writeMutTable}
 \title{Function that generates a Mutation Table with summarised cfDNA fragment data}
 \usage{
-writeMutTable(frag_obj, output_file)
+writeMutTable(frag_obj, output_file, genome = NULL)
 }
 \arguments{
 \item{frag_obj}{GRanges object containing genomic ranges and associated data.}
 
 \item{output_file}{Character string specifying the path/name of the output file.}
+
+\item{genome}{Optional \code{BSgenome} passed to \code{\link{callTrinucleotide}}; use when
+\code{frag_obj} was built with \code{genome_label = "user_define"} and the reference
+cannot be restored from object metadata. Defaults to \code{NULL} (infer when possible).}
 }
 \value{
 The path to the output file as a character string.
