@@ -161,6 +161,15 @@ readBam <- function(bamfile,
     )
   }
 
+  # Seqinfo from the BSgenome avoids GenomeInfoDb::Seqinfo(genome = <RefSeq ID>),
+  # which queries NCBI FTP (e.g. GCF_000001405.26 for GATK GRCh38) and can fail
+  # offline or when FTP layout changes.
+  galp_merge_seqinfo <- if (!isFALSE(chromosome_to_keep)) {
+    GenomeInfoDb::seqinfo(genome)[chromosome_to_keep]
+  } else {
+    GenomeInfoDb::seqinfo(genome)
+  }
+
   ###########################################################################
   # Read BAM into galp based on user-defined parameters
   ###########################################################################
@@ -171,6 +180,7 @@ readBam <- function(bamfile,
                            chromosome_to_keep = chromosome_to_keep,
                            strand_mode = strand_mode,
                            genome_name = genome_name,
+                           galp_merge_seqinfo = galp_merge_seqinfo,
                            galp_flag = galp_flag,
                            galp_what = galp_what,
                            galp_tag = galp_tag,
@@ -294,7 +304,11 @@ bam_to_galp2 <- function(bamfile,
   message("BAM file has been read into galp.")
 
   # add genome information
-  if (isSingleStringOrNA(genome)) {
+  if (methods::is(genome, "Seqinfo")) {
+    if (!isFALSE(chromosome_to_keep)) {
+      genome <- genome[chromosome_to_keep]
+    }
+  } else if (isSingleStringOrNA(genome)) {
     genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
 

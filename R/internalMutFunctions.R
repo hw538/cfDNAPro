@@ -1227,7 +1227,11 @@ bam_to_galp_mut <- function(bamfile,
   message("BAM file has been read into galp.")
 
   # add genome information
-  if (isSingleStringOrNA(genome)) {
+  if (methods::is(genome, "Seqinfo")) {
+    if (!isFALSE(chromosome_to_keep)) {
+      genome <- genome[chromosome_to_keep]
+    }
+  } else if (isSingleStringOrNA(genome)) {
     genome <- Seqinfo(genome = genome)[chromosome_to_keep]
   }
 
@@ -1512,6 +1516,7 @@ process_bam_file <- function(bamfile,
                              chromosome_to_keep = NULL,
                              strand_mode = 1,
                              genome_name,
+                             galp_merge_seqinfo = NULL,
                              galp_flag,
                              galp_what,
                              galp_tag,
@@ -1524,6 +1529,12 @@ process_bam_file <- function(bamfile,
     tag = galp_tag,
     mapqFilter = galp_mapqFilter
   )
+
+  genome_for_galp <- if (!is.null(galp_merge_seqinfo)) {
+    galp_merge_seqinfo
+  } else {
+    genome_name
+  }
 
   # Check the presence of a mutation file and the mode of operation
   if (!is.null(mutation_file)) {
@@ -1552,7 +1563,7 @@ process_bam_file <- function(bamfile,
                               use_names = use_names,
                               chromosome_to_keep = chromosome_to_keep,
                               strand_mode = strand_mode,
-                              genome = genome_name,
+                              genome = genome_for_galp,
                               param = galp_param_mut)
       # Update metadata with content specifics
       galp@metadata <- list(
@@ -1568,7 +1579,7 @@ process_bam_file <- function(bamfile,
                            use_names = use_names,
                            chromosome_to_keep = chromosome_to_keep,
                            strand_mode = strand_mode,
-                           genome = genome_name,
+                           genome = genome_for_galp,
                            param = galp_param)
 
       galp_mm <- suppressMessages(bam_to_galp_mut(
@@ -1576,7 +1587,7 @@ process_bam_file <- function(bamfile,
                                   use_names = use_names,
                                   chromosome_to_keep = chromosome_to_keep,
                                   strand_mode = strand_mode,
-                                  genome = genome_name,
+                                  genome = genome_for_galp,
                                   param = galp_param_mut))
 
       if (length(galp_mm) == 0) {
@@ -1596,7 +1607,7 @@ process_bam_file <- function(bamfile,
                          use_names = use_names,
                          chromosome_to_keep = chromosome_to_keep,
                          strand_mode = strand_mode,
-                         genome = genome_name,
+                         genome = genome_for_galp,
                          param = galp_param)
   }
 

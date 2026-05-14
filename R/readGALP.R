@@ -115,6 +115,12 @@ readGALP <- function(
       "(GenomeInfoDb::seqinfo(genome)@genome)."
     )
   }
+
+  galp_merge_seqinfo <- if (!isFALSE(chromosome_to_keep)) {
+    GenomeInfoDb::seqinfo(genome)[chromosome_to_keep]
+  } else {
+    GenomeInfoDb::seqinfo(genome)
+  }
   
   ############################################################################
   # Read bam into galp
@@ -129,7 +135,7 @@ readGALP <- function(
                        use_names = use_names,
                        chromosome_to_keep = chromosome_to_keep,
                        strand_mode = strand_mode, 
-                       genome = genome_name,
+                       genome = galp_merge_seqinfo,
                        param = galp_param
   ) 
   
