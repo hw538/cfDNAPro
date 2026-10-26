@@ -18,7 +18,10 @@ read_bam_insert_metrics(
 )
 }
 \arguments{
-\item{bamfile}{The bam file name.}
+\item{bamfile}{The bam file name. Supply either bamfile or fragment_obj.}
+
+\item{fragment_obj}{GRanges fragments returned by readBam(), as an alternative
+to reading a BAM file. Reference and BAM-reading options apply only to bamfile.}
 
 \item{chromosome_to_keep}{Should be a character vector containing the 
 seqnames to be kept in the GRanges object. 

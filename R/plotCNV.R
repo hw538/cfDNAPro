@@ -37,6 +37,7 @@
 #' @param legend_position string. default is "none", which mean no legends.
 #' @param x_axis_expand numerical vector. default is c(0.1, 0.1).
 #' @param y_axis_expand numerical vector. default is c(0, 0).
+#' @param text_size Numeric gene-label text size passed to geom_text_repel().
 #' @param output_file string, optional Full path and filename for the output
 #' plot, including the file extension like ".png" or ".pdf". Ensure the
 #' directory exists and is writable.
@@ -55,7 +56,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' p <- plotCNV(bamfile = "/path/to/bamfile.bam")
+#' p <- plotCNV(x = cnv_results, output_file = "cnv.png")
 #' }
 #'
 plotCNV <- function(x,

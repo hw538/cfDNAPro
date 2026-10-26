@@ -24,7 +24,7 @@ readGALP(
 \arguments{
 \item{bamfile}{The bam file name.}
 
-\item{use_names}{}
+\item{use_names}{Logical; retain read-pair names in the returned object.}
 
 \item{chromosome_to_keep}{Should be a character vector containing the 
 seqnames to be kept in the GRanges object or boolean FALSE. FALSE means not filtering.
@@ -45,17 +45,17 @@ UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
 full genome sequences for Homo sapiens (Human) as provided by 
 NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.}
 
-\item{outdir}{The path for saving rds file. Default is NA, i.e. not saving.}
+\item{outdir}{The path for saving an RDS file, or FALSE (default) to skip saving.}
 
-\item{galp_flag}{}
+\item{galp_flag}{BAM flag filter created with Rsamtools::scanBamFlag().}
 
 \item{galp_what}{A character vector naming the fields to return 
 Rsamtools::scanBamWhat() returns a vector of available fields. Fields are 
 described on the Rsamtools::scanBam help page.}
 
-\item{galp_tag}{}
+\item{galp_tag}{BAM tags to import; defaults to NM and MD.}
 
-\item{galp_mapqFilter}{}
+\item{galp_mapqFilter}{Minimum mapping quality; defaults to 30.}
 
 \item{genome}{A BSgenome object, required when
 \code{genome_label = "user_define"}. The BAM and reference must use
@@ -67,7 +67,7 @@ reference. References and dependencies must be installed before offline use.}
 \item{...}{Further arguments passed to or from other methods.}
 }
 \value{
-This function returns curated GRanges object.
+A curated GAlignmentPairs object with reference provenance metadata.
 }
 \description{
 Read bam file into GAlignmentPairs object

@@ -64,43 +64,43 @@ number of reads.}
 \item{total_mapped_count}{Boolean. Default = TRUE, which mean calculating the
 number of mapped reads, and these reads must have mate reads.}
 
-\item{chrM_count}{}
+\item{chrM_count}{Logical; count reads mapped to M, chrM, or MT.}
 
-\item{duplicate_count}{}
+\item{duplicate_count}{Logical; count reads flagged as duplicates.}
 
-\item{coverage_by_mapped}{}
+\item{coverage_by_mapped}{Logical; estimate coverage as mapped nucleotides divided by genome_length_bp. Requires total_mapped_count.}
 
-\item{genome_length_bp}{}
+\item{genome_length_bp}{Genome length in base pairs used for the coverage estimate.}
 
-\item{customized_count}{}
+\item{customized_count}{Logical; enable counting with the customized BAM filters below.}
 
-\item{customized_count_mapqFilter}{}
+\item{customized_count_mapqFilter}{Minimum mapping quality passed to ScanBamParam() for customized counting.}
 
-\item{customized_count_isPaired}{}
+\item{customized_count_isPaired}{Logical or NA; passed as isPaired to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isProperPair}{}
+\item{customized_count_isProperPair}{Logical or NA; passed as isProperPair to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isUnmappedQuery}{}
+\item{customized_count_isUnmappedQuery}{Logical or NA; passed as isUnmappedQuery to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_hasUnmappedMate}{}
+\item{customized_count_hasUnmappedMate}{Logical or NA; passed as hasUnmappedMate to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isMinusStrand}{}
+\item{customized_count_isMinusStrand}{Logical or NA; passed as isMinusStrand to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isMateMinusStrand}{}
+\item{customized_count_isMateMinusStrand}{Logical or NA; passed as isMateMinusStrand to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isFirstMateRead}{}
+\item{customized_count_isFirstMateRead}{Logical or NA; passed as isFirstMateRead to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isSecondMateRead}{}
+\item{customized_count_isSecondMateRead}{Logical or NA; passed as isSecondMateRead to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isSecondaryAlignment}{}
+\item{customized_count_isSecondaryAlignment}{Logical or NA; passed as isSecondaryAlignment to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isNotPassingQualityControls}{}
+\item{customized_count_isNotPassingQualityControls}{Logical or NA; passed as isNotPassingQualityControls to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isDuplicate}{}
+\item{customized_count_isDuplicate}{Logical or NA; passed as isDuplicate to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{customized_count_isSupplementaryAlignment}{}
+\item{customized_count_isSupplementaryAlignment}{Logical or NA; passed as isSupplementaryAlignment to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.}
 
-\item{...}{}
+\item{...}{Additional arguments reserved for compatibility.}
 }
 \value{
 tibble object (i.e. a dataframe)

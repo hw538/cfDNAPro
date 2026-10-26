@@ -36,10 +36,11 @@
 #' @return A dataframe of processed mutation data from specified chromosomes.
 
 #' @examples
+#' \dontrun{
 #' bamfile <- "/path/to/your.bam"
-#' genome <- BSgenome.Hsapiens.UCSC.hg19
+#' genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
 #' chromosomes <- c("chr1", "chr2", "chrX")
-#' flags <- ScanBamFlag(isPaired=TRUE, isDuplicate=FALSE)
+#' flags <- Rsamtools::scanBamFlag(isPaired=TRUE, isDuplicate=FALSE)
 #' pileup_params <- list(max_depth=250, min_base_quality=20)
 #' outfile <- "path/to/output.tsv"
 #'
@@ -49,9 +50,10 @@
 #'     chromosome_to_keep=chromosomes,
 #'     galp_flag=flags,
 #'     pileup_params=pileup_params,
-#'     num_cores=3
+#'     num_cores=3,
 #'     outfile=outfile
 #' )
+#' }
 #' @export
 
 pileupMismatches <- function(

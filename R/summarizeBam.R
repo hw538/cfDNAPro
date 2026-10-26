@@ -8,25 +8,25 @@
 #' number of reads. 
 #' @param total_mapped_count Boolean. Default = TRUE, which mean calculating the
 #' number of mapped reads, and these reads must have mate reads.
-#' @param chrM_count 
-#' @param duplicate_count 
-#' @param coverage_by_mapped 
-#' @param genome_length_bp 
-#' @param customized_count 
-#' @param customized_count_mapqFilter 
-#' @param customized_count_isPaired 
-#' @param customized_count_isProperPair 
-#' @param customized_count_isUnmappedQuery 
-#' @param customized_count_hasUnmappedMate 
-#' @param customized_count_isMinusStrand 
-#' @param customized_count_isMateMinusStrand 
-#' @param customized_count_isFirstMateRead 
-#' @param customized_count_isSecondMateRead 
-#' @param customized_count_isSecondaryAlignment 
-#' @param customized_count_isNotPassingQualityControls 
-#' @param customized_count_isDuplicate 
-#' @param customized_count_isSupplementaryAlignment 
-#' @param ... 
+#' @param chrM_count Logical; count reads mapped to M, chrM, or MT.
+#' @param duplicate_count Logical; count reads flagged as duplicates.
+#' @param coverage_by_mapped Logical; estimate coverage as mapped nucleotides divided by genome_length_bp. Requires total_mapped_count.
+#' @param genome_length_bp Genome length in base pairs used for the coverage estimate.
+#' @param customized_count Logical; enable counting with the customized BAM filters below.
+#' @param customized_count_mapqFilter Minimum mapping quality passed to ScanBamParam() for customized counting.
+#' @param customized_count_isPaired Logical or NA; passed as isPaired to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isProperPair Logical or NA; passed as isProperPair to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isUnmappedQuery Logical or NA; passed as isUnmappedQuery to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_hasUnmappedMate Logical or NA; passed as hasUnmappedMate to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isMinusStrand Logical or NA; passed as isMinusStrand to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isMateMinusStrand Logical or NA; passed as isMateMinusStrand to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isFirstMateRead Logical or NA; passed as isFirstMateRead to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isSecondMateRead Logical or NA; passed as isSecondMateRead to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isSecondaryAlignment Logical or NA; passed as isSecondaryAlignment to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isNotPassingQualityControls Logical or NA; passed as isNotPassingQualityControls to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isDuplicate Logical or NA; passed as isDuplicate to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param customized_count_isSupplementaryAlignment Logical or NA; passed as isSupplementaryAlignment to Rsamtools::scanBamFlag() for customized counting. NA leaves this flag unrestricted.
+#' @param ... Additional arguments reserved for compatibility.
 #'
 #' @return tibble object (i.e. a dataframe)
 #' @export

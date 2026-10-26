@@ -14,6 +14,22 @@ bam_to_galp2(
   ...
 )
 }
+\arguments{
+\item{bamfile}{Path to a paired-end BAM file.}
+
+\item{use_names}{Retain read-pair names in the returned object.}
+
+\item{param}{A ScanBamParam object controlling fields and read filters.}
+
+\item{chromosome_to_keep}{Sequence names to retain, or FALSE for all sequences.}
+
+\item{strand_mode}{Strand mode passed to readGAlignmentPairs().}
+
+\item{genome}{Reference Seqinfo, an assembly label, or NA for no reference.}
+
+\item{...}{Additional arguments reserved for compatibility.}
+}
 \description{
 Function to read bam file
 }
+\keyword{internal}

@@ -83,6 +83,8 @@ generating a GRanges object, see the `readBam()` function.}
 
 \item{y_axis_expand}{numerical vector. default is c(0, 0).}
 
+\item{text_size}{Numeric gene-label text size passed to geom_text_repel().}
+
 \item{output_file}{string, optional Full path and filename for the output
 plot, including the file extension like ".png" or ".pdf". Ensure the
 directory exists and is writable.}
@@ -103,7 +105,7 @@ plot copy number profile
 \examples{
 \dontrun{
 
-p <- plotCNV(bamfile = "/path/to/bamfile.bam")
+p <- plotCNV(x = cnv_results, output_file = "cnv.png")
 }
 
 }

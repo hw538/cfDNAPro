@@ -6,7 +6,9 @@
 #'   BSgenome is ignored with a warning. If \code{genome_label} is omitted,
 #'   the older shorthand \code{genome = "hg38"} still selects that built-in
 #'   reference. References and dependencies must be installed before offline use.
-#' @param bamfile The bam file name.
+#' @param bamfile The bam file name. Supply either bamfile or fragment_obj.
+#' @param fragment_obj GRanges fragments returned by readBam(), as an alternative
+#'   to reading a BAM file. Reference and BAM-reading options apply only to bamfile.
 #' @param genome_label Reference label: "hg19", "hg38", "hg38-NCBI", or
 #'   "user_define". Defaults to "hg19". For "user_define", supply \code{genome}.
 #' @param outdir The path for saving rds file. Default is FALSE, i.e. not saving.

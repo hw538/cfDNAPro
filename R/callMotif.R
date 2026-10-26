@@ -76,6 +76,11 @@ callMotif <- function(frag_obj,
 }
 
 #' Helper function to process the motif data
+#' @param frag_obj GRanges object containing fragment coordinates.
+#' @param bsgenome_obj Matching BSgenome reference.
+#' @param motif_type Motif location code passed to get_motif().
+#' @param motif_length Number of bases in each motif.
+#' @keywords internal
 processMotif <- function(frag_obj, bsgenome_obj, motif_type, motif_length) {
 
   # Extract the motif to a vector

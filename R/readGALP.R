@@ -26,22 +26,22 @@
 #'   the older shorthand \code{genome = "hg38"} still selects that built-in
 #'   reference. References and dependencies must be installed before offline use.
 #' @param bamfile The bam file name.
-#' @param outdir The path for saving rds file. Default is NA, i.e. not saving.
+#' @param outdir The path for saving an RDS file, or FALSE (default) to skip saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
 #' @param chromosome_to_keep Should be a character vector containing the 
 #'    seqnames to be kept in the GRanges object or boolean FALSE. FALSE means not filtering.
 #'    Default is paste0("chr", 1:22).
-#' @param use_names 
-#' @param galp_flag 
+#' @param use_names Logical; retain read-pair names in the returned object.
+#' @param galp_flag BAM flag filter created with Rsamtools::scanBamFlag().
 #' @param galp_what A character vector naming the fields to return 
 #' Rsamtools::scanBamWhat() returns a vector of available fields. Fields are 
 #' described on the Rsamtools::scanBam help page.
-#' @param galp_tag 
-#' @param galp_mapqFilter 
+#' @param galp_tag BAM tags to import; defaults to NM and MD.
+#' @param galp_mapqFilter Minimum mapping quality; defaults to 30.
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @return This function returns curated GRanges object.
+#' @return A curated GAlignmentPairs object with reference provenance metadata.
 #' @export
 #' @author Haichao Wang
 #'

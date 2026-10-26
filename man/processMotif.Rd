@@ -6,6 +6,16 @@
 \usage{
 processMotif(frag_obj, bsgenome_obj, motif_type, motif_length)
 }
+\arguments{
+\item{frag_obj}{GRanges object containing fragment coordinates.}
+
+\item{bsgenome_obj}{Matching BSgenome reference.}
+
+\item{motif_type}{Motif location code passed to get_motif().}
+
+\item{motif_length}{Number of bases in each motif.}
+}
 \description{
 Helper function to process the motif data
 }
+\keyword{internal}

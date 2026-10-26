@@ -217,6 +217,14 @@ readBam <- function(bamfile,
 #-----------------------------------------------------------------------------
 
 #' Function to read bam file
+#' @param bamfile Path to a paired-end BAM file.
+#' @param use_names Retain read-pair names in the returned object.
+#' @param param A ScanBamParam object controlling fields and read filters.
+#' @param chromosome_to_keep Sequence names to retain, or FALSE for all sequences.
+#' @param strand_mode Strand mode passed to readGAlignmentPairs().
+#' @param genome Reference Seqinfo, an assembly label, or NA for no reference.
+#' @param ... Additional arguments reserved for compatibility.
+#' @keywords internal
 #' @import magrittr
 #' @import GenomeInfoDb
 #' @import GenomicAlignments
