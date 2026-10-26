@@ -1,3 +1,9 @@
+# cfDNAPro development
+* Fixed mitochondrial alias resolution and `chromosome_to_keep = FALSE` in
+  `readBam()`. Preserve reference lengths and circularity after curation, use
+  local reference metadata, and retain length checks for incompatible references.
+* Added hg19/hg38 regression tests for autosomal, sex-chromosome, mitochondrial,
+  and mutation-aware filtering.
 
 # cfDNAPro 1.5.4
 * In addition to "bam" and "picard" files as the input, now we accept 
@@ -20,5 +26,3 @@ tsv file containing two columns, i.e., "insert_size" (fragment length) and
 * Coding style improvements.
 * Documentation improvements.
 * Submitted to Bioconductor.
-
-

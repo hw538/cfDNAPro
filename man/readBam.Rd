@@ -36,7 +36,11 @@ The default value is TRUE.}
 \item{chromosome_to_keep}{Should be a character vector containing the
 seqnames to be kept in the GRanges object or boolean FALSE.
 FALSE means not filtering.
-Default is paste0("chr", 1:22).}
+Default is paste0("chr", 1:22). Select "chrX", "chrY", or "chrM"
+explicitly to include sex or mitochondrial chromosomes. Mitochondrial
+aliases ("chrM", "chrMT", "MT", "M") are resolved against the BAM header
+and returned using the selected reference genome's name. Nuclear names
+must match the BAM header. BAM and reference sequence lengths must agree.}
 
 \item{strand_mode}{The strand_mode = 1 means
 the strand of the pair is strand of its first alignment.
