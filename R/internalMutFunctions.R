@@ -1226,21 +1226,10 @@ bam_to_galp_mut <- function(bamfile,
   # Message indicating successful read and possibly some details about 'galp'
   message("BAM file has been read into galp.")
 
-  # add genome information
-  if (isSingleStringOrNA(genome)) {
-    genome <- Seqinfo(genome = genome)[chromosome_to_keep]
-  }
-
-  seqinfo(galp) <- merge(GenomeInfoDb::seqinfo(galp), genome)
+  galp <- curate_bam_seqinfo(galp, genome, chromosome_to_keep)
 
   # strandMode should be one for downstream operations
   stopifnot(GenomicAlignments::strandMode(galp) == 1)
-
-  # only keep needed seqnames
-  if (!isFALSE(chromosome_to_keep)) {
-    galp <- keepSeqlevels(galp, chromosome_to_keep, pruning.mode = "coarse")
-
-  }
 
   message("Curating seqnames and strand information...")
   # remove read pairs without correct seqnames and strand information
@@ -1302,7 +1291,10 @@ process_mutation_fragments <- function(
 
   # Process mutation list data
   loci_df <- read_mutation_file(mutation_file = mutation_file)
-  loci_df <- base::subset(loci_df, chr %in% chromosome_to_keep)
+  if (!isFALSE(chromosome_to_keep)) {
+    selected <- resolve_chromosome_selection(chromosome_to_keep, unique(loci_df$chr))
+    loci_df <- base::subset(loci_df, chr %in% selected)
+  }
 
   # Process duplicate read-pair names
   reads_df <- process_duplicate_read_pairs(
@@ -1529,7 +1521,10 @@ process_bam_file <- function(bamfile,
   if (!is.null(mutation_file)) {
     loci_df <- suppressMessages(
       read_mutation_file(mutation_file = mutation_file))
-    loci_df <- base::subset(loci_df, chr %in% chromosome_to_keep)
+    if (!isFALSE(chromosome_to_keep)) {
+      selected <- resolve_chromosome_selection(chromosome_to_keep, unique(loci_df$chr))
+      loci_df <- base::subset(loci_df, chr %in% selected)
+    }
 
     if (nrow(loci_df) == 0) {
       message("No mutations for selected chromosomes in the mutation file.")

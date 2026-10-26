@@ -33,7 +33,11 @@
 #' @param chromosome_to_keep Should be a character vector containing the
 #'    seqnames to be kept in the GRanges object or boolean FALSE.
 #'    FALSE means not filtering.
-#'    Default is paste0("chr", 1:22).
+#'    Default is paste0("chr", 1:22). Select "chrX", "chrY", or "chrM"
+#'    explicitly to include sex or mitochondrial chromosomes. Mitochondrial
+#'    aliases ("chrM", "chrMT", "MT", "M") are resolved against the BAM header
+#'    and returned using the selected reference genome's name. Nuclear names
+#'    must match the BAM header. BAM and reference sequence lengths must agree.
 #' @param use_names Logical, assigns read names to GRanges, default TRUE.
 #' @param galp_flag ScanBamFlag object for BAM file scanning flags.
 #' @param galp_what A character vector of fields to return from the BAM file.
@@ -125,7 +129,7 @@ readBam <- function(bamfile,
 
   }
 
-  genome_name <- seqinfo(genome)@genome %>% unique()
+  genome_info <- seqinfo(genome)
 
   ###########################################################################
   # Read BAM into galp based on user-defined parameters
@@ -136,7 +140,7 @@ readBam <- function(bamfile,
                            use_names = use_names,
                            chromosome_to_keep = chromosome_to_keep,
                            strand_mode = strand_mode,
-                           genome_name = genome_name,
+                           genome_name = genome_info,
                            galp_flag = galp_flag,
                            galp_what = galp_what,
                            galp_tag = galp_tag,
@@ -161,54 +165,8 @@ readBam <- function(bamfile,
         fragmentwise <- curate_start_and_end(galp = galp)
 
         names(fragmentwise) <- names(galp)
-        # Get sequence names from genome
-        genome_seqnames <- names(seqlengths(genome))
-        
-        # Get actual seqnames present in fragmentwise (after filtering)
-        frag_seqnames <- unique(seqnames(fragmentwise))
-        
-        # Check which chromosomes from fragmentwise exist in the genome
-        frag_seqnames_in_genome <- frag_seqnames[frag_seqnames %in% genome_seqnames]
-        
-        # Handle mitochondrial chromosome naming variations
-        # Check if user requested chrM but genome uses different name
-        mt_names <- c("chrM", "chrMT", "MT", "M")
-        requested_mt <- chromosome_to_keep[chromosome_to_keep %in% mt_names]
-        genome_mt <- genome_seqnames[genome_seqnames %in% mt_names]
-        
-        if (length(requested_mt) > 0 && length(genome_mt) > 0) {
-          # If user requested one mt name but genome has different one, use genome's name
-          if (!any(requested_mt %in% genome_seqnames) && length(genome_mt) > 0) {
-            frag_seqnames_in_genome <- c(frag_seqnames_in_genome, genome_mt[1])
-            message(paste0("Note: Using '", genome_mt[1], "' for mitochondrial chromosome ",
-                          "(requested: ", paste(requested_mt, collapse = ", "), ")."))
-          }
-        }
-        
-        # Warn if some requested chromosomes are not found in genome
-        missing_in_genome <- setdiff(chromosome_to_keep, genome_seqnames)
-        if (length(missing_in_genome) > 0) {
-          # Check if any are mitochondrial chromosome variants
-          mt_missing <- missing_in_genome[missing_in_genome %in% mt_names]
-          if (length(mt_missing) > 0 && length(genome_mt) > 0) {
-            # Mitochondrial chromosome exists but with different name - already handled above
-            missing_in_genome <- setdiff(missing_in_genome, mt_missing)
-          }
-          if (length(missing_in_genome) > 0) {
-            warning(paste("The following chromosomes were requested but not found in the genome:",
-                         paste(missing_in_genome, collapse = ", ")))
-          }
-        }
-        
-        # Update sequence lengths only for chromosomes that exist in both fragmentwise and genome
-        if (length(frag_seqnames_in_genome) > 0) {
-          seqlengths(fragmentwise)[frag_seqnames_in_genome] <- seqlengths(genome)[frag_seqnames_in_genome]
-        } else {
-          warning("No matching chromosomes found between fragmentwise object and genome seqnames.")
-        }
-        
-        # Update genome name
-        genome(fragmentwise) <- genome_name
+        # Preserve the validated BAM/reference lengths and circularity.
+        seqinfo(fragmentwise) <- seqinfo(galp)[seqlevels(fragmentwise)]
 
     } else {
 
@@ -293,21 +251,10 @@ bam_to_galp2 <- function(bamfile,
   # Message indicating successful read and possibly some details about 'galp'
   message("BAM file has been read into galp.")
 
-  # add genome information
-  if (isSingleStringOrNA(genome)) {
-    genome <- Seqinfo(genome = genome)[chromosome_to_keep]
-  }
-
-  seqinfo(galp) <- merge(seqinfo(galp), genome)
+  galp <- curate_bam_seqinfo(galp, genome, chromosome_to_keep)
 
   # strandMode should be one for downstream operations
   stopifnot(GenomicAlignments::strandMode(galp) == 1)
-
-  # only keep needed seqnames
-  if (!isFALSE(chromosome_to_keep)) {
-    galp <- keepSeqlevels(galp, chromosome_to_keep, pruning.mode = "coarse")
-
-  }
 
   message("Curating seqnames and strand information...")
 
@@ -318,4 +265,71 @@ bam_to_galp2 <- function(bamfile,
 
   return(galp3)
 
+}
+
+# Resolve mitochondrial aliases against the names in a BAM or mutation table.
+# Nuclear chromosome names must match the input naming style exactly.
+resolve_chromosome_selection <- function(chromosomes, available) {
+  if (isFALSE(chromosomes)) return(FALSE)
+  if (!is.character(chromosomes) || length(chromosomes) == 0L ||
+      anyNA(chromosomes) || any(!nzchar(chromosomes))) {
+    stop("'chromosome_to_keep' must be a non-empty character vector or FALSE.")
+  }
+  mt_names <- c("chrM", "chrMT", "MT", "M")
+  available_mt <- intersect(available, mt_names)
+  needs_alias <- chromosomes %in% mt_names & !chromosomes %in% available
+  if (any(needs_alias) && length(available_mt) == 1L) {
+    chromosomes[needs_alias] <- available_mt
+  }
+  unique(chromosomes)
+}
+
+# Filter using BAM names before reconciling the selected reference metadata.
+curate_bam_seqinfo <- function(galp, genome, chromosome_to_keep) {
+  selected <- resolve_chromosome_selection(chromosome_to_keep, seqlevels(galp))
+  if (!isFALSE(selected)) {
+    missing <- setdiff(selected, seqlevels(galp))
+    present <- intersect(selected, seqlevels(galp))
+    # A regional BAM may omit reference chromosomes from its header. Retain
+    # the available selection, while rejecting names absent from the reference.
+    absent_reference <- if (is(genome, "Seqinfo")) setdiff(missing, seqlevels(genome)) else missing
+    if (!length(present) || length(absent_reference)) {
+      stop("Chromosomes not found in the BAM header: ",
+           paste(missing, collapse = ", "), ". Check the chromosome naming style.")
+    }
+    galp <- keepSeqlevels(galp, present, pruning.mode = "coarse")
+  }
+
+  # readBam supplies the already-loaded BSgenome Seqinfo, avoiding a second
+  # reference lookup over the network. Retain string support for direct callers.
+  if (isSingleStringOrNA(genome)) {
+    if (is.na(genome)) return(galp)
+    genome <- Seqinfo(genome = genome)
+  }
+
+  mt_names <- c("chrM", "chrMT", "MT", "M")
+  bam_mt <- intersect(seqlevels(galp), mt_names)
+  genome_mt <- intersect(seqlevels(genome), mt_names)
+  if (length(bam_mt) && length(genome_mt)) {
+    # hg19 has both chrM and chrMT with different sequences and lengths.
+    # Preserve exact reference names before considering an alias.
+    mt_targets <- vapply(bam_mt, function(chr) {
+      if (chr %in% genome_mt) return(chr)
+      if ("chrM" %in% genome_mt) return("chrM")
+      if (length(genome_mt) == 1L) return(genome_mt)
+      stop("The reference contains multiple mitochondrial sequences; ",
+           "use an exact reference chromosome name.")
+    }, character(1))
+    if (anyDuplicated(unname(mt_targets))) {
+      stop("Multiple mitochondrial aliases would map to the same reference ",
+           "sequence; select one explicitly.")
+    }
+    galp <- GenomeInfoDb::renameSeqlevels(galp, stats::setNames(mt_targets, bam_mt))
+  }
+
+  common <- intersect(seqlevels(galp), seqlevels(genome))
+  # merge rejects conflicting lengths, including hg19 chrM (16571) versus
+  # a 16569-base mitochondrial reference. An alias is not a reference conversion.
+  seqinfo(galp) <- merge(seqinfo(galp), genome[common])
+  galp
 }
