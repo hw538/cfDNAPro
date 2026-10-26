@@ -3,3 +3,7 @@
 ^Meta$
 ^LICENSE\.md$
 ^doc$
+^Dockerfile$
+^\.dockerignore$
+^\.github$
+^tools$

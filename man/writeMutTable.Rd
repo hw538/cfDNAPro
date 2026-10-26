@@ -4,12 +4,16 @@
 \alias{writeMutTable}
 \title{Function that generates a Mutation Table with summarised cfDNA fragment data}
 \usage{
-writeMutTable(frag_obj, output_file)
+writeMutTable(frag_obj, output_file, genome = NULL)
 }
 \arguments{
 \item{frag_obj}{GRanges object containing genomic ranges and associated data.}
 
 \item{output_file}{Character string specifying the path/name of the output file.}
+
+\item{genome}{Optional matching BSgenome reference passed to
+\code{callTrinucleotide()}. If omitted, recover a reference from fragment
+provenance. Supply an ad-hoc reference explicitly.}
 }
 \value{
 The path to the output file as a character string.
@@ -25,6 +29,7 @@ Consensus mismatch is used to derive the trinucleotide substitution (SBS96).
 The resulting table is written to a .tsv file.
 }
 \examples{
-output_path <- writeMutTable(gr, "output_directory", "output_filename")
-print(paste("File written to:", output_path))
+\dontrun{
+output_path <- writeMutTable(gr, "mutations.tsv", genome = reference)
+}
 }

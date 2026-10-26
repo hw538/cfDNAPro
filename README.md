@@ -29,7 +29,7 @@ Please do not impose any filtering on the bam files; For example, do not filter 
 (5) No supplementary alignment;\
 (6) No unmapped reads.
 
-Note: remember to choose the correct `genome_label`, a parameter in `readBam()` function, based on the ref genome you used for alignment. At the moment, it supports three different ref genomes, hg19, hg38 and hg38-NCBI, For details see readBam() R documentation by typing `?readBam` in the R console or see source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
+Note: remember to choose the correct `genome_label`, a parameter in `readBam()` function, based on the ref genome you used for alignment. It supports hg19, hg38, hg38-NCBI, and `genome_label = "user_define"` with a matching BSgenome object (see the custom reference section below). For details see readBam() R documentation by typing `?readBam` in the R console or see source code:https://github.com/hw538/cfDNAPro/blob/master/R/readBam.R
 
 ## Output
 
@@ -46,34 +46,42 @@ SNV/SNP related questions: Paulius D. Mennea: paulius.mennea\@cruk.cam.ac.uk
 
 ## Installation
 
-### Option 1 (recommended): Use Docker or Singularity:
+### Option 1 (recommended): Docker or Apptainer/Singularity
 
-Thanks zetian-jia for building the docker image,\
-please refer to [github.com/zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker/)
+Release containers are built and tested by
+[GitHub Actions](https://github.com/hw538/cfDNAPro/actions/workflows/container.yml)
+from this repository. The image tag matches the installed R package version.
 
 #### Docker
 
-``` bash
-#Step 1: Pull the Docker Image
-docker pull zetianjia/cfdnapro:1.7.3
-
-#Step 2: Launch R inside the Container
-docker run -it zetianjia/cfdnapro:1.7.3 R --no-save
+```bash
+docker pull ghcr.io/hw538/cfdnapro:1.7.4
+docker run --rm -it -v "$PWD:/work" -w /work ghcr.io/hw538/cfdnapro:1.7.4 R --no-save
 ```
 
-#### Singularity
+#### Apptainer / Singularity
 
-``` bash
-#Step 1: Pull the Docker Image
-singularity pull docker://zetianjia/cfdnapro:1.7.3
-
-#Step 2: Launch R inside the Container
-singularity exec -e cfdnapro_1.7.3.sif R --no-save
+```bash
+apptainer pull cfdnapro_1.7.4.sif docker://ghcr.io/hw538/cfdnapro:1.7.4
+apptainer exec --cleanenv --bind "$PWD:/work" --pwd /work cfdnapro_1.7.4.sif R --no-save
 ```
 
-### Option 2: Your can try to install in your local R console:
+Replace `apptainer` with `singularity` for Singularity installations. Confirm the
+installed version with `Rscript -e 'packageVersion("cfDNAPro")'` inside the image.
+The image includes the hg19, hg38, and NCBI GRCh38 BSgenome references. It targets
+Linux x86-64. For repeatable analyses, use the immutable image digest recorded in
+the successful workflow's summary instead of a tag.
 
-In R console (tested using R 4.5.2 locally), you can try to install with following methods: 
+The Dockerfile reuses the previous container's R/Bioconductor dependencies at a
+pinned digest, then installs the cfDNAPro source from the checked-out commit.
+Credit for that dependency environment goes to
+[zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker).
+The workflow checks the installed version and runs the installed regression suite
+with networking disabled before publishing to GitHub Container Registry.
+
+### Option 2: Install in your local R console
+
+Release 1.7.4 was built and installed locally using R 4.3.2. In the R console:
 ```R
 options(timeout = 3600)
 if (!requireNamespace("devtools", quietly = TRUE)) {
@@ -131,6 +139,14 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 
 ## News
 
+### cfDNAPro 1.7.4 (October 2026)
+
+- Custom BSgenome references and offline reference metadata, with validated
+  reference recovery for motif and mutation analysis.
+- Mitochondrial and sex-chromosome filtering fixes from PR #14.
+- Updated roxygen documentation, dependency declarations, and versioned release
+  containers built and tested in GitHub Actions.
+
 ### cfDNAPro paper is published on Genome Biology (May 2025)!
 
 -   [Link to the paper](https://doi.org/10.1186/s13059-025-03607-5) \### cfDNAPro 1.7.3 (Jan 2025)
@@ -156,3 +172,54 @@ The returned dataframe contains two columns, i.e., "insert_size" (fragment lengt
 Please cite this paper:
 
 Wang, H., Mennea, P.D., Chan, Y.K.E., Cheng, Z. et al. A standardized framework for robust fragmentomic feature extraction from cell-free DNA sequencing data. Genome Biol 26, 141 (2025). https://doi.org/10.1186/s13059-025-03607-5
+
+
+## Custom references and offline analysis
+
+Custom reference support follows the proposal in
+[PR #11](https://github.com/hw538/cfDNAPro/pull/11), with reference provenance and
+validation added to preserve the chromosome handling introduced in PR #14.
+Once cfDNAPro, its dependencies, and the reference package are installed, the
+readers use local reference metadata without querying UCSC or NCBI.
+
+```r
+ref <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
+frag <- readBam("sample.bam", genome_label = "user_define", genome = ref,
+                chromosome_to_keep = FALSE)
+saveRDS(frag, "fragments.rds")
+callMotif(readRDS("fragments.rds"))
+```
+
+The same `genome` argument is available in `readGALP()` and
+`read_bam_insert_metrics()`. Default chromosome selection remains chr1-chr22;
+set the appropriate names or FALSE for other reference naming styles/species.
+New arguments follow the existing positional parameters. The older shorthand
+`genome = "hg38"`, with `genome_label` omitted, also remains supported in readers.
+
+Fragment objects store a small reference manifest, not genome sequences.
+Unmodified installed reference packages are restored only when their recorded
+package version and sequence metadata match. For modified or ad-hoc BSgenome
+objects, supply the same `genome` explicitly to `callMotif()`,
+`callTrinucleotide()`, or `writeMutTable()`. Unknown legacy assembly labels no
+longer silently select hg19. Explicit references are also checked against the
+fragment chromosomes, lengths, and recorded provenance.
+
+
+## History / archived containers
+
+These older third-party images predate the 1.7.4 reference-handling changes.
+They are retained here for reproducing earlier analyses. Thanks to
+[zetian-jia/cfDNAPro_docker](https://github.com/zetian-jia/cfDNAPro_docker)
+for providing them.
+
+### cfDNAPro 1.7.3
+
+```bash
+# Historical Docker image
+docker pull zetianjia/cfdnapro:1.7.3
+docker run --rm -it zetianjia/cfdnapro:1.7.3 R --no-save
+
+# Historical Singularity image
+singularity pull cfdnapro_1.7.3.sif docker://zetianjia/cfdnapro:1.7.3
+singularity exec --cleanenv cfdnapro_1.7.3.sif R --no-save
+```

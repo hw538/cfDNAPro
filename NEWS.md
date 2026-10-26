@@ -1,4 +1,8 @@
-# cfDNAPro development
+# cfDNAPro 1.7.4 (2026-10-26)
+* Regenerated roxygen help pages and declared direct namespace dependencies.
+* Added versioned GitHub Actions container builds with installed, offline tests.
+* Added explicit custom BSgenome references with offline readers, saved-reference
+  provenance, and safe motif/mutation reference recovery. Inspired by PR #11.
 * Fixed mitochondrial alias resolution and `chromosome_to_keep = FALSE` in
   `readBam()`. Preserve reference lengths and circularity after curation, use
   local reference metadata, and retain length checks for incompatible references.

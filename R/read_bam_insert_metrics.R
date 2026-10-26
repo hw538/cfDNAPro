@@ -1,17 +1,14 @@
 #' Calculate insert sizes from a curated GRanges object
 #' 
+#' @param genome A BSgenome object, required when
+#'   \code{genome_label = "user_define"}. The BAM and reference must use
+#'   matching sequence names and lengths. For built-in labels a supplied
+#'   BSgenome is ignored with a warning. If \code{genome_label} is omitted,
+#'   the older shorthand \code{genome = "hg38"} still selects that built-in
+#'   reference. References and dependencies must be installed before offline use.
 #' @param bamfile The bam file name.
-#' @param genome_label The Genome you used in the alignment. 
-#'    Should be "hg19" or "hg38" or "hg38-NCBI. Default is "hg19". 
-#'    Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is 
-#'    Full genome sequences for Homo sapiens (Human) as provided by 
-#'    UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects; 
-#'    "hg38" will load BSgenome.Hsapiens.UCSC.hg38 package, which is 
-#'    Full genome sequences for Homo sapiens (Human) as provided by 
-#'    UCSC (hg38, based on GRCh38.p13) and stored in Biostrings objects.
-#'    "hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is 
-#'    full genome sequences for Homo sapiens (Human) as provided by 
-#'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
+#' @param genome_label Reference label: "hg19", "hg38", "hg38-NCBI", or
+#'   "user_define". Defaults to "hg19". For "user_define", supply \code{genome}.
 #' @param outdir The path for saving rds file. Default is FALSE, i.e. not saving.
 #' @param strand_mode Usually the strand_mode  = 1 means the First read is 
 #'    aligned to positive strand. Details please see GenomicAlignments docs.
@@ -49,6 +46,7 @@ read_bam_insert_metrics <- function(bamfile = NULL,
                                     outdir = FALSE,
                                     isize_min = 1L,
                                     isize_max = 1000L,
+                                    genome = NULL,
                                     ...) {
  
   insert_size <- NULL
@@ -62,10 +60,12 @@ read_bam_insert_metrics <- function(bamfile = NULL,
   )
   
   if(!is.null(bamfile)) {
+    reference <- .cfDNAPro_resolve_genome(genome_label, genome, missing(genome_label))
     frag <- readBam(bamfile = bamfile, 
                   chromosome_to_keep = chromosome_to_keep,
                   strand_mode = strand_mode,
-                  genome_label = genome_label,
+                  genome_label = reference$label,
+                  genome = if (reference$label == "user_define") reference$genome else NULL,
                   outdir = outdir)
   } else if(!is.null(fragment_obj)) {
     

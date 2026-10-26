@@ -23,20 +23,27 @@
 #' fragments/read-pairs that do not overlap indicated mutation loci.
 #' @param downsample_ref Logical, if TRUE, downsamples reference motifs to match
 #'        the count of mutant motifs.
+#' @param genome Optional matching BSgenome reference. If omitted, restore the
+#'   reference from fragment provenance or a known legacy assembly label.
+#'   Automatic recovery checks the installed reference package version and
+#'   sequence metadata. Supply the same object explicitly for an ad-hoc genome.
 #' @param ... Additional parameters passed to underlying functions.
 #'
 #' @return Returns a tibble containing the results of the motif analysis.
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' callMotif(frag_obj = myData, motif_type = "s",
 #'           motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
+#' }
 callMotif <- function(frag_obj,
                       motif_type = "s",
                       motif_length = 3L,
                       integrate_mut = FALSE,
                       ref_type = "locus_fragment",
                       downsample_ref = FALSE,
+                      genome = NULL,
                       ...) {
 
   motif_length <- as.numeric(motif_length)
@@ -44,11 +51,12 @@ callMotif <- function(frag_obj,
   message("Started to extract ", paste0(motif_type, motif_length), " motif...")
 
   # Select the appropriate genome reference
-  bsgenome_obj <- get_genome_reference(frag_obj)
+  bsgenome_obj <- get_genome_reference(frag_obj, genome = genome)
 
-  genome_label <- bsgenome_obj@metadata$genome
+  genome_label <- unique(GenomeInfoDb::genome(bsgenome_obj))
+  genome_label <- genome_label[!is.na(genome_label)]
 
-  message("You reference genome was set to ", genome_label, "!")
+  message("Reference genome: ", if (length(genome_label)) paste(genome_label, collapse = ", ") else "unspecified assembly", ".")
 
   if (integrate_mut == TRUE) {
 

@@ -174,7 +174,9 @@ read_mutation_file <- function(mutation_file) {
   message("Reading in the provided mutation file...")
   bed <- read.table(mutation_file,
                     header = TRUE, sep="\t",
-                    quote="", stringsAsFactors = FALSE)
+                    quote="", stringsAsFactors = FALSE,
+                    colClasses = c(chr = "character", pos = "integer",
+                                   ref = "character", alt = "character"))
 
   # Check whether the file format is correct
   result <- check_mutfile_columns(bed)
@@ -211,15 +213,19 @@ read_mutation_file <- function(mutation_file) {
 #'
 #' @param frag_obj GRanges object containing genomic ranges and associated data.
 #' @param output_file Character string specifying the path/name of the output file.
+#' @param genome Optional matching BSgenome reference passed to
+#'   \code{callTrinucleotide()}. If omitted, recover a reference from fragment
+#'   provenance. Supply an ad-hoc reference explicitly.
 #'
 #' @return The path to the output file as a character string.
 #'
 #' @export
 #' 
 #' @examples
-#' output_path <- writeMutTable(gr, "output_directory", "output_filename")
-#' print(paste("File written to:", output_path))
-writeMutTable <- function(frag_obj, output_file) {
+#' \dontrun{
+#' output_path <- writeMutTable(gr, "mutations.tsv", genome = reference)
+#' }
+writeMutTable <- function(frag_obj, output_file, genome = NULL) {
 
   # Extract the directory path from the output file path
   output_dir <- dirname(output_file)
@@ -231,7 +237,7 @@ writeMutTable <- function(frag_obj, output_file) {
     stop("The directory does not exist. Please provide a valid directory path.")
   }
 
-  trinuc_df <- callTrinucleotide(frag_obj = frag_obj)
+  trinuc_df <- callTrinucleotide(frag_obj_mut = frag_obj, genome = genome)
 
   # Adding informative columns for counts and fractions
   trinuc_df <- trinuc_df %>%
@@ -1628,33 +1634,6 @@ create_empty_galp <- function() {
 
 
 
-#' Function to determine the correct BSgenome based on the seqinfo result
-#' @importFrom GenomeInfoDb seqinfo
-#' @noRd
-get_genome_reference <- function(frag_obj_mut) {
-  # Extract genome sequence from GRanges object's seqinfo
-  genome_seq <- unique(
-    as.character(GenomeInfoDb::seqinfo(frag_obj_mut)@genome))
-  
-  # Define genome versions and corresponding BSgenome data packages
-  genome_versions <- c("GRCh38", "hg38-NCBI", "hg38", "hg19")
-  genome_packages <- c(
-    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38", 
-    "BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38", 
-    "BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38", 
-    "BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19")
-  
-  # Find the index of the genome sequence in the genome_versions vector
-  index <- match(genome_seq, genome_versions)
-  
-  # Return the corresponding genome package; default to hg19 if not found
-  if (!is.na(index)) {
-    return(eval(parse(text = genome_packages[index])))
-  } else {
-    return(BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
-  }
-}
-
 #' Prepare and filter GRanges data
 #' @noRd
 prepare_data <- function(frag_obj_mut) {
@@ -1691,8 +1670,9 @@ check_mutation_in_metadata <- function(frag_obj) {
   # Check for the specific metadata entry
   required_info <- "GRanges object with fragment and mutational data"
 
-  if (!any(sapply(metadata_list,
-                  function(x) grepl(required_info, x, ignore.case = TRUE)))) {
+  if (!any(vapply(metadata_list, function(x) {
+    is.character(x) && any(grepl(required_info, x, ignore.case = TRUE))
+  }, logical(1)))) {
     stop("The GRanges object does not contain fragment data ",
          "with annotated mutational information.\n ",
          " Re-run readBam() with ",

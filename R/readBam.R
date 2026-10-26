@@ -12,7 +12,7 @@
 #' @importFrom methods is
 #'
 #' @param genome_label The Genome you used in the alignment.
-#'    Should be "hg19" or "hg38" or "hg38-NCBI". Default is "hg19".
+#'    Should be "hg19", "hg38", "hg38-NCBI", or "user_define". Default is "hg19".
 #'    Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is
 #'    Full genome sequences for Homo sapiens (Human) as provided by
 #'    UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects;
@@ -22,6 +22,12 @@
 #'    "hg38-NCBI" will load BSgenome.Hsapiens.NCBI.GRCh38 package, which is
 #'    full genome sequences for Homo sapiens (Human) as provided by
 #'    NCBI (GRCh38, 2013-12-17) and stored in Biostrings objects.
+#' @param genome A BSgenome object, required when
+#'   \code{genome_label = "user_define"}. The BAM and reference must use
+#'   matching sequence names and lengths. For built-in labels a supplied
+#'   BSgenome is ignored with a warning. If \code{genome_label} is omitted,
+#'   the older shorthand \code{genome = "hg38"} still selects that built-in
+#'   reference. References and dependencies must be installed before offline use.
 #' @param bamfile The bam file name.
 #' @param curate_start_and_end A logical (TRUE or FALSE) parameter
 #'   for curating alignment start and end coordinates.
@@ -76,7 +82,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' object <- readGALP(bamfile = "/path/to/bamfile.bam",
+#' object <- readBam(bamfile = "/path/to/bamfile.bam",
 #'                    outdir = "./",
 #'                    chromosome_to_keep = c("chr1", "chr2", "chr3"))
 #' }
@@ -100,6 +106,7 @@ readBam <- function(bamfile,
                     galp_bqFilter = 20,
                     mutation_file = NULL,
                     mut_fragments_only = FALSE,
+                    genome = NULL,
                     ...) {
 
   ############################################################################
@@ -111,23 +118,9 @@ readBam <- function(bamfile,
     stop("Input is not paired-end Bam file.")
   }
 
-  if (!genome_label %in% c("hg19", "hg38", "hg38-NCBI") || is.na(genome_label)) {
-      stop("Only 'hg19', 'hg38', or 'hg38-NCBI' are accepted as genome labels.")
-  }
-
-  if (genome_label == "hg19") {
-
-    genome <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
-
-  } else if (genome_label == "hg38") {
-
-    genome <- BSgenome.Hsapiens.UCSC.hg38::BSgenome.Hsapiens.UCSC.hg38
-
-  } else if (genome_label == "hg38-NCBI") {
-
-    genome <- BSgenome.Hsapiens.NCBI.GRCh38::BSgenome.Hsapiens.NCBI.GRCh38
-
-  }
+  reference <- .cfDNAPro_resolve_genome(genome_label, genome, missing(genome_label))
+  genome_label <- reference$label
+  genome <- reference$genome
 
   genome_info <- seqinfo(genome)
 
@@ -202,6 +195,7 @@ readBam <- function(bamfile,
   ###########################################################################
   # Saving RDS file
   ###########################################################################
+  frag <- .cfDNAPro_attach_reference(frag, genome_label, genome)
   if (is.na(outdir) || isFALSE(outdir)) {
 
     return(frag)

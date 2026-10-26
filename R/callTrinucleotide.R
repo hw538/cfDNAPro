@@ -26,19 +26,24 @@
 #' @importFrom magrittr '%>%'
 #'
 #' @param frag_obj_mut GRanges object containing fragment and mutation data.
+#' @param genome Optional matching BSgenome reference. If omitted, recover the
+#'   reference from fragment provenance or a known legacy assembly label.
+#'   Supply an ad-hoc reference explicitly; incompatible references are rejected.
 #'
 #' @return dataframe with summarised mutational and trinucleotide data.
 #' @export
 #'
 #' @examples
-#' trinuc_df <-  callTrinucleotide(frag_obj_mut)
-callTrinucleotide <- function(frag_obj_mut) {
+#' \dontrun{
+#' trinuc_df <- callTrinucleotide(frag_obj_mut, genome = reference)
+#' }
+callTrinucleotide <- function(frag_obj_mut, genome = NULL) {
 
   # Check if GRanges has mutational information
   check_mutation_in_metadata(frag_obj = frag_obj_mut)
 
   # Get the appropriate genome reference
-  genome <- get_genome_reference(frag_obj_mut)
+  genome <- get_genome_reference(frag_obj_mut, genome = genome)
 
   # Convert relevant data to dataframe
   gr_df <- prepare_data(frag_obj_mut)

@@ -5,10 +5,14 @@
 \title{Call trinucleotides and summarise the cfDNA information
 for each target mutation locus.}
 \usage{
-callTrinucleotide(frag_obj_mut)
+callTrinucleotide(frag_obj_mut, genome = NULL)
 }
 \arguments{
 \item{frag_obj_mut}{GRanges object containing fragment and mutation data.}
+
+\item{genome}{Optional matching BSgenome reference. If omitted, recover the
+reference from fragment provenance or a known legacy assembly label.
+Supply an ad-hoc reference explicitly; incompatible references are rejected.}
 }
 \value{
 dataframe with summarised mutational and trinucleotide data.
@@ -33,5 +37,7 @@ The consensus mutations are then used to derive
 the trinucleotide substitution types (SBS96).
 }
 \examples{
-trinuc_df <-  callTrinucleotide(frag_obj_mut)
+\dontrun{
+trinuc_df <- callTrinucleotide(frag_obj_mut, genome = reference)
+}
 }

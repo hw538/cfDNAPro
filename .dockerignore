@@ -1,0 +1,14 @@
+**
+!DESCRIPTION
+!NAMESPACE
+!NEWS.md
+!R/
+!R/**
+!man/
+!man/**
+!data/
+!data/**
+!inst/
+!inst/**
+!tests/
+!tests/**

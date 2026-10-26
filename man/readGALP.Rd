@@ -17,6 +17,7 @@ readGALP(
   galp_what = c("cigar", "mapq", "isize"),
   galp_tag = c("NM", "MD"),
   galp_mapqFilter = 30,
+  genome = NULL,
   ...
 )
 }
@@ -33,7 +34,7 @@ Default is paste0("chr", 1:22).}
 aligned to positive strand. Details please see GenomicAlignments docs.}
 
 \item{genome_label}{The Genome you used in the alignment. 
-Should be "hg19" or "hg38" or "hg38-NCBI". Default is "hg19". 
+Should be "hg19", "hg38", "hg38-NCBI", or "user_define". Default is "hg19".
 Note: "hg19" will load BSgenome.Hsapiens.UCSC.hg19 package, which is 
 Full genome sequences for Homo sapiens (Human) as provided by 
 UCSC (hg19, based on GRCh37.p13) and stored in Biostrings objects; 
@@ -55,6 +56,13 @@ described on the Rsamtools::scanBam help page.}
 \item{galp_tag}{}
 
 \item{galp_mapqFilter}{}
+
+\item{genome}{A BSgenome object, required when
+\code{genome_label = "user_define"}. The BAM and reference must use
+matching sequence names and lengths. For built-in labels a supplied
+BSgenome is ignored with a warning. If \code{genome_label} is omitted,
+the older shorthand \code{genome = "hg38"} still selects that built-in
+reference. References and dependencies must be installed before offline use.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

@@ -11,6 +11,7 @@ callMotif(
   integrate_mut = FALSE,
   ref_type = "locus_fragment",
   downsample_ref = FALSE,
+  genome = NULL,
   ...
 )
 }
@@ -31,6 +32,11 @@ fragments/read-pairs that do not overlap indicated mutation loci.}
 \item{downsample_ref}{Logical, if TRUE, downsamples reference motifs to match
 the count of mutant motifs.}
 
+\item{genome}{Optional matching BSgenome reference. If omitted, restore the
+reference from fragment provenance or a known legacy assembly label.
+Automatic recovery checks the installed reference package version and
+sequence metadata. Supply the same object explicitly for an ad-hoc genome.}
+
 \item{...}{Additional parameters passed to underlying functions.}
 }
 \value{
@@ -43,6 +49,8 @@ It supports integration with mutation data and allows for downsampling of
 reference based (i.e., non-mutant) motifs to balance the dataset.
 }
 \examples{
+\dontrun{
 callMotif(frag_obj = myData, motif_type = "s",
           motif_length = 2, integrate_mut = TRUE, downsample_ref = FALSE)
+}
 }
